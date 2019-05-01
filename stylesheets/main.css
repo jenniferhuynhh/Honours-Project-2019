@@ -1,0 +1,58 @@
+/*** Renderer's window manager classes ***/
+.window_manager {
+	border-collapse: collapse;
+}
+
+.window_manager td {
+	vertical-align: top;
+}
+
+/*** Track field classes ***/
+.border, .no_border {
+	width: 600px;
+	height: 600px;
+	border: solid grey 1px;
+	border-collapse: collapse;
+}
+
+.border td {
+	border: solid grey 1px;
+}
+
+.no_border td {
+	border: none;
+}
+
+.no_border .highlighted_td, .border .highlighted_td {
+	border: solid black 1px;
+}
+
+/*** Track field controls ***/
+.controls_table input {
+	width: 30px;
+	height: 30px;
+}
+
+
+/*** Track data table classes ***/
+.track_table, .track_table td {
+	border-collapse: collapse;
+	border: solid black 1px;
+	padding: 3px;
+}
+
+.friendly_data {
+	background-color: #e2f9ff;
+}
+
+.highlighted_friendly_data {
+	background-color: #90cbdb;
+}
+
+.hostile_data {
+	background-color: #ffe5e5;
+}
+
+.highlighted_hostile_data {
+	background-color: #ce8a8a;
+}
