@@ -11,20 +11,15 @@
 .border, .no_border {
 	width: 600px;
 	height: 600px;
-	border: solid grey 1px;
 	border-collapse: collapse;
-}
-
-.border td {
-	border: solid grey 1px;
 }
 
 .no_border td {
 	border: none;
 }
 
-.no_border .highlighted_td, .border .highlighted_td {
-	border: solid black 1px;
+.border td {
+	border: solid grey 1px;
 }
 
 /*** Track field controls ***/
@@ -32,7 +27,6 @@
 	width: 30px;
 	height: 30px;
 }
-
 
 /*** Track data table classes ***/
 .track_table, .track_table td {

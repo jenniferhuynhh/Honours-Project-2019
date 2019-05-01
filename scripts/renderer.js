@@ -323,7 +323,7 @@ function Renderer() {
 		//grid_toggle.setAttribute("checked", "true");
 		grid_toggle.addEventListener("click", function() {
 			if(self.field.className == "border") {
-				self.field.className = "noborder";
+				self.field.className = "no_border";
 			} else {
 				self.field.className = "border";
 			}
