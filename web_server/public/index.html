@@ -1,16 +1,27 @@
 <html>
 <head>
+	<!-- Make the app on mobile take up the full browser screen and disable user scaling. -->
+    <!-- <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"> -->
 	<title>Track simulator</title>
 	<meta charset="utf-8" />
+	<!-- Libraries -->
+	<script src="libraries/cesium/Build/Cesium/Cesium.js"></script>
+	<!-- Custom JS -->
 	<script src="javascripts/helpers.js"></script>
-	<script src="javascripts/renderer.js"></script>
 	<script src="javascripts/track.js"></script>
+	<script src="javascripts/track_table.js"></script>
+	<script src="javascripts/map_module.js"></script>
+	<script src="javascripts/renderer.js"></script>
 	<script src="javascripts/simulator.js"></script>
+	<script src="javascripts/window_manager.js"></script>
+	<script src="javascripts/ftms_ui.js"></script>
 	<script src="javascripts/main.js"></script>
-	<link rel="stylesheet" href="stylesheets/main.css">
+	<!-- Style Sheets -->
+	<link href="stylesheets/main.css" rel="stylesheet">
+    <link href="libraries/cesium/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
 </head>
-
-<body onload="main();">
-	<div id="tracking_sim"></div>
+<body onload="load_ftms_ui();">
+	<div id="ftms_ui"></div>
 </body>
 </html>
