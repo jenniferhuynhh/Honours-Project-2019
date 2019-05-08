@@ -3,7 +3,7 @@ function Track(lat, long, affiliation) {
 	this.latitude = lat; //-34.912955
 	this.longitude = long; //138.365660
 	this.speed = ((25000/60/60)/(1000000))*0.85; //25km/h (6.94m/s) in decimal degrees (geographic coordinates)
-	this.course = randomInt(0, 359); //course in degrees
+	this.course = randomInt(0, 360); //course in degrees
 	this.type = "ship"; //type of ship
 	this.affiliation = affiliation; //affiliation of ship (friendly, hostile, etc.)
 	this.route = "forward"; //current state of travel (straight/turning)

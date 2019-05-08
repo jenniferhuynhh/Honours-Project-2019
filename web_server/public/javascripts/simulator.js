@@ -47,6 +47,10 @@ function Simulator() {
 			log(this.tracks[i].id);
 		}
 
+		if(Math.random() < 0.10){
+			this.ftms_ui.alert_module.showRandomAlerts();
+		}
+
 		//Render new track positions
 		this.ftms_ui.renderer.render();
 
