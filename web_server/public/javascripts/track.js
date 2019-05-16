@@ -6,6 +6,7 @@ function Track(lat, long, affiliation) {
 	this.course = randomInt(0, 360); //course in degrees
 	this.type = "ship"; //type of ship
 	this.affiliation = affiliation; //affiliation of ship (friendly, hostile, etc.)
+	this.domain = "sea";
 	this.route = "forward"; //current state of travel (straight/turning)
 	this.turn_count = 0; //used to limit the time a ship can turn
 	this.highlighted = false; //determines if track is highlighted on map

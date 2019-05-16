@@ -6,6 +6,7 @@ function FTMS_UI() {
 	this.renderer;
 	this.track_table_module;
 	this.alert_module;
+	this.classification_module;
 
 	this.initialise = function() {
 		this.window_manager = new WindowManager();
@@ -25,6 +26,9 @@ function FTMS_UI() {
 
 		this.alert_module = new AlertModule();
 		this.alert_module.initialise(this);
+
+		this.classification_module = new ClassificationModule();
+		this.classification_module.initialise(this);
 	}
 
 	this.run = function() {
