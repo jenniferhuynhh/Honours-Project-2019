@@ -12,8 +12,8 @@ function Track(lat, long, affiliation) {
 
 	//Moves a track forward according to its course and speed
 	this.forward = function() {
-		this.latitude += this.speed * Math.sin(this.course * (Math.PI/180)) * 30; //convert to radians
-		this.longitude += this.speed * Math.cos(this.course * (Math.PI/180)) * 20;
+		this.latitude += this.speed * Math.cos(this.course * (Math.PI/180)) * 30; //convert to radians
+		this.longitude += this.speed * Math.sin(this.course * (Math.PI/180)) * 20;
 	}
 
 	//Shifts a track's course
