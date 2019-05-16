@@ -41,14 +41,14 @@ function Simulator() {
 	this.tick = function tick() {
 		var self = this; //Store scope (https://stackoverflow.com/q/45147661)
 
-		//Tell all tracks to move once
-		for(var i = 0; i < this.tracks.length; i++) {
-			this.tracks[i].go();
-		}
-
 		//10% chance for a new alert to appear
 		if(Math.random() < 0.10) {
 			this.ftms_ui.alert_module.showRandomAlerts();
+		}
+
+		//Tell all tracks to move once
+		for(var i = 0; i < this.tracks.length; i++) {
+			this.tracks[i].go();
 		}
 
 		//Render new track positions

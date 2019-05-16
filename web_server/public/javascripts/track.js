@@ -8,7 +8,6 @@ function Track(lat, long, affiliation) {
 	this.affiliation = affiliation; //affiliation of ship (friendly, hostile, etc.)
 	this.route = "forward"; //current state of travel (straight/turning)
 	this.turn_count = 0; //used to limit the time a ship can turn
-	this.highlighted = false; //determines if track is highlighted on map
 
 	//Moves a track forward according to its course and speed
 	this.forward = function() {
@@ -66,9 +65,6 @@ function Track(lat, long, affiliation) {
 			this.turn();
 		}
 	}
-
-	global_tracks.push(this);
 }
 
 var track_id = 0; //track unique ID counter
-var global_tracks = [] //array of all tracks
