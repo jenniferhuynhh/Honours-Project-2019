@@ -41,14 +41,14 @@ function Simulator() {
 	this.tick = function tick() {
 		var self = this; //Store scope (https://stackoverflow.com/q/45147661)
 
+		//10% chance for a new alert to appear
+		if(Math.random() < 0.10) {
+			this.ftms_ui.alert_module.showRandomAlerts();
+		}
+
 		//Tell all tracks to move once
 		for(var i = 0; i < this.tracks.length; i++) {
 			this.tracks[i].go();
-			log(this.tracks[i].id);
-		}
-
-		if(Math.random() < 0.10){
-			this.ftms_ui.alert_module.showRandomAlerts();
 		}
 
 		//Render new track positions
@@ -57,10 +57,17 @@ function Simulator() {
 		//Display data of new track positions
 		this.ftms_ui.track_table_module.updateTrackTable();
 
-		//Repeat every 'tick_rate' seconds
+		//Repeat every 'tick_rate' seconds iteratively
 		if(++this.i == this.iterations) return; //Exit case
 		setTimeout(function() {
 			self.tick();
 		}, this.tick_rate * 1000);
+	}
+
+	//Returns track with matching ID
+	this.getTrack = function(id) {
+		for(var i = 0; i < this.tracks.length; i++) {
+			if(this.tracks[i].id == id) return this.tracks[i];
+		}
 	}
 };

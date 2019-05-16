@@ -32,11 +32,11 @@ function WindowManager() {
 
 	//Appends an element to a window
 	this.appendToWindow = function(element, row, column) {
-		this.windows.childNodes[row].childNodes[column].appendChild(element);
+		this.windows.rows[row].cells[column].appendChild(element);
 	}
 
 	//Returns the window corresponding to the coordinates
 	this.getWindow = function(row, column) {
-		return this.windows.childNodes[row].childNodes[column];
+		return this.windows.rows[row].cells[column];
 	}
 }
