@@ -77,6 +77,7 @@ function TrackTableModule() {
 				self.selected_track_id = this.cells[0].innerHTML;
 			}
 			self.updateTrackTable();
+			self.ftms_ui.classification_module.updateDisplay();
 		});
 
 		//Create cells

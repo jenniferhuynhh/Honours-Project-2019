@@ -5,6 +5,10 @@ function ClassificationModule() {
 	this.div2;
 	this.div3;
 	this.dropdown_menu;
+	this.land_types;
+	this.sea_types;
+	this.air_types;
+	this.subsurface_types;
 
 	this.initialise = function(ftms_ui){
 		//Link FTMS UI system
@@ -12,10 +16,10 @@ function ClassificationModule() {
 
 		//type div
 		this.div1 = document.createElement('div');
-		var land_types = ['Tank', 'Humvee', 'Desert patrol vehicle'];
-		var sea_types = ['Missile boat', 'Naval ship', 'Patrol boat' ];
-		var air_types = ['Jet', 'Helicopter', 'Military aircraft'];
-		var subsurface_types = ['Submarine'];
+		this.land_types = ['Tank', 'Humvee', 'Desert patrol vehicle'];
+		this.sea_types = ['Missile boat', 'Naval ship', 'Patrol boat' ];
+		this.air_types = ['Jet', 'Helicopter', 'Military aircraft'];
+		this.subsurface_types = ['Submarine', 'Torpedo'];
 		this.dropdown_menu = document.createElement('select');
 		this.dropdown_menu.setAttribute('class', 'dropdown_menu');
 		this.div1.appendChild(this.dropdown_menu);
@@ -59,6 +63,26 @@ function ClassificationModule() {
 		return button;
 	}
 
-	//this.
+	this.updateDisplay = function(){
+		var track_id = this.ftms_ui.track_table_module.selected_track_id;
+		var track = this.ftms_ui.simulator.getTrack(track_id);
+		this.dropdown_menu.innerHTML = "";
+		var selected_array;
+		if(track.domain == 'land'){
+			selected_array = this.land_types;
+		} else if(track.domain == 'air'){
+			selected_array = this.air_types;
+		} else if(track.domain == 'sea'){
+			selected_array = this.sea_types;
+		} else if(track.domain == 'subsurface'){
+			selected_array = this.subsurface_types;
+		}
+		for(var i = 0; i < selected_array.length; i++){
+			var option = document.createElement('option');
+			option.innerHTML = selected_array[i];
+			this.dropdown_menu.appendChild(option);
+		}
+
+	}
 
 }
