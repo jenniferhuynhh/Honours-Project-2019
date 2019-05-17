@@ -16,9 +16,9 @@ function MapModule() {
 		this.ftms_ui.window_manager.appendToWindow(div, 0, 0);
 
 		//Set size of window
-		var display = this.ftms_ui.window_manager.getWindow(0, 0);
+		/*var display = this.ftms_ui.window_manager.getWindow(0, 0);
 		display.style.width = this.width + "px";
-		display.style.height = this.height + "px";
+		display.style.height = this.height + "px";*/
 
 		//Create the Cesium Viewer
 		"use strict";
