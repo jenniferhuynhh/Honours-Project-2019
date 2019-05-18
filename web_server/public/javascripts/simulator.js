@@ -28,6 +28,7 @@ function Simulator() {
 		this.tracks.push(new Track(-34.921254, 138.46, "friendly", "air"));
 		this.tracks.push(new Track(-34.921240, 138.45, "friendly", "land"));
 		this.tracks.push(new Track(-34.931000, 138.43, "hostile", "sea"));
+		log("Simulator initialised");
 	};
 
 	//Begins the tick cycle
@@ -52,7 +53,7 @@ function Simulator() {
 		}
 
 		//Render new track positions
-		this.ftms_ui.renderer.render();
+		this.ftms_ui.map_module.render();
 
 		//Display data of new track positions
 		this.ftms_ui.track_table_module.updateTrackTable();
