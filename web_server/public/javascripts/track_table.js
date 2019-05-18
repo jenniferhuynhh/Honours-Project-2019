@@ -72,8 +72,10 @@ function TrackTableModule() {
 		row.addEventListener("click", function() {
 			if(self.selected_track_id == this.cells[0].innerHTML) {
 				self.selected_track_id = -1;
+				self.ftms_ui.map_module.viewer.selectedEntity = undefined;
 			} else {
 				self.selected_track_id = this.cells[0].innerHTML;
+				self.ftms_ui.map_module.viewer.selectedEntity = self.ftms_ui.map_module.viewer.entities.getById(this.cells[0].innerHTML)
 			}
 			self.updateTrackTable();
 			self.ftms_ui.classification_module.updateDisplay();

@@ -47,6 +47,18 @@ function Simulator() {
 			this.ftms_ui.alert_module.showRandomAlerts();
 		}
 
+		//10% chance for track to disappear
+		/*if(Math.random() < 0.01) {
+			var min = 1000;
+			for(var i = 0; i < this.tracks.length; i++) {
+				if(this.tracks[i].id < min) {
+					min = this.tracks[i].id;
+				}
+			}
+			this.removeTrack(randomInt(min, this.tracks.length));
+			this.ftms_ui.track_table_module.updateTrackTable();
+		}*/
+
 		//Tell all tracks to move once
 		for(var i = 0; i < this.tracks.length; i++) {
 			this.tracks[i].go();
@@ -69,6 +81,17 @@ function Simulator() {
 	this.getTrack = function(id) {
 		for(var i = 0; i < this.tracks.length; i++) {
 			if(this.tracks[i].id == id) return this.tracks[i];
+		}
+	}
+
+	//Removes a track from the track array by ID
+	this.removeTrack = function(id) {
+		for(var i = 0; i < this.tracks.length; i++) {
+			if(this.tracks[i].id == id) {
+				this.ftms_ui.map_module.eraseTrack(id);
+				this.tracks.splice(i, 1);
+				return;
+			}
 		}
 	}
 };
