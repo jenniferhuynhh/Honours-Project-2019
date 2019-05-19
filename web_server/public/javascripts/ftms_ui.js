@@ -3,7 +3,6 @@ function FTMS_UI() {
 	this.window_manager;
 	this.simulator;
 	this.map_module;
-	this.renderer;
 	this.track_table_module;
 	this.alert_module;
 	this.classification_module;
@@ -14,9 +13,6 @@ function FTMS_UI() {
 
 		this.simulator = new Simulator();
 		this.simulator.initialise(this);
-
-		this.renderer = new Renderer();
-		this.renderer.initialise(this);
 
 		this.map_module = new MapModule();
 		this.map_module.initialise(this);
