@@ -2,6 +2,7 @@ function MapModule() {
 	this.ftms_ui; //FTMS UI system this module is linked to
 	this.width = 1000;
 	this.height = 600;
+	this.icon_size = 30;
 	this.viewer;
 
 	this.initialise = function(ftms_ui) {
@@ -94,9 +95,24 @@ function MapModule() {
 		// viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP; // loop at the end
 		// viewer.timeline.zoomTo(viewer.clock.startTime, viewer.clock.stopTime); // set visible range
 
+
 		//////////////////////////////////////////////////////////////////////////
 		// Custom mouse interaction for highlighting and selecting
 		//////////////////////////////////////////////////////////////////////////
+
+		//Handle on-click entity selecting
+		var self = this;
+		var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+		handler.setInputAction(function(click) {
+			var pickedObject = viewer.scene.pick(click.position);
+			if(Cesium.defined(pickedObject)) {
+				self.ftms_ui.track_table_module.selected_track_id = viewer.selectedEntity.id;
+			} else {
+				self.ftms_ui.track_table_module.selected_track_id = -1;
+			}
+			self.ftms_ui.track_table_module.updateTrackTable();
+			self.ftms_ui.classification_module.updateDisplay();
+		}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
 		// If the mouse is over a point of interest, change the entity billboard scale and color
 		// var previousPickedEntity;
@@ -123,32 +139,64 @@ function MapModule() {
 		// city.readyPromise.then(function () {
 		//     loadingIndicator.style.display = 'none';
 		// });
+	
 		log("Map module initialised");
 	}
 
-	//Places/updates a track on the map
+	//Places/updates a track on viewer
 	this.paintTrack = function(track) {
 		var ent = this.viewer.entities.getById(track.id);
 
-		if(ent == undefined) {
-			var icon = 'images/friendly-ship.png';
-			if(track.affiliation == "hostile") icon = 'images/enemy-ship.png';
+		//Decide which military symbol icon to use (uses milsymbol library)
+		var icon_id = 102000;
+		switch(track.affiliation) {
+			case "friendly": 	icon_id += 300;
+								break;
+			case "hostile": 	icon_id += 600;
+								break;
+			case "neutral": 	icon_id += 400;
+								break;
+			case "unknown": 	icon_id += 100;
+								break;
+		}
+		switch(track.domain) {
+			case "air": 		icon_id += 1;
+								break;
+			case "land": 		icon_id += 10;
+								break;
+			case "sea": 		icon_id += 15;
+								break;
+			case "subsurface": 	icon_id += 35;
+								break;
+		}
 
+		//Create milsymbol
+		var icon = new ms.Symbol(icon_id, {size: this.icon_size}).asCanvas();
+
+		//Create or update entity
+		if(ent == undefined) {
 			this.viewer.entities.add({
-				id : track.id,
-				// name : data["stnm"],
-				show : true,
-				description : `Affiliation: ${track.affiliation} <br> Longitude: ${track.longitude} <br> Latitude: ${track.latitude}`,
-				position : Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, 0),
-				billboard : {
-					image : icon,
-					scaleByDistance : new Cesium.NearFarScalar(0.0, 1, 2.0e5, 0.0)
+				id: track.id,
+				name: `ID: ${track.id}`,
+				show: true,
+				description: `Affiliation: ${track.affiliation} <br> Longitude: ${track.longitude} <br> Latitude: ${track.latitude}`,
+				position: Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, 0),
+				billboard: {
+					image: icon,
+					scaleByDistance: new Cesium.NearFarScalar(0.0, 1, 2.0e5, 0.0)
 				}
 			});
 		} else {
+			ent.billboard.image = icon;
 			ent.position = Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, 0);
-			ent.description = `Affiliation: ${track.affiliation} <br> Longitude: ${track.longitude} <br> Latitude: ${track.latitude}`;
+			ent.description = `Affiliation: ${track.affiliation} <br> Latitude: ${track.latitude} <br> Longitude: ${track.longitude}`;
 		}
+	}
+
+	//Erases track from viewer
+	this.eraseTrack = function(id) {
+		var ent = this.viewer.entities.getById(id);
+		this.viewer.entities.remove(ent);
 	}
 
 	//Renders the current state of the simulator
@@ -156,7 +204,7 @@ function MapModule() {
 		//Grab new track data
 		var tracks = this.ftms_ui.simulator.tracks;
 		
-		//Paint tracks if not out of bounds
+		//Paint tracks
 		for(var i = 0; i < tracks.length; i++) {
 			this.paintTrack(tracks[i]);
 		}

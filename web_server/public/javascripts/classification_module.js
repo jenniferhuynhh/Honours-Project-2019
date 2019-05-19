@@ -154,6 +154,7 @@ function ClassificationModule() {
 		}
 
 		this.ftms_ui.track_table_module.updateTrackTable();
+		this.ftms_ui.map_module.render();
 	}
 
 	//this function clears the dropdown menu and deselects domain and affiliation buttons
