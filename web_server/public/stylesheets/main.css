@@ -107,3 +107,19 @@
 	height: 130px;
 	width: 520px;
 }
+
+.unhighlighted_weapons_buttons {
+	margin: 0px 10px 10px 20px;
+	width: 100px;
+	height: 100px;
+	border: none;
+	background: lightgrey;
+}
+
+.highlighted_weapons_buttons {
+	margin: 0px 10px 10px 20px;
+	width: 100px;
+	height: 100px;
+	border: none;
+	background: blue;
+}
