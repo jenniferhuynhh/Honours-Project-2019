@@ -58,9 +58,13 @@ function ClassificationModule() {
 		this.div3.setAttribute('class', 'classification_buttons_container');
 
 		//Show divs
-		this.ftms_ui.window_manager.appendToWindow(this.div1, 0, 1);
-		this.ftms_ui.window_manager.appendToWindow(this.div2, 0, 1);
-		this.ftms_ui.window_manager.appendToWindow(this.div3, 0, 1);
+		var bigDiv = document.createElement("div");
+		bigDiv.appendChild(this.div1);
+		bigDiv.appendChild(this.div2);
+		bigDiv.appendChild(this.div3);
+		this.ftms_ui.window_manager.appendToWindow('Track Classification Module', bigDiv);
+		//this.ftms_ui.window_manager.appendToWindow(this.div2, 0, 1);
+		//this.ftms_ui.window_manager.appendToWindow(this.div3, 0, 1);
 
 	}
 

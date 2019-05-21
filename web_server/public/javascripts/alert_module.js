@@ -13,7 +13,7 @@ function AlertModule() {
 		this.display = document.createElement('p');
 
 		//Show table
-		this.ftms_ui.window_manager.appendToWindow(this.display, 1, 0);
+		this.ftms_ui.window_manager.appendToWindow('Alert Module', this.display);
 
 	}
 

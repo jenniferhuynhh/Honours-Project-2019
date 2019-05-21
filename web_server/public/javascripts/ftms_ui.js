@@ -18,7 +18,7 @@ function FTMS_UI() {
 		this.map_module = new MapModule();
 		this.map_module.initialise(this);
 
-		/*this.track_table_module = new TrackTableModule();
+		this.track_table_module = new TrackTableModule();
 		this.track_table_module.initialise(this);
 
 		this.alert_module = new AlertModule();
@@ -26,9 +26,11 @@ function FTMS_UI() {
 
 		this.classification_module = new ClassificationModule();
 		this.classification_module.initialise(this);
+
+		this.window_manager.showAll();
 	}
 
 	this.run = function() {
-		//this.simulator.run();
+		this.simulator.run();
 	}
 }

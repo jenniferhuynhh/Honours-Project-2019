@@ -12,9 +12,9 @@ function MapModule() {
 
 		//Create div for map to load into and append to a window
 		var div = document.createElement("div");
-		div.setAttribute("id", "cesiumContainer");
-		this.ftms_ui.window_manager.appendToWindow(div, 0, 0);
-
+		document.body.appendChild(div);
+		var self = this;
+		this.ftms_ui.window_manager.appendToWindow('Map Module',div);
 		//Set size of window
 		/*var display = this.ftms_ui.window_manager.getWindow(0, 0);
 		display.style.width = this.width + "px";
@@ -23,7 +23,7 @@ function MapModule() {
 		//Create the Cesium Viewer
 		"use strict";
 		Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJiNGM3NmUyMS0yNWY5LTQ5MmMtYjQ0ZS1hYTliMjY2MzFhYzYiLCJpZCI6OTcwNCwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU1NDc3NTg2N30.U4oXqg5SHWnf22tUsRCb2aHrOp1aMF0TK3YmWC39Prc';
-		this.viewer = new Cesium.Viewer("cesiumContainer", {
+		this.viewer = new Cesium.Viewer(div, {
 			selectionIndicator: false,
 			baseLayerPicker: false
 		});
@@ -139,6 +139,7 @@ function MapModule() {
 		// city.readyPromise.then(function () {
 		//     loadingIndicator.style.display = 'none';
 		// });
+
 	
 		log("Map module initialised");
 	}
