@@ -56,7 +56,7 @@ function WeaponAuthorisationModule() {
 				auth_button2.setAttribute('value', 'AUTHORISE');
 			}
 		});
-
+		
 		this.ftms_ui.window_manager.appendToWindow(this.div2, 1, 1);
 	}
 
