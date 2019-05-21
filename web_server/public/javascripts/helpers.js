@@ -1,4 +1,4 @@
-//Generates random int between min/max (inclusive)
+//Generates random int between min/max (inclusive, exclusive respectively)
 function randomInt(min, max) {
 	return Math.floor((Math.random() * max) + min);
 }

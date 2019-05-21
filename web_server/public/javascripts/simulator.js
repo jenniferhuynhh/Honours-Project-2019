@@ -23,11 +23,12 @@ function Simulator() {
 		this.tracks.push(new Track(-34.912915, 138.365620, "hostile"));
 		this.tracks.push(new Track(-34.912975, 138.365680, "hostile"));
 		this.tracks.push(new Track(-34.912980, 138.365635, "friendly"));*/
-		this.tracks.push(new Track(-34.910000, 138.455, "friendly"));
-		this.tracks.push(new Track(-34.921225, 138.42, "hostile"));
-		this.tracks.push(new Track(-34.921254, 138.46, "friendly"));
-		this.tracks.push(new Track(-34.921240, 138.45, "friendly"));
-		this.tracks.push(new Track(-34.931000, 138.43, "hostile"));
+		this.tracks.push(new Track(-34.910000, 138.455, "friendly", "sea"));
+		this.tracks.push(new Track(-34.921225, 138.42, "hostile", "subsurface"));
+		this.tracks.push(new Track(-34.921254, 138.46, "friendly", "air"));
+		this.tracks.push(new Track(-34.921240, 138.45, "friendly", "land"));
+		this.tracks.push(new Track(-34.931000, 138.43, "hostile", "sea"));
+		log("Simulator initialised");
 	};
 
 	//Begins the tick cycle
@@ -46,13 +47,25 @@ function Simulator() {
 			this.ftms_ui.alert_module.showRandomAlerts();
 		}
 
+		//10% chance for track to disappear
+		/*if(Math.random() < 0.01) {
+			var min = 1000;
+			for(var i = 0; i < this.tracks.length; i++) {
+				if(this.tracks[i].id < min) {
+					min = this.tracks[i].id;
+				}
+			}
+			this.removeTrack(randomInt(min, this.tracks.length));
+			this.ftms_ui.track_table_module.updateTrackTable();
+		}*/
+
 		//Tell all tracks to move once
 		for(var i = 0; i < this.tracks.length; i++) {
 			this.tracks[i].go();
 		}
 
 		//Render new track positions
-		this.ftms_ui.renderer.render();
+		this.ftms_ui.map_module.render();
 
 		//Display data of new track positions
 		this.ftms_ui.track_table_module.updateTrackTable();
@@ -68,6 +81,17 @@ function Simulator() {
 	this.getTrack = function(id) {
 		for(var i = 0; i < this.tracks.length; i++) {
 			if(this.tracks[i].id == id) return this.tracks[i];
+		}
+	}
+
+	//Removes a track from the track array by ID
+	this.removeTrack = function(id) {
+		for(var i = 0; i < this.tracks.length; i++) {
+			if(this.tracks[i].id == id) {
+				this.ftms_ui.map_module.eraseTrack(id);
+				this.tracks.splice(i, 1);
+				return;
+			}
 		}
 	}
 };

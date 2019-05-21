@@ -36,17 +36,74 @@
 }
 
 .friendly_data {
-	background-color: #e2f9ff;
+	background-color: #80e0ff;
 }
 
 .highlighted_friendly_data {
-	background-color: #90cbdb;
+	/*background-color: #006b8c;*/
+	background-color: #00a8dc;
 }
 
 .hostile_data {
-	background-color: #ffe5e5;
+	background-color: #ff8080;
 }
 
 .highlighted_hostile_data {
-	background-color: #ce8a8a;
+	/*background-color: #c80000;*/
+	background-color: #ff3031;
+}
+
+.neutral_data {
+	background-color: #aaffaa;
+}
+
+.highlighted_neutral_data {
+	/*background-color: #00a000;*/
+	background-color: #00e200;
+}
+
+.unknown_data {
+	background-color: #ffff80;
+}
+
+.highlighted_unknown_data {
+	/*background-color: #e1dc00;*/
+	background-color: #ffff00;
+}
+
+/*** Classification module buttons ***/
+.unhighlighted_classification_buttons {
+	margin: 20px 10px 10px 20px;
+	width: 100px;
+	height: 100px;
+	border: none;
+	background: lightgrey;
+}
+
+.highlighted_classification__buttons {
+	margin: 20px 10px 10px 20px;
+	width: 100px;
+	height: 100px;
+	border: none;
+	background: blue;
+}
+
+.dropdown_menu{
+	/*margin: 20px 10px 10px 200px;*/
+	width: 310px;
+	height: 40px;
+}
+
+.center_align{
+	text-align: center;
+}
+
+.dropdown_container{
+	display: inline-block;
+	margin-top: 20px;
+}
+
+.classification_buttons_container{
+	height: 130px;
+	width: 520px;
 }

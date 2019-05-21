@@ -15,7 +15,7 @@ function TrackTableModule() {
 		this.selected_track_id = -1;
 
 		//Print headers
-		this.header_elements = ["ID", "Affiliation", "Latitude", "Longitude", "Speed", "Course", "Type", "Route"];
+		this.header_elements = ["ID", "Affiliation", "Latitude", "Longitude", "Speed", "Course", "Route"];
 		var header = document.createElement("tr");
 		for(var i = 0; i < this.header_elements.length; i++) {
 			var td = document.createElement("td");
@@ -54,7 +54,6 @@ function TrackTableModule() {
 			track.longitude.toFixed(8),
 			track.speed.toFixed(7),
 			track.course + "°",
-			track.type,
 			track.route
 		];
 
@@ -73,10 +72,13 @@ function TrackTableModule() {
 		row.addEventListener("click", function() {
 			if(self.selected_track_id == this.cells[0].innerHTML) {
 				self.selected_track_id = -1;
+				self.ftms_ui.map_module.viewer.selectedEntity = undefined;
 			} else {
 				self.selected_track_id = this.cells[0].innerHTML;
+				self.ftms_ui.map_module.viewer.selectedEntity = self.ftms_ui.map_module.viewer.entities.getById(this.cells[0].innerHTML)
 			}
 			self.updateTrackTable();
+			self.ftms_ui.classification_module.updateDisplay();
 		});
 
 		//Create cells
