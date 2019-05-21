@@ -31,6 +31,6 @@ function FTMS_UI() {
 	}
 
 	this.run = function() {
-		this.simulator.run();
+		//this.simulator.run();
 	}
 }
