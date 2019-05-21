@@ -18,16 +18,16 @@ function Simulator() {
 		this.tracks.push(new Track(-34.912915, 138.365620, "hostile"));
 		this.tracks.push(new Track(-34.912975, 138.365680, "hostile"));
 		this.tracks.push(new Track(-34.912980, 138.365635, "friendly"));*/
-		/*this.tracks.push(new Track(-34.912955, 138.365660, "hostile"));
-		this.tracks.push(new Track(-34.912936, 138.365650, "friendly"));
-		this.tracks.push(new Track(-34.912915, 138.365620, "hostile"));
-		this.tracks.push(new Track(-34.912975, 138.365680, "hostile"));
-		this.tracks.push(new Track(-34.912980, 138.365635, "friendly"));*/
-		this.tracks.push(new Track(-34.910000, 138.455, "friendly", "sea"));
-		this.tracks.push(new Track(-34.921225, 138.42, "hostile", "subsurface"));
-		this.tracks.push(new Track(-34.921254, 138.46, "friendly", "air"));
-		this.tracks.push(new Track(-34.921240, 138.45, "friendly", "land"));
-		this.tracks.push(new Track(-34.931000, 138.43, "hostile", "sea"));
+		/*this.tracks.push(new Track(-34.912955, 138.365660, "hostile"));*/
+		/*this.tracks.push(new Track(-34.912936, 138.5, "friendly", "land"));
+		this.tracks.push(new Track(-34.912915, 138.56, "unknown", "land"));
+		this.tracks.push(new Track(-34.9, 138.53, "unknown", "air"));
+		this.tracks.push(new Track(-34.941000, 138.53, "neutral", "subsurface"));*/
+		this.tracks.push(new Track(-34.850000, 138.455, "unknown", "sea"));
+		this.tracks.push(new Track(-34.921225, 138.42, "unknown", "subsurface"));
+		this.tracks.push(new Track(-34.900000, 138.46, "unknown", "air"));
+		this.tracks.push(new Track(-34.941240, 138.47, "unknown", "land"));
+		this.tracks.push(new Track(-34.961000, 138.43, "hostile", "sea"));
 		log("Simulator initialised");
 	};
 
