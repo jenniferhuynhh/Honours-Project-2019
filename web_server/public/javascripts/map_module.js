@@ -171,7 +171,11 @@ function MapModule() {
 		}
 
 		//Create milsymbol
-		var icon = new ms.Symbol(icon_id, {size: this.icon_size}).asCanvas();
+		var color_mode = 'Light';
+		if (this.ftms_ui.track_table_module.selected_track_id == track.id) {
+			color_mode = 'Dark';
+		}
+		var icon = new ms.Symbol(icon_id, {size: this.icon_size, colorMode: color_mode}).asCanvas();
 
 		//Create or update entity
 		if(ent == undefined) {
