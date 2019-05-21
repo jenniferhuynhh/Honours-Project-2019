@@ -2,7 +2,7 @@ function MapModule() {
 	this.ftms_ui; //FTMS UI system this module is linked to
 	this.width = 1000;
 	this.height = 600;
-	this.icon_size = 30;
+	this.icon_size = 15;
 	this.viewer;
 
 	this.initialise = function(ftms_ui) {
@@ -182,8 +182,8 @@ function MapModule() {
 				description: `Affiliation: ${track.affiliation} <br> Longitude: ${track.longitude} <br> Latitude: ${track.latitude}`,
 				position: Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, 0),
 				billboard: {
-					image: icon,
-					scaleByDistance: new Cesium.NearFarScalar(0.0, 1, 2.0e5, 0.0)
+					image: icon//,
+					//scaleByDistance: new Cesium.NearFarScalar(0.0, 1, 2.0e5, 0.0)
 				}
 			});
 		} else {
