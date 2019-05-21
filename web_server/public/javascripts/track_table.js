@@ -77,6 +77,7 @@ function TrackTableModule() {
 				self.selected_track_id = this.cells[0].innerHTML;
 				self.ftms_ui.map_module.viewer.selectedEntity = self.ftms_ui.map_module.viewer.entities.getById(this.cells[0].innerHTML)
 			}
+			self.ftms_ui.map_module.render();
 			self.updateTrackTable();
 			self.ftms_ui.classification_module.updateDisplay();
 		});
