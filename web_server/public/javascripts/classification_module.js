@@ -111,11 +111,9 @@ function ClassificationModule() {
 		var track = this.ftms_ui.simulator.getTrack(track_id);
 		if(property == 'affiliation') {
 			track.affiliation = value;
-		}
-		else if(property == 'domain') {
+		} else if(property == 'domain') {
 			track.domain = value;
-		}
-		else if(property == 'type') {
+		} else if(property == 'type') {
 			track.type = value;
 		}
 		this.updateDisplay();
@@ -175,8 +173,7 @@ function ClassificationModule() {
 		for(var i = 0; i < this.div3_buttons.length; i++) {
 			if(this.div3_buttons[i].value.toLowerCase() == track.affiliation) {
 				this.div3_buttons[i].setAttribute('class', 'highlighted_classification__buttons');
-			}
-			else {
+			} else {
 				this.div3_buttons[i].setAttribute('class', 'unhighlighted_classification_buttons');
 			}
 		}

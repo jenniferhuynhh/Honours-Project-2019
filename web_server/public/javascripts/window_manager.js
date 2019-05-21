@@ -32,7 +32,11 @@ function WindowManager() {
 					},{
 						type: 'component',
 						componentName: 'Track Classification Module',
-						height: 60
+						height: 40
+					},{
+						type: 'component',
+						componentName: 'Weapon Authorisation Module',
+						height: 30
 					}]
 				}]
 			}]

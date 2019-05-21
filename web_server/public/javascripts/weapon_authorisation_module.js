@@ -1,6 +1,7 @@
 function WeaponAuthorisationModule() {
 
 	this.ftms_ui;
+	this.display;
 	this.div1;
 	this.div2;
 	//this.weapons_buttons;
@@ -9,14 +10,14 @@ function WeaponAuthorisationModule() {
 		//Link FTMS UI system
 		this.ftms_ui = ftms_ui;
 
+		this.display = document.createElement("div");
+
 		//weapons buttons div
 		this.div1 = document.createElement('div');
 		var weapons_buttons = ['1', '2', '3', '4'];
-		for (var i = 0; i < weapons_buttons.length; i++){
+		for (var i = 0; i < weapons_buttons.length; i++) {
 			this.div1.appendChild(this.generateWeaponsButtons(weapons_buttons[i]));
 		}
-		
-		this.ftms_ui.window_manager.appendToWindow(this.div1, 1, 1);
 
 		//authorise button div
 		this.div2 = document.createElement('div');
@@ -53,8 +54,11 @@ function WeaponAuthorisationModule() {
 				auth_button2.setAttribute('value', 'AUTHORISE');
 			}
 		});
+
+		this.display.appendChild(this.div1);
+		this.display.appendChild(this.div2);
 		
-		this.ftms_ui.window_manager.appendToWindow(this.div2, 1, 1);
+		this.ftms_ui.window_manager.appendToWindow('Weapon Authorisation Module', this.display);
 	}
 
 	this.generateWeaponsButtons = function(s){
@@ -63,10 +67,9 @@ function WeaponAuthorisationModule() {
 		button.setAttribute('type', 'button');
 		button.setAttribute('value', s);
 		button.addEventListener('click', function(){
-			if (this.className == 'unhighlighted_weapons_buttons'){
+			if (this.className == 'unhighlighted_weapons_buttons') {
 				this.setAttribute('class', 'highlighted_weapons_buttons');
-			}
-			else{
+			} else {
 				this.setAttribute('class', 'unhighlighted_weapons_buttons');
 			}
 		});

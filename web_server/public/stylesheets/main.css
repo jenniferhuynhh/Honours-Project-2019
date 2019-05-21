@@ -2,7 +2,7 @@ body {
 	margin: 0px;
 }
 
-/*** Track data table classes ***/
+/*** Track data table ***/
 .track_table, .track_table td {
 	border-collapse: collapse;
 	border: solid black 1px;
@@ -84,7 +84,7 @@ body {
 	margin-top: 5px;
 }
 
-/*** Alert module classes ***/
+/*** Alert module ***/
 .alert_module {
 	color: white;
 	width: 100%;
@@ -92,6 +92,7 @@ body {
 	overflow: auto;
 }
 
+/*** Weapon authorisation module ***/
 .unhighlighted_weapons_buttons {
 	margin: 0px 10px 10px 20px;
 	width: 100px;
