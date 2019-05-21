@@ -1,41 +1,5 @@
-/*** FTMS UI div ***/
 body {
 	margin: 0px;
-}
-
-#ftms_ui {
-	width: 100%;
-	height: 100%;
-}
-
-/*** Renderer's window manager classes ***/
-.window_manager {
-	border-collapse: collapse;
-}
-
-.window_manager td {
-	vertical-align: top;
-}
-
-/*** Track field classes ***/
-.border, .no_border {
-	width: 600px;
-	height: 600px;
-	border-collapse: collapse;
-}
-
-.no_border td {
-	border: none;
-}
-
-.border td {
-	border: solid grey 1px;
-}
-
-/*** Track field controls ***/
-.controls_table input {
-	width: 30px;
-	height: 30px;
 }
 
 /*** Track data table classes ***/
@@ -98,7 +62,7 @@ body {
 	background: blue;
 }
 
-.dropdown_menu{
+.type_dropdown_menu{
 	/*margin: 20px 10px 10px 200px;*/
 	width: 310px;
 	height: 40px;
@@ -116,4 +80,12 @@ body {
 .classification_buttons_container{
 	height: 130px;
 	width: 520px;
+}
+
+/*** Alert module classes ***/
+.alert_module {
+	color: white;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
 }
