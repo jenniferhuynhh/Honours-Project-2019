@@ -21,10 +21,9 @@ function Simulator() {
 		/*this.tracks.push(new Track(-34.912955, 138.365660, "hostile"));*/
 		/*this.tracks.push(new Track(-34.912936, 138.5, "friendly", "land"));
 		this.tracks.push(new Track(-34.912915, 138.56, "unknown", "land"));
-		this.tracks.push(new Track(-34.9, 138.53, "unknown", "air"));
-		this.tracks.push(new Track(-34.941000, 138.53, "neutral", "subsurface"));*/
+		this.tracks.push(new Track(-34.9, 138.53, "unknown", "air"));*/
+		this.tracks.push(new Track(-34.941000, 138.53, "neutral", "subsurface"));
 		this.tracks.push(new Track(-34.850000, 138.455, "unknown", "sea"));
-		this.tracks.push(new Track(-34.921225, 138.42, "unknown", "subsurface"));
 		this.tracks.push(new Track(-34.900000, 138.46, "unknown", "air"));
 		this.tracks.push(new Track(-34.941240, 138.47, "unknown", "land"));
 		this.tracks.push(new Track(-34.961000, 138.43, "hostile", "sea"));
