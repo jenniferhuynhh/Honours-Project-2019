@@ -44,7 +44,7 @@ function Simulator() {
 
 		//10% chance for a new alert to appear
 		if(Math.random() < 0.10) {
-			this.ftms_ui.alert_module.showRandomAlerts();
+			this.ftms_ui.alert_module.outputRandomAlert();
 		}
 
 		//10% chance for track to disappear
