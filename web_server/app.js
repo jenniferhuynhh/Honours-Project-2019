@@ -9,6 +9,12 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
+// Kafka consumer + socket.io stuff
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+var kafka = require('kafka-node');
+var bp = require('body-parser');
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -39,3 +45,42 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
+
+io.on('connection', function(socket){
+    console.log('a user connected');
+    socket.on('disconnect', function(){
+		console.log('user disconnected');
+	});
+});
+
+http.listen(3000, function(){
+    console.log('listening on *:3000');
+});
+
+try {
+    // const Consumer = kafka.HighLevelConsumer;
+    const client = new kafka.KafkaClient('localhost:9092');
+    
+    let consumer = new kafka.Consumer(
+        client,
+        [{ topic: 'tdn-systrk', partition: 0 }],
+        {
+            autoCommit: true,
+            fetchMaxWaitMs: 1000,
+            fetchMaxBytes: 1024 * 1024,
+            encoding: 'utf8',
+            fromOffset: false
+        }
+    );
+
+    consumer.on('message', async function(message) {
+        console.log(`Server got message: '${message.value}'`);
+    	io.emit('track', message.value);
+    })
+    consumer.on('error', function(err) {
+        console.log('error', err);
+    });
+}
+catch(e) {
+    console.log(e);
+}

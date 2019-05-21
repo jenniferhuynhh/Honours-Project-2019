@@ -4,7 +4,7 @@ function MapModule() {
 	this.height = 600;
 	this.icon_size = 30;
 	this.viewer;
-
+	
 	this.initialise = function(ftms_ui) {
 		log("Map module initialising...");
 		//Link FTMS UI system
@@ -61,7 +61,7 @@ function MapModule() {
 		viewer.scene.globe.enableLighting = true;
 
 		// Create an initial camera view
-		var initialPosition = new Cesium.Cartesian3.fromDegrees(138.45, -34.921230, 34000);
+		var initialPosition = new Cesium.Cartesian3.fromDegrees(56.78, 26.5731, 34000);
 		var initialOrientation = new Cesium.HeadingPitchRoll.fromDegrees(0, 0, 0);
 		var homeCameraView = {
 			destination : initialPosition,
@@ -179,8 +179,8 @@ function MapModule() {
 				id: track.id,
 				name: `ID: ${track.id}`,
 				show: true,
-				description: `Affiliation: ${track.affiliation} <br> Longitude: ${track.longitude} <br> Latitude: ${track.latitude}`,
-				position: Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, 0),
+				description: `Affiliation: ${track.affiliation} <br> Longitude: ${track.longitude} <br> Latitude: ${track.latitude} <br> Altitude: ${track.altitude}`,
+				position: Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, track.altitude),
 				billboard: {
 					image: icon,
 					scaleByDistance: new Cesium.NearFarScalar(0.0, 1, 2.0e5, 0.0)
@@ -188,8 +188,8 @@ function MapModule() {
 			});
 		} else {
 			ent.billboard.image = icon;
-			ent.position = Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, 0);
-			ent.description = `Affiliation: ${track.affiliation} <br> Latitude: ${track.latitude} <br> Longitude: ${track.longitude}`;
+			ent.position = Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, track.altitude);
+			ent.description = `Affiliation: ${track.affiliation} <br> Latitude: ${track.latitude} <br> Longitude: ${track.longitude} <br> Altitude: ${track.altitude}`;
 		}
 	}
 
