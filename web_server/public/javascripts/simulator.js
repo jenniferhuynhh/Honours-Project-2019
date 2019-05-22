@@ -49,6 +49,7 @@ function Simulator() {
 		this.tracks.push(new Track(-34.912915, 138.365620, "hostile"));
 		this.tracks.push(new Track(-34.912975, 138.365680, "hostile"));
 		this.tracks.push(new Track(-34.912980, 138.365635, "friendly"));*/
+		
 		/*this.tracks.push(new Track(-34.912955, 138.365660, "hostile"));
 		this.tracks.push(new Track(-34.912936, 138.365650, "friendly"));
 		this.tracks.push(new Track(-34.912915, 138.365620, "hostile"));
@@ -60,6 +61,7 @@ function Simulator() {
 		// this.tracks.push(new Track(-34.921254, 138.46, "friendly", "air"));
 		// this.tracks.push(new Track(-34.921240, 138.45, "friendly", "land"));
 		// this.tracks.push(new Track(-34.931000, 138.43, "hostile", "sea"));
+
 		log("Simulator initialised");
 	};
 
@@ -76,7 +78,7 @@ function Simulator() {
 
 		//10% chance for a new alert to appear
 		if(Math.random() < 0.10) {
-			this.ftms_ui.alert_module.showRandomAlerts();
+			this.ftms_ui.alert_module.outputRandomAlert();
 		}
 
 		//10% chance for track to disappear

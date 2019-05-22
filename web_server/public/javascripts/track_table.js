@@ -25,7 +25,7 @@ function TrackTableModule() {
 		this.track_table.appendChild(header);
 
 		//Show table
-		this.ftms_ui.window_manager.appendToWindow(this.track_table, 0, 1);
+		this.ftms_ui.window_manager.appendToWindow('Track Table Module', this.track_table);
 
 		this.updateTrackTable();
 	}
@@ -77,6 +77,7 @@ function TrackTableModule() {
 				self.selected_track_id = this.cells[0].innerHTML;
 				self.ftms_ui.map_module.viewer.selectedEntity = self.ftms_ui.map_module.viewer.entities.getById(this.cells[0].innerHTML)
 			}
+			self.ftms_ui.map_module.render();
 			self.updateTrackTable();
 			self.ftms_ui.classification_module.updateDisplay();
 		});

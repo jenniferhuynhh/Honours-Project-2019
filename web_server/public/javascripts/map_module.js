@@ -1,29 +1,24 @@
 function MapModule() {
 	this.ftms_ui; //FTMS UI system this module is linked to
-	this.width = 1000;
-	this.height = 600;
-	this.icon_size = 30;
+	this.icon_size = 15; //Size of milsymbol symbols
+	this.display;
 	this.viewer;
 	
 	this.initialise = function(ftms_ui) {
 		log("Map module initialising...");
+
 		//Link FTMS UI system
 		this.ftms_ui = ftms_ui;
 
-		//Create div for map to load into and append to a window
-		var div = document.createElement("div");
-		div.setAttribute("id", "cesiumContainer");
-		this.ftms_ui.window_manager.appendToWindow(div, 0, 0);
-
-		//Set size of window
-		var display = this.ftms_ui.window_manager.getWindow(0, 0);
-		display.style.width = this.width + "px";
-		display.style.height = this.height + "px";
+		//Create div for map to load into
+		this.display = document.createElement("div");
 
 		//Create the Cesium Viewer
 		"use strict";
-		Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJiNGM3NmUyMS0yNWY5LTQ5MmMtYjQ0ZS1hYTliMjY2MzFhYzYiLCJpZCI6OTcwNCwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU1NDc3NTg2N30.U4oXqg5SHWnf22tUsRCb2aHrOp1aMF0TK3YmWC39Prc';
-		this.viewer = new Cesium.Viewer("cesiumContainer", {
+		Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNTNlZjU4NS05ZDZlLTRiMTUtOGVmYi1lYTIwNjk2ODcyN2IiLCJpZCI6MTA2ODQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTcxNTk1ODl9.pefjm_v8G065frNjyPdGYd9ggHaMdKBfukjjMbgTg6M';
+		//Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJiNGM3NmUyMS0yNWY5LTQ5MmMtYjQ0ZS1hYTliMjY2MzFhYzYiLCJpZCI6OTcwNCwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU1NDc3NTg2N30.U4oXqg5SHWnf22tUsRCb2aHrOp1aMF0TK3YmWC39Prc';
+		
+		this.viewer = new Cesium.Viewer(this.display, {
 			selectionIndicator: false,
 			baseLayerPicker: false
 		});
@@ -139,6 +134,8 @@ function MapModule() {
 		// city.readyPromise.then(function () {
 		//     loadingIndicator.style.display = 'none';
 		// });
+
+		this.ftms_ui.window_manager.appendToWindow('Map Module', this.display);
 	
 		log("Map module initialised");
 	}
@@ -171,7 +168,11 @@ function MapModule() {
 		}
 
 		//Create milsymbol
-		var icon = new ms.Symbol(icon_id, {size: this.icon_size}).asCanvas();
+		var color_mode = 'Light';
+		if (this.ftms_ui.track_table_module.selected_track_id == track.id) {
+			color_mode = 'Dark';
+		}
+		var icon = new ms.Symbol(icon_id, {size: this.icon_size, colorMode: color_mode}).asCanvas();
 
 		//Create or update entity
 		if(ent == undefined) {
@@ -182,8 +183,7 @@ function MapModule() {
 				description: `Affiliation: ${track.affiliation} <br> Longitude: ${track.longitude} <br> Latitude: ${track.latitude} <br> Altitude: ${track.altitude}`,
 				position: Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, track.altitude),
 				billboard: {
-					image: icon,
-					scaleByDistance: new Cesium.NearFarScalar(0.0, 1, 2.0e5, 0.0)
+					image: icon
 				}
 			});
 		} else {

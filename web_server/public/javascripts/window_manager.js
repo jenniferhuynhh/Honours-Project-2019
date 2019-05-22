@@ -1,42 +1,61 @@
 function WindowManager() {
 	this.ftms_ui; //FTMS UI system this module is linked to
-	this.display; //element object the windows will be displayed in
-	this.windows; //group of window objects
+	this.display; //GoldenLayout object
 
-	//Initialises window manager components
+	//Initialises GoldenLayout window manager components
 	this.initialise = function(ftms_ui) {
+		log("Window manager initialising...");
+		
 		//Link FTMS UI system
 		this.ftms_ui = ftms_ui;
 
-		//Find area to display
-		this.display = document.getElementById(this.ftms_ui.display_id);
-		
-		//Generate divs
-		this.generateDivs();
+		var config = {
+			content: [{
+				type: 'row',
+				content:[{
+					type: 'column',
+					content:[{
+						type: 'component',
+						componentName: 'Map Module',
+						isClosable: false
+					},{
+						type: 'component',
+						componentName: 'Alert Module',
+						height: 20
+					}],
+					width: 65
+				},{
+					type: 'column',
+					content:[{
+						type: 'component',
+						componentName: 'Track Table Module'
+					},{
+						type: 'component',
+						componentName: 'Track Classification Module',
+						height: 40
+					},{
+						type: 'component',
+						componentName: 'Weapon Authorisation Module',
+						height: 30
+					}]
+				}]
+			}]
+		};
+
+		this.display = new GoldenLayout(config);
+
+		log("Window manager initialised");
 	}
 
-	//Generates the window manager's initial divs
-	this.generateDivs = function() {
-		this.windows = document.createElement("table");
-		this.windows.setAttribute("class", "window_manager");
-		for(var i = 0; i < 5; i++) {
-			var row = document.createElement("tr");
-			for(var j = 0; j < 5; j++) {
-				var td = document.createElement("td");
-				row.appendChild(td);
-			}
-			this.windows.appendChild(row);
-		}
-		this.display.appendChild(this.windows);
+	//Displays all windows
+	this.showAll = function() {
+		this.display.init();
 	}
 
-	//Appends an element to a window
-	this.appendToWindow = function(element, row, column) {
-		this.windows.rows[row].cells[column].appendChild(element);
-	}
-
-	//Returns the window corresponding to the coordinates
-	this.getWindow = function(row, column) {
-		return this.windows.rows[row].cells[column];
+	//Appends given element to component with given windowName
+	this.appendToWindow = function(windowName, element) {
+		this.display.registerComponent(windowName, function(container, componentState) {
+		    container.getElement()[0].appendChild(element);
+		});
 	}
 }
