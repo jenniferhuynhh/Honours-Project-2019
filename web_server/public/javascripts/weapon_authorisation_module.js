@@ -11,6 +11,7 @@ function WeaponAuthorisationModule() {
 		this.ftms_ui = ftms_ui;
 
 		this.display = document.createElement("div");
+		this.display.setAttribute('class', 'center_align');
 
 		//weapons buttons div
 		this.div1 = document.createElement('div');
