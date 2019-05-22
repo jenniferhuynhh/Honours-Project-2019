@@ -74,7 +74,7 @@ try {
     );
 
     consumer.on('message', async function(message) {
-        console.log(`Server got message: '${message.value}'`);
+        // console.log(`Server got message: '${message.value}'`);
     	io.emit('track', message.value);
     })
     consumer.on('error', function(err) {

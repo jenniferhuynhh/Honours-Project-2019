@@ -19,7 +19,9 @@ function MapModule() {
 		//Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJiNGM3NmUyMS0yNWY5LTQ5MmMtYjQ0ZS1hYTliMjY2MzFhYzYiLCJpZCI6OTcwNCwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU1NDc3NTg2N30.U4oXqg5SHWnf22tUsRCb2aHrOp1aMF0TK3YmWC39Prc';
 		
 		this.viewer = new Cesium.Viewer(this.display, {
+			animation: false,
 			selectionIndicator: false,
+			timeline: false,
 			baseLayerPicker: false
 		});
 
@@ -81,7 +83,7 @@ function MapModule() {
 		});
 
 		// Set up clock and timeline.
-		viewer.clock.shouldAnimate = true; // default
+		// viewer.clock.shouldAnimate = true; // default
 		// viewer.clock.startTime = Cesium.JulianDate.fromIso8601("2017-07-11T16:00:00Z");
 		// viewer.clock.stopTime = Cesium.JulianDate.fromIso8601("2017-07-11T16:20:00Z");
 		// viewer.clock.currentTime = Cesium.JulianDate.fromIso8601("2017-07-11T16:00:00Z");
