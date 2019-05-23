@@ -27,32 +27,13 @@ function WeaponAuthorisationModule() {
 		this.div2.appendChild(authorise_button);
 		authorise_button.setAttribute('class', 'unhighlighted_authorise_button');
 		authorise_button.setAttribute('type', 'button');
-		authorise_button.setAttribute('value', 'UNAUTHORISED');
+		authorise_button.setAttribute('value', 'Request Authorisation');
 		authorise_button.addEventListener('click', function(){
 			if (this.className == 'unhighlighted_authorise_button'){
 				this.setAttribute('class', 'highlighted_authorise_button');
-				authorise_button.setAttribute('value', 'AUTHORISED');
 			}
 			else{
 				this.setAttribute('class', 'unhighlighted_authorise_button');
-				authorise_button.setAttribute('value', 'UNAUTHORISED');
-			}
-		});
-
-		var auth_button2 = document.createElement('input');
-		this.div2.appendChild(auth_button2);
-		auth_button2.setAttribute('class', 'unhighlighted_authorise_button');
-		auth_button2.setAttribute('type', 'button');
-		auth_button2.setAttribute('value', 'AUTHORISE');
-		auth_button2.style.margin = '10px';
-		auth_button2.addEventListener('click', function(){
-			if (this.className == 'unhighlighted_authorise_button'){
-				this.setAttribute('class', 'highlighted_authorise_button');
-				auth_button2.setAttribute('value', 'AUTHORISED');
-			}
-			else{
-				this.setAttribute('class', 'unhighlighted_authorise_button');
-				auth_button2.setAttribute('value', 'AUTHORISE');
 			}
 		});
 
