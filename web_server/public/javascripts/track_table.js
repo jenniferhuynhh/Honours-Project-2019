@@ -1,5 +1,6 @@
 function TrackTableModule() {
 	this.ftms_ui; //FTMS UI system this module is linked to
+	this.display;
 	this.track_table; //the table that track data will be displayed in
 	this.selected_track_id; //ID of the currently selected track
 	this.header_elements; //Labels to be displayed in header
@@ -8,6 +9,8 @@ function TrackTableModule() {
 	this.initialise = function(ftms_ui) {
 		//Link FTMS UI system
 		this.ftms_ui = ftms_ui;
+		this.display = document.createElement('div');
+		this.display.setAttribute('class', 'track_table_display');
 
 		//Generate and store track data table element
 		this.track_table = document.createElement("table");
@@ -23,9 +26,10 @@ function TrackTableModule() {
 			header.appendChild(td);
 		}
 		this.track_table.appendChild(header);
+		this.display.appendChild(this.track_table);
 
 		//Show table
-		this.ftms_ui.window_manager.appendToWindow('Track Table Module', this.track_table);
+		this.ftms_ui.window_manager.appendToWindow('Track Table Module', this.display);
 
 		this.updateTrackTable();
 	}

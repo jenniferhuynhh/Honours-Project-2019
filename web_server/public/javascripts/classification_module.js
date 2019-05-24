@@ -60,6 +60,7 @@ function ClassificationModule() {
 		//Track domain div
 		this.div2 = document.createElement('div');
 		this.div2.setAttribute('class', 'classification_buttons_container');
+		this.div2.setAttribute('class', 'center_align');
 
 		this.div2_buttons = [];
 		for (var i = 0; i < this.track_domains.length; i++){
@@ -70,6 +71,7 @@ function ClassificationModule() {
 		//Track affiliation div
 		this.div3 = document.createElement('div');
 		this.div3.setAttribute('class', 'classification_buttons_container');
+		this.div3.setAttribute('class', 'center_align');
 
 		this.div3_buttons = [];
 		for (var i = 0; i < this.track_affiliations.length; i++){
