@@ -3,20 +3,26 @@ body {
 }
 
 /*** Track data table ***/
-.track_table, .track_table td {
-	border-collapse: collapse;
-	border: solid black 1px;
-	padding: 3px;
+.track_table_display {
+	width: 100%;
+	height: 100%;
+	overflow: auto;
 }
 
 .track_table {
 	width: 100%;
 }
 
-.track_table_display {
-	width: 100%;
-	height: 100%;
-	overflow: auto;
+.track_table, .track_table td, .track_table th {
+	border-collapse: collapse;
+	border: solid black 1px;
+	padding: 3px;
+}
+
+.track_table th {
+	font-weight: normal;
+	color: white;
+	text-align: left;
 }
 
 .friendly_data {
@@ -56,8 +62,7 @@ body {
 }
 
 /*** Classification module buttons ***/
-
-.classification_buttons_container{
+.classification_buttons_container {
 	height: 130px;
 	width: 520px;
 	margin-top: 5px;
@@ -68,7 +73,6 @@ body {
 	width: 95px;
 	height: 95px;
 	border: none;
-	background: lightgrey;
 }
 
 .unhighlighted_classification_buttons {
@@ -80,21 +84,20 @@ body {
 	color: white;
 }
 
-.type_dropdown_menu{
-	/*margin: 20px 10px 10px 200px;*/
-	width: 310px;
-	height: 40px;
-	margin-left: 30px;
-}
-
-.center_align{
+.center_align {
 	text-align: center;
 }
 
-.dropdown_container{
+.dropdown_container {
 	display: inline-block;
 	margin-top: 15px;
 	color: white;
+}
+
+.type_dropdown_menu {
+	width: 310px;
+	height: 40px;
+	margin-left: 20px;
 }
 
 /*** Alert module ***/
@@ -111,7 +114,6 @@ body {
 	width: 95px;
 	height: 95px;
 	border: none;
-	background: lightgrey;
 }
 
 .unhighlighted_weapons_buttons {
@@ -123,20 +125,19 @@ body {
 	color: white;
 }
 
-.unhighlighted_authorise_button, .highlighted_authorise_button{
+.unhighlighted_authorise_button, .highlighted_authorise_button {
 	margin-top: 20px;
 	width: 180px;
 	height: 50px;
 	border: none;
-	background: lightgrey;
 	font-weight: bold;
 }
 
-.unhighlighted_authorise_button{
+.unhighlighted_authorise_button {
 	background: lightgrey;
 }
 
-.highlighted_authorise_button{
-	background: blue;
+.highlighted_authorise_button {
+	background: #af2424;
 	color: white;
 }

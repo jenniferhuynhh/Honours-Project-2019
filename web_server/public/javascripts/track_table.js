@@ -18,12 +18,12 @@ function TrackTableModule() {
 		this.selected_track_id = -1;
 
 		//Print headers
-		this.header_elements = ["ID", "Affiliation", "Latitude", "Longitude", "Speed", "Course", "Route"];
+		this.header_elements = ["ID", "Affiliation", "Latitude", "Longitude", "Speed", "Course"];
 		var header = document.createElement("tr");
 		for(var i = 0; i < this.header_elements.length; i++) {
-			var td = document.createElement("td");
-			td.appendChild(document.createTextNode(this.header_elements[i]));
-			header.appendChild(td);
+			var th = document.createElement("th");
+			th.appendChild(document.createTextNode(this.header_elements[i]));
+			header.appendChild(th);
 		}
 		this.track_table.appendChild(header);
 		this.display.appendChild(this.track_table);
@@ -56,9 +56,8 @@ function TrackTableModule() {
 			track.affiliation,
 			track.latitude.toFixed(8),
 			track.longitude.toFixed(8),
-			track.speed.toFixed(7),
-			track.course + "°",
-			track.route
+			((track.speed/0.85)*1000000*60*60)/1000 + "km/h",
+			track.course + "°"
 		];
 
 		//Print data
