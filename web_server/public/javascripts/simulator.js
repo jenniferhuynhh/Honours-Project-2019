@@ -11,15 +11,14 @@ function Simulator() {
 		console.log(`[${new Date().toTimeString().substr(0,8)}] Got message from server:\n${message}`);
 		if (message[0] == "{"){
 			var jsonTrack = JSON.parse(message);
-			var id = jsonTrack["track_id"]["$numberInt"];
-			var lat = jsonTrack["latitude"]["$numberDouble"];
-			var long = jsonTrack["longitude"]["$numberDouble"];
-			var alt = jsonTrack["altitude"]["$numberDouble"];
-			var speed = jsonTrack["speed"]["$numberDouble"];
-			var course = jsonTrack["course"]["$numberDouble"];
-			var aff = jsonTrack["state"];
+			var id = jsonTrack.trackId;
+			var lat = jsonTrack.longitude;
+			var long = jsonTrack.latitude;
+			var alt = jsonTrack.altitude;
+			var speed = jsonTrack.speed;
+			var course = jsonTrack.course;
+			var aff = jsonTrack.state;
 			var t = self.tracks.get(id);
-			
 
 			if (t !== undefined){
 				t.latitude = lat;

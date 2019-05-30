@@ -13,7 +13,11 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var kafka = require('kafka-node');
-var bp = require('body-parser');
+
+// Protocol Buffer
+var protobuf = require("protobufjs");
+var protoBuilder;
+var protoMessageType;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -46,41 +50,45 @@ app.use(function(err, req, res, next) {
 
 module.exports = app;
 
+// Kafka/Socket.io/protobuf.js
 io.on('connection', function(socket){
-    console.log('a user connected');
-    socket.on('disconnect', function(){
+	console.log('a user connected');
+	socket.on('disconnect', function(){
 		console.log('user disconnected');
 	});
 });
 
 http.listen(3000, function(){
-    console.log('listening on *:3000');
+	console.log('listening on *:3000');
+});
+
+protoBuilder = protobuf.load("tdn.proto", function(err, root){
+	protoMessageType = root.lookup("tdn.SystemTrack");
 });
 
 try {
-    // const Consumer = kafka.HighLevelConsumer;
-    const client = new kafka.KafkaClient('localhost:9092');
-    
-    let consumer = new kafka.Consumer(
-        client,
-        [{ topic: 'tdn-systrk', partition: 0 }],
-        {
-            autoCommit: true,
-            fetchMaxWaitMs: 1000,
-            fetchMaxBytes: 1024 * 1024,
-            encoding: 'utf8',
-            fromOffset: false
-        }
-    );
+	const client = new kafka.KafkaClient('localhost:9092');
+	
+	let consumer = new kafka.Consumer(
+		client,
+		[{ topic: 'tdn-systrk', partition: 0 }],
+		{
+			autoCommit: true,
+			fetchMaxWaitMs: 1000,
+			fetchMaxBytes: 1024 * 1024,
+			encoding: 'buffer',
+			fromOffset: false
+		}
+	);
 
-    consumer.on('message', async function(message) {
-        // console.log(`Server got message: '${message.value}'`);
-    	io.emit('track', message.value);
-    })
-    consumer.on('error', function(err) {
-        console.log('error', err);
-    });
-}
-catch(e) {
-    console.log(e);
+	consumer.on('message', async function(message) {
+		var dec = protoMessageType.decode(message.value);
+		io.emit('track', JSON.stringify(dec));
+
+	})
+	consumer.on('error', function(err) {
+		console.log('error', err);
+	});
+}catch(e) {
+	console.log(e);
 }

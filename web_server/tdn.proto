@@ -1,0 +1,113 @@
+syntax = "proto2";
+
+package tdn;
+
+option java_package = "au.gov.defence.dst.ftms.tdn";
+option java_outer_classname = "TdnDataSerde";
+
+message NavTrack {
+  required string name = 1;
+  required int64 timestamp = 2;
+
+  required double latitude = 3;
+  required double longitude = 4;
+  optional double altitude = 5;
+  optional double speed = 6;
+  optional double course = 7;
+}
+
+message SensorTrack {
+  required string name = 1;
+  required int64 timestamp = 2;
+  required int64 track_id = 3;
+  required int64 sensorId = 4;
+
+  required double latitude = 5;
+  required double longitude = 6;
+  optional double altitude = 7;
+  optional double speed = 8;
+  optional double course = 9;
+}
+
+message SystemTrack {
+  required string name = 1;
+  required int64 timestamp = 2;
+  required int64 track_id = 3;
+  enum CUD {
+    CREATE = 0;
+    UPDATE = 1;
+    DELETE = 2;
+  }
+  required CUD eventType = 4;
+  required int64 sensorId = 5;
+
+  required double latitude = 6;
+  required double longitude = 7;
+  optional double altitude = 8;
+  optional double speed = 9;
+  optional double course = 10;
+  optional int64 trackNumber = 11;
+  optional int64 lastTimeMeasurement = 12;
+  optional string truthId = 13;
+  enum TrackState {
+    UNKNOWN = 0;
+    NORMAL = 1;
+  }
+  optional TrackState state = 14;
+}
+
+
+enum AlertSeverity {
+  CRITICAL = 1;
+  HIGH = 2;
+  MEDIUM = 3;
+  LOW = 4;
+}
+
+enum AlertStatus {
+  NEW = 1;
+  ACKNOWLEDGED = 2;
+  COMPLETE = 3;
+}
+
+message Alert {
+  required int64 timestamp = 1;
+  required int64 id = 2;
+  required AlertSeverity severity = 3;
+  required AlertStatus status = 4;
+  optional string text = 5;
+  optional string associatedObjectId = 6;
+}
+
+enum CommandType {
+  ASSIGN = 1;
+  LAUNCH = 2;
+}
+
+enum AssignStatus {
+  WILLCO = 1;
+  NEGAT = 2;
+}
+
+message AssignCommand {
+  required int64 timestamp = 1;
+  required int64 messageId = 2;
+  // TODO: Weapon online/status message so that systems know what's available...
+  required int64 weaponId = 3;
+  required int64 systemTrackId = 4;
+  required int64 ttlMillis = 5;
+}
+
+message AssignResponse {
+  required int64 timestamp = 1;
+  required int64 originatingMessageId = 2;
+  required AssignStatus responseStatus = 3;
+}
+
+message LaunchCommand {
+  required int64 timestamp = 1;
+  required int64 messageId = 2;
+  required int64 weaponId = 3;
+  required int64 systemTrackId = 4;
+  required int64 ttlMillis = 5;
+}
