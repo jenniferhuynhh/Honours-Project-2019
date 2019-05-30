@@ -29,36 +29,52 @@ body {
 	background-color: #80e0ff;
 }
 
+.friendly_data:hover {
+	background-color: #1ab2ff;
+}
+
 .highlighted_friendly_data {
 	/*background-color: #006b8c;*/
 	background-color: #00a8dc;
 }
 
 .hostile_data {
-	background-color: #ff8080;
+	background-color: #FF9797;
+}
+
+.hostile_data:hover {
+	background-color: #ff471a;
 }
 
 .highlighted_hostile_data {
 	/*background-color: #c80000;*/
-	background-color: #ff3031;
+	background-color: #A40303;
 }
 
 .neutral_data {
 	background-color: #aaffaa;
 }
 
+.neutral_data:hover {
+	background-color: #00E200;
+}
+
 .highlighted_neutral_data {
 	/*background-color: #00a000;*/
-	background-color: #00e200;
+	background-color: #00A000;
 }
 
 .unknown_data {
 	background-color: #ffff80;
 }
 
+.unknown_data:hover{
+	background-color: #ffff33;
+}
+
 .highlighted_unknown_data {
 	/*background-color: #e1dc00;*/
-	background-color: #ffff00;
+	background-color: #b3b300;
 }
 
 /*** Classification module buttons ***/
