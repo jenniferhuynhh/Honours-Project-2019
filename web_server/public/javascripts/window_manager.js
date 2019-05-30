@@ -40,10 +40,18 @@ function WindowManager() {
 						isClosable: false,
 						height: 40
 					},{
-						type: 'component',
-						componentName: 'Weapon Authorisation Module',
-						isClosable: false,
-						height: 30
+						type: 'stack',
+						content: [{
+							type: 'component',
+							componentName: 'Weapon Authorisation Module',
+							isClosable: false,
+							height: 30
+						},{
+							type: 'component',
+							componentName: 'Weapon Firing Module',
+							isClosable: false,
+							height: 30
+						}]
 					}]
 				}]
 			}]

@@ -9,13 +9,12 @@ function WeaponAuthorisationModule() {
 	this.initialise = function(ftms_ui){
 		//Link FTMS UI system
 		this.ftms_ui = ftms_ui;
-
 		this.display = document.createElement("div");
 		this.display.setAttribute('class', 'center_align');
-
-		//weapons buttons div
-		this.div1 = document.createElement('div');
+		
 		var weapons_buttons = ['1', '2', '3', '4'];
+		//weapons buttons div
+		this.div1 = document.createElement('div');	
 		for (var i = 0; i < weapons_buttons.length; i++) {
 			this.div1.appendChild(this.generateWeaponsButtons(weapons_buttons[i]));
 		}
@@ -24,7 +23,6 @@ function WeaponAuthorisationModule() {
 		this.div2 = document.createElement('div');
 		this.div2.setAttribute('class', 'center_align');
 		var authorise_button = document.createElement('input');
-		this.div2.appendChild(authorise_button);
 		authorise_button.setAttribute('class', 'unhighlighted_authorise_button');
 		authorise_button.setAttribute('type', 'button');
 		authorise_button.setAttribute('value', 'Request Authorisation');
@@ -36,6 +34,7 @@ function WeaponAuthorisationModule() {
 				this.setAttribute('class', 'unhighlighted_authorise_button');
 			}
 		});
+		this.div2.appendChild(authorise_button);
 
 		this.display.appendChild(this.div1);
 		this.display.appendChild(this.div2);
@@ -58,5 +57,4 @@ function WeaponAuthorisationModule() {
 
 		return button;
 	}
-
 }
