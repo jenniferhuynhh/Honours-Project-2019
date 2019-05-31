@@ -150,6 +150,10 @@ body {
 	color: white;
 }
 
+.highlighted_weapons_buttons:hover {
+	background-color: mediumblue; 
+}
+
 .unhighlighted_authorise_button, .highlighted_authorise_button {
 	margin-top: 20px;
 	width: 180px;
