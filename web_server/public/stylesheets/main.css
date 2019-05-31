@@ -2,6 +2,12 @@ body {
 	margin: 0px;
 }
 
+.scrollable {
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+}
+
 /*** Track data table ***/
 .track_table_display {
 	width: 100%;
@@ -139,5 +145,10 @@ body {
 
 .highlighted_authorise_button {
 	background: #af2424;
+	color: white;
+}
+
+/*** Messaging module ***/
+.messaging_module {
 	color: white;
 }

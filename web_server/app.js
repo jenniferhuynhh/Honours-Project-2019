@@ -10,14 +10,27 @@ var usersRouter = require('./routes/users');
 var app = express();
 
 //Socket.io
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
 
-io.on('connection', function(socket){
-  console.log('a user connected');
+io.on('connection', function(socket) {
+	console.log('a user connected');
+	socket.on('username', function(username) {
+        socket.username = username;
+        io.emit('is_online', socket.username);
+    });
+
+    socket.on('disconnect', function(username) {
+        io.emit('is_offline', socket.username);
+		console.log('user disconnected');
+    })
+
+    socket.on('chat_message', function(message) {
+        io.emit('chat_message', '<strong>' + socket.username + '</strong>: ' + message);
+    });
 });
 
-http.listen(3000, function(){
+server.listen(3000, function(){
   console.log('listening on *:3000');
 });
 
