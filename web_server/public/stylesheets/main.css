@@ -2,12 +2,6 @@ body {
 	margin: 0px;
 }
 
-.scrollable {
-	width: 100%;
-	height: 100%;
-	overflow: auto;
-}
-
 /*** Track data table ***/
 .track_table_display {
 	width: 100%;
@@ -149,6 +143,45 @@ body {
 }
 
 /*** Messaging module ***/
-.messaging_module {
+.messages_box {
 	color: white;
+	height:100%;
+	width:100%;
+	overflow: auto;
 }
+
+.messaging_table {
+	height:100%;
+	width:100%;
+}
+
+.input_row {
+	height: 32px;
+}
+
+.message_textbox {
+	width: 100%;
+}
+
+.send_button_td {
+	width:30px;
+}
+
+.send_button {
+	display: inline-block;
+}
+
+/*.form_container {
+	position: absolute;
+	bottom: 20px;
+	width: 100%;
+	height: 20px;
+}
+
+.message_textbox {
+	width: -webkit-calc(100% - 50px);
+}
+
+.send_button {
+	width: 50px;
+}*/

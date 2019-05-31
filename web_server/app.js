@@ -13,23 +13,28 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
+//Messaging module code
 io.on('connection', function(socket) {
 	console.log('a user connected');
+	//Send user online message
 	socket.on('username', function(username) {
         socket.username = username;
         io.emit('is_online', socket.username);
     });
 
+	//Send user disconnect message
     socket.on('disconnect', function(username) {
         io.emit('is_offline', socket.username);
 		console.log('user disconnected');
     })
 
+    //Send new chat message
     socket.on('chat_message', function(message) {
         io.emit('chat_message', '<strong>' + socket.username + '</strong>: ' + message);
     });
 });
 
+//Initiate socket.io server
 server.listen(3000, function(){
   console.log('listening on *:3000');
 });
