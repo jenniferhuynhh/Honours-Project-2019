@@ -15,28 +15,31 @@ var io = require('socket.io')(server);
 
 //Messaging module code
 io.on('connection', function(socket) {
-	console.log('a user connected');
-	//Send user online message
+	var address = socket.handshake.address.split(":").pop(); //Gets client's public IP address
+	log(address + ' connected');
+
+	//Send user connect message
 	socket.on('username', function(username) {
-        socket.username = username;
-        io.emit('is_online', socket.username);
-    });
+		socket.username = username;
+		io.emit('is_online', socket.username);
+	});
 
 	//Send user disconnect message
-    socket.on('disconnect', function(username) {
-        io.emit('is_offline', socket.username);
-		console.log('user disconnected');
-    })
+	socket.on('disconnect', function(username) {
+		io.emit('is_offline', socket.username);
+		var address = socket.handshake.address.split(":").pop(); //Gets client's public IP address
+		log(address + ' disconnected');
+	})
 
-    //Send new chat message
-    socket.on('chat_message', function(message) {
-        io.emit('chat_message', '<strong>' + socket.username + '</strong>: ' + message);
-    });
+	//Send new chat message
+	socket.on('chat_message', function(message) {
+		io.emit('chat_message', socket.username, message);
+	});
 });
 
 //Initiate socket.io server
-server.listen(3000, function(){
-  console.log('listening on *:3000');
+server.listen(3000, function() {
+  log('Messaging service listening on *:3000');
 });
 
 
@@ -70,3 +73,8 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
+
+//Logs string to console with timestamp
+function log(s) {
+	console.log("[" + new Date().toTimeString().substr(0,8) + "] " + s);
+}

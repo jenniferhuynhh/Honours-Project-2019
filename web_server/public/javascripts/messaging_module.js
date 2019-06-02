@@ -68,12 +68,15 @@ function MessagingModule() {
 		});
 
 		//Show new message
-		this.socket.on('chat_message', function(msg){self.displayMessage(msg)});
+		this.socket.on('chat_message', function(username, message) {
+			self.displayMessage('<strong>' + username + '</strong>: ' + message)
+		});
 
 		//Show log/logoff messages
 		this.socket.on('is_online', function(username) {
 			self.displayMessage('🔵 <i>' + username + ' joined the chat.</i>'); //😭
 		});
+
 		this.socket.on('is_offline', function(username) {
 			self.displayMessage('🔴 <i>' + username + ' left the chat.</i>');
 		});
@@ -93,7 +96,6 @@ function MessagingModule() {
 	this.displayMessage = function(msg) {
 		var new_msg = document.createElement("p");
 		new_msg.innerHTML = msg;
-		//new_msg.appendChild(document.createTextNode(msg));
 		this.messages.appendChild(new_msg);
 		this.messages.scrollTop = this.messages.scrollHeight; //Scroll to bottom of chat feed on new message
 	}
