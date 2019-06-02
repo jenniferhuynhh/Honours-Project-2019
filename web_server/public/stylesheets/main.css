@@ -2,6 +2,10 @@ body {
 	margin: 0px;
 }
 
+input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***/
+	outline: 0;
+}
+
 /*** Track data table ***/
 .track_table_display {
 	width: 100%;
