@@ -26,6 +26,9 @@ function FTMS_UI() {
 		this.weapon_authorisation_module = new WeaponAuthorisationModule();
 		this.weapon_authorisation_module.initialise(this);
 
+		this.weapon_firing_module = new WeaponFiringModule();
+		this.weapon_firing_module.initialise(this);
+
 		this.alert_module = new AlertModule();
 		this.alert_module.initialise(this);
 
