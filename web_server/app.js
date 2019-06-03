@@ -83,6 +83,7 @@ try {
 
 	consumer.on('message', async function(message) {
 		var dec = protoMessageType.decode(message.value);
+		console.log(JSON.stringify(dec)+"\n");
 		io.emit('track', JSON.stringify(dec));
 
 	})

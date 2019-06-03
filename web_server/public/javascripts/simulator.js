@@ -12,8 +12,8 @@ function Simulator() {
 		if (message[0] == "{"){
 			var jsonTrack = JSON.parse(message);
 			var id = jsonTrack.trackId;
-			var lat = jsonTrack.longitude;
-			var long = jsonTrack.latitude;
+			var lat = jsonTrack.latitude;
+			var long = jsonTrack.longitude;
 			var alt = jsonTrack.altitude;
 			var speed = jsonTrack.speed;
 			var course = jsonTrack.course;
