@@ -102,17 +102,18 @@ function TrackTableModule() {
 	this.updateTrackTable = function() {
 		//Grab track data
 		var tracks = this.ftms_ui.simulator.tracks;
+		var self = this;
 
 		//If table is empty, add all existing tracks
 		if(this.track_table.rows.length <= 1) {
-			for(var i = 0; i < tracks.length; i++) {
-				this.addEntry(tracks[i]);
-			}
+			tracks.forEach(function(value, key, map){
+				self.addEntry(value);
+			});
 			return;
 		}
 
 		//If no tracks exist, empty table
-		if(tracks.length == 0) {
+		if(tracks.size == 0) {
 			while(this.track_table.rows.length > 1) {
 				this.track_table.removeChild(this.track_table.rows[1]);
 			}
@@ -120,25 +121,21 @@ function TrackTableModule() {
 		}
 
 		//Update or add track's data
-		for(var i = 0; i < tracks.length; i++) {
-			for(var j = 1; j < this.track_table.rows.length; j++) {
-				if(this.track_table.rows[j].cells[0].innerHTML == tracks[i].id) { //If track data is already on table
-					this.updateEntry(tracks[i]);
+		tracks.forEach(function(value, key, map){
+			for(var j = 1; j < self.track_table.rows.length; j++) {
+				if(self.track_table.rows[j].cells[0].innerHTML == value.id) { //If track data is already on table
+					self.updateEntry(value);
 					break;
-				} else if (j == this.track_table.rows.length-1) { //If not found
-					this.addEntry(tracks[i]);
+				} else if (j == self.track_table.rows.length-1) { //If not found
+					self.addEntry(value);
 				}
 			}
-		}
+		});
 
 		//Delete missing track's data
 		for(var i = 1; i < this.track_table.rows.length; i++) {
-			for(var j = 0; j < tracks.length; j++) {
-				if(this.track_table.rows[i].cells[0].innerHTML == tracks[j].id) { //If track still exists
-					break;
-				} else if (j == tracks.length-1) { //If not found
-					this.track_table.removeChild(this.track_table.rows[i--]);
-				}
+			if(!tracks.has(this.track_table.rows[i].cells[0].innerHTML)) {
+				this.track_table.removeChild(this.track_table.rows[i--]);
 			}
 		}
 	}

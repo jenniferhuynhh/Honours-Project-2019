@@ -129,14 +129,7 @@ function MapModule() {
 		// 		previousPickedEntity = pickedEntity;
 		// 	}
 		// }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-
-		// Finally, wait for the initial city to be ready before removing the loading indicator.
-		// var loadingIndicator = document.getElementById('loadingIndicator');
-		// loadingIndicator.style.display = 'block';
-		// city.readyPromise.then(function () {
-		//     loadingIndicator.style.display = 'none';
-		// });
-
+		
 		this.ftms_ui.window_manager.appendToWindow('Map Module', this.display);
 	
 		log("Map module initialised");
