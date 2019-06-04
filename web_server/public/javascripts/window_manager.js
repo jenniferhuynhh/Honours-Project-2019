@@ -22,9 +22,17 @@ function WindowManager() {
 						componentName: 'Map Module',
 						isClosable: false
 					},{
-						type: 'component',
-						componentName: 'Alert Module',
-						isClosable: false,
+						type: 'row',
+						content:[{
+							type: 'component',
+							componentName: 'Alert Module',
+							isClosable: false,
+							width: 65
+						},{
+							type: 'component',
+							componentName: 'Messaging Module',
+							isClosable: false
+						}],
 						height: 20
 					}],
 					width: 65

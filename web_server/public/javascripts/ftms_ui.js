@@ -6,6 +6,7 @@ function FTMS_UI() {
 	this.classification_module;
 	this.weapon_authorisation_module;
 	this.alert_module;
+	this.messaging_module;
 
 	this.initialise = function() {
 		this.window_manager = new WindowManager();
@@ -31,6 +32,9 @@ function FTMS_UI() {
 
 		this.alert_module = new AlertModule();
 		this.alert_module.initialise(this);
+
+		this.messaging_module = new MessagingModule();
+		this.messaging_module.initialise(this);
 
 		this.window_manager.showAll();
 	}

@@ -179,6 +179,51 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	color: white;
 }
 
+
+/*** Messaging module ***/
+.messages_box {
+	color: white;
+	height:100%;
+	width:100%;
+	overflow: auto;
+}
+
+.messaging_table {
+	height:100%;
+	width:100%;
+}
+
+.input_row {
+	height: 32px;
+}
+
+.message_textbox {
+	width: 100%;
+}
+
+.send_button_td {
+	width:30px;
+}
+
+.send_button {
+	display: inline-block;
+}
+
+/*.form_container {
+	position: absolute;
+	bottom: 20px;
+	width: 100%;
+	height: 20px;
+}
+
+.message_textbox {
+	width: -webkit-calc(100% - 50px);
+}
+
+.send_button {
+	width: 50px;
+}*/
+
 /*** Weapon Firing module ***/ 
 .unhighlighted_fire_button, .highlighted_fire_button {
 	margin-top: 10px;
@@ -200,3 +245,4 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 .disabled_button {
 	color: grey;
 }
+
