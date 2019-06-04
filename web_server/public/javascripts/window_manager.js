@@ -10,6 +10,9 @@ function WindowManager() {
 		this.ftms_ui = ftms_ui;
 
 		var config = {
+			settings: {
+				showPopoutIcon: false
+			},
 			content: [{
 				type: 'row',
 				content:[{
@@ -19,8 +22,17 @@ function WindowManager() {
 						componentName: 'Map Module',
 						isClosable: false
 					},{
-						type: 'component',
-						componentName: 'Alert Module',
+						type: 'row',
+						content:[{
+							type: 'component',
+							componentName: 'Alert Module',
+							isClosable: false,
+							width: 65
+						},{
+							type: 'component',
+							componentName: 'Messaging Module',
+							isClosable: false
+						}],
 						height: 20
 					}],
 					width: 65
@@ -28,15 +40,26 @@ function WindowManager() {
 					type: 'column',
 					content:[{
 						type: 'component',
-						componentName: 'Track Table Module'
+						componentName: 'Track Table Module',
+						isClosable: false
 					},{
 						type: 'component',
 						componentName: 'Track Classification Module',
+						isClosable: false,
 						height: 40
 					},{
-						type: 'component',
-						componentName: 'Weapon Authorisation Module',
-						height: 30
+						type: 'stack',
+						content: [{
+							type: 'component',
+							componentName: 'Weapon Authorisation Module',
+							isClosable: false,
+							height: 30
+						},{
+							type: 'component',
+							componentName: 'Weapon Firing Module',
+							isClosable: false,
+							height: 30
+						}]
 					}]
 				}]
 			}]

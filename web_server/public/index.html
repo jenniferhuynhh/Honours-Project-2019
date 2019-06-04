@@ -3,20 +3,22 @@
 	<!-- Make the app on mobile take up the full browser screen and disable user scaling. -->
     <!-- <meta name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"> -->
-	<title>Track simulator</title>
+	<title>FTMS</title>
 	<meta charset="utf-8" />
 	<!-- Libraries -->
-	<script src="libraries/cesium/Build/Cesium/Cesium.js"></script>
-	<script src="libraries/milsymbol/milsymbol.js"></script>
 	<script src="libraries/JQuery-1.11.1/jquery-1.11.1.min.js"></script>
 	<script src="libraries/GoldenLayout1.5.9/goldenlayout.min.js"></script>
-	<script src="libraries/socket.io-client/dist/socket.io.js"></script>
+	<script src="libraries/socket.io/socket.io.js"></script>
+	<script src="libraries/milsymbol/milsymbol.js"></script>
+	<script src="libraries/cesium/Build/Cesium/Cesium.js"></script>
 	<!-- Custom JS -->
 	<script src="javascripts/helpers.js"></script>
 	<script src="javascripts/track.js"></script>
 	<!-- Modules & Main -->
 	<script src="javascripts/window_manager.js"></script>
+	<script src="javascripts/messaging_module.js"></script>
 	<script src="javascripts/alert_module.js"></script>
+	<script src="javascripts/weapon_firing_module.js"></script>
 	<script src="javascripts/weapon_authorisation_module.js"></script>
 	<script src="javascripts/classification_module.js"></script>
 	<script src="javascripts/track_table.js"></script>

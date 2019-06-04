@@ -9,15 +9,46 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
-// Kafka consumer + socket.io stuff
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+// Apache Kafka
 var kafka = require('kafka-node');
 
 // Protocol Buffer
 var protobuf = require("protobufjs");
 var protoBuilder;
 var protoMessageType;
+
+//Socket.io
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
+
+//Messaging module code
+io.on('connection', function(socket) {
+	var address = socket.handshake.address.split(":").pop(); //Gets client's public IP address
+	log(address + ' connected');
+
+	//Send user connect message
+	socket.on('username', function(username) {
+		socket.username = username;
+		io.emit('is_online', socket.username);
+	});
+
+	//Send user disconnect message
+	socket.on('disconnect', function(username) {
+		io.emit('is_offline', socket.username);
+		var address = socket.handshake.address.split(":").pop(); //Gets client's public IP address
+		log(address + ' disconnected');
+	})
+
+	//Send new chat message
+	socket.on('chat_message', function(message) {
+		io.emit('chat_message', socket.username, message);
+	});
+});
+
+//Initiate socket.io server
+server.listen(3000, function() {
+  log('Messaging service listening on *:3000');
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -50,18 +81,7 @@ app.use(function(err, req, res, next) {
 
 module.exports = app;
 
-// Kafka/Socket.io/protobuf.js
-io.on('connection', function(socket){
-	console.log('a user connected');
-	socket.on('disconnect', function(){
-		console.log('user disconnected');
-	});
-});
-
-http.listen(3000, function(){
-	console.log('listening on *:3000');
-});
-
+// Kafka/protobuf.js
 protoBuilder = protobuf.load("tdn.proto", function(err, root){
 	protoMessageType = root.lookup("tdn.SystemTrack");
 });
@@ -92,4 +112,9 @@ try {
 	});
 }catch(e) {
 	console.log(e);
+}
+
+//Logs string to console with timestamp
+function log(s) {
+	console.log("[" + new Date().toTimeString().substr(0,8) + "] " + s);
 }

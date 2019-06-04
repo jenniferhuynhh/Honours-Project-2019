@@ -1,5 +1,6 @@
 function TrackTableModule() {
 	this.ftms_ui; //FTMS UI system this module is linked to
+	this.display;
 	this.track_table; //the table that track data will be displayed in
 	this.selected_track_id; //ID of the currently selected track
 	this.header_elements; //Labels to be displayed in header
@@ -8,6 +9,8 @@ function TrackTableModule() {
 	this.initialise = function(ftms_ui) {
 		//Link FTMS UI system
 		this.ftms_ui = ftms_ui;
+		this.display = document.createElement('div');
+		this.display.setAttribute('class', 'track_table_display');
 
 		//Generate and store track data table element
 		this.track_table = document.createElement("table");
@@ -15,17 +18,18 @@ function TrackTableModule() {
 		this.selected_track_id = -1;
 
 		//Print headers
-		this.header_elements = ["ID", "Affiliation", "Latitude", "Longitude", "Speed", "Course", "Route"];
+		this.header_elements = ["ID", "Affiliation", "Latitude", "Longitude", "Speed", "Course"];
 		var header = document.createElement("tr");
 		for(var i = 0; i < this.header_elements.length; i++) {
-			var td = document.createElement("td");
-			td.appendChild(document.createTextNode(this.header_elements[i]));
-			header.appendChild(td);
+			var th = document.createElement("th");
+			th.appendChild(document.createTextNode(this.header_elements[i]));
+			header.appendChild(th);
 		}
 		this.track_table.appendChild(header);
+		this.display.appendChild(this.track_table);
 
 		//Show table
-		this.ftms_ui.window_manager.appendToWindow('Track Table Module', this.track_table);
+		this.ftms_ui.window_manager.appendToWindow('Track Table Module', this.display);
 
 		this.updateTrackTable();
 	}
@@ -52,9 +56,8 @@ function TrackTableModule() {
 			track.affiliation,
 			track.latitude.toFixed(8),
 			track.longitude.toFixed(8),
-			track.speed.toFixed(7),
-			track.course + "°",
-			track.route
+			((track.speed/0.85)*1000000*60*60)/1000 + "km/h",
+			track.course + "°"
 		];
 
 		//Print data
