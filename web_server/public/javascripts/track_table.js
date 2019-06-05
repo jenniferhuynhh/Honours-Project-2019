@@ -56,8 +56,8 @@ function TrackTableModule() {
 			track.affiliation,
 			track.latitude.toFixed(8),
 			track.longitude.toFixed(8),
-			((track.speed/0.85)*1000000*60*60)/1000 + "km/h",
-			track.course + "°"
+			track.speed.toFixed(3) + " knots",
+			track.course.toFixed(3) + "°"
 		];
 
 		//Print data
