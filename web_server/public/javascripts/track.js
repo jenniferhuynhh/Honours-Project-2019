@@ -1,9 +1,10 @@
-function Track(lat, long, affiliation, domain) {
-	this.id = track_id++; //unique, autoincrementing ID
+function Track(track_id, lat, long, alt, speed, course, affiliation, domain) {
+	this.id = track_id; //unique ID
 	this.latitude = lat; //-34.912955
 	this.longitude = long; //138.365660
-	this.speed = ((25000/60/60)/(1000000))*0.85; //25km/h (6.94m/s) in decimal degrees (geographic coordinates)
-	this.course = randomInt(0, 360); //course in degrees
+	this.altitude = alt;
+	this.speed = speed; //25km/h (6.94m/s) in decimal degrees (geographic coordinates)
+	this.course = course; //course in degrees
 	this.type = "naval ship"; //type of ship
 	this.affiliation = affiliation; //affiliation of ship (friendly, hostile, etc.)
 	this.domain = domain;
@@ -67,5 +68,3 @@ function Track(lat, long, affiliation, domain) {
 		}
 	}
 }
-
-var track_id = 0; //track unique ID counter

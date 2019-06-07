@@ -1,0 +1,2 @@
+{"_id":{"$oid":"5ce379b544fa621aba96383d"},"timestamp":{"$numberLong":"1558411701781"},"id":{"$numberInt":"1"},"severity":"MEDIUM","status":"NEW","text":"System Track \"sensor\" created","associatedObjectId":"sensor"}
+{"_id":{"$oid":"5ce379b544fa621aba96383e"},"timestamp":{"$numberLong":"1558411701836"},"id":{"$numberInt":"2"},"severity":"MEDIUM","status":"NEW","text":"System Track \"nav\" created","associatedObjectId":"nav"}

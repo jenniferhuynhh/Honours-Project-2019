@@ -3,7 +3,7 @@ function MapModule() {
 	this.icon_size = 15; //Size of milsymbol symbols
 	this.display;
 	this.viewer;
-
+	
 	this.initialise = function(ftms_ui) {
 		log("Map module initialising...");
 
@@ -19,7 +19,9 @@ function MapModule() {
 		//Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJiNGM3NmUyMS0yNWY5LTQ5MmMtYjQ0ZS1hYTliMjY2MzFhYzYiLCJpZCI6OTcwNCwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU1NDc3NTg2N30.U4oXqg5SHWnf22tUsRCb2aHrOp1aMF0TK3YmWC39Prc';
 		
 		this.viewer = new Cesium.Viewer(this.display, {
+			animation: false,
 			selectionIndicator: false,
+			timeline: false,
 			baseLayerPicker: false
 		});
 
@@ -56,7 +58,7 @@ function MapModule() {
 		viewer.scene.globe.enableLighting = true;
 
 		// Create an initial camera view
-		var initialPosition = new Cesium.Cartesian3.fromDegrees(138.45, -34.921230, 34000);
+		var initialPosition = new Cesium.Cartesian3.fromDegrees(56.78, 26.5731, 34000);
 		var initialOrientation = new Cesium.HeadingPitchRoll.fromDegrees(0, 0, 0);
 		var homeCameraView = {
 			destination : initialPosition,
@@ -81,7 +83,7 @@ function MapModule() {
 		});
 
 		// Set up clock and timeline.
-		viewer.clock.shouldAnimate = true; // default
+		// viewer.clock.shouldAnimate = true; // default
 		// viewer.clock.startTime = Cesium.JulianDate.fromIso8601("2017-07-11T16:00:00Z");
 		// viewer.clock.stopTime = Cesium.JulianDate.fromIso8601("2017-07-11T16:20:00Z");
 		// viewer.clock.currentTime = Cesium.JulianDate.fromIso8601("2017-07-11T16:00:00Z");
@@ -127,14 +129,7 @@ function MapModule() {
 		// 		previousPickedEntity = pickedEntity;
 		// 	}
 		// }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-
-		// Finally, wait for the initial city to be ready before removing the loading indicator.
-		// var loadingIndicator = document.getElementById('loadingIndicator');
-		// loadingIndicator.style.display = 'block';
-		// city.readyPromise.then(function () {
-		//     loadingIndicator.style.display = 'none';
-		// });
-
+		
 		this.ftms_ui.window_manager.appendToWindow('Map Module', this.display);
 	
 		log("Map module initialised");
@@ -180,16 +175,16 @@ function MapModule() {
 				id: track.id,
 				name: `ID: ${track.id}`,
 				show: true,
-				description: `Affiliation: ${track.affiliation} <br> Longitude: ${track.longitude} <br> Latitude: ${track.latitude}`,
-				position: Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, 0),
+				description: `Affiliation: ${track.affiliation} <br> Longitude: ${track.longitude} <br> Latitude: ${track.latitude} <br> Altitude: ${track.altitude}`,
+				position: Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, track.altitude),
 				billboard: {
 					image: icon
 				}
 			});
 		} else {
 			ent.billboard.image = icon;
-			ent.position = Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, 0);
-			ent.description = `Affiliation: ${track.affiliation} <br> Latitude: ${track.latitude} <br> Longitude: ${track.longitude}`;
+			ent.position = Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, track.altitude);
+			ent.description = `Affiliation: ${track.affiliation} <br> Latitude: ${track.latitude} <br> Longitude: ${track.longitude} <br> Altitude: ${track.altitude}`;
 		}
 	}
 
