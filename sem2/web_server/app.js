@@ -10,6 +10,49 @@ var users = require('./routes/users');
 
 var app = express();
 
+
+
+
+//Socket.io
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
+
+//Messaging module code
+io.on('connection', function(socket) {
+  var address = socket.handshake.address.split(":").pop(); //Gets client's public IP address
+  log(address + ' connected');
+
+  //Send user connect message
+  socket.on('username', function(username) {
+    socket.username = username;
+    io.emit('is_online', socket.username);
+  });
+
+  //Send user disconnect message
+  socket.on('disconnect', function(username) {
+    io.emit('is_offline', socket.username);
+    var address = socket.handshake.address.split(":").pop(); //Gets client's public IP address
+    log(address + ' disconnected');
+  })
+
+  //Send new chat message
+  socket.on('chat_message', function(message) {
+    io.emit('chat_message', socket.username, message);
+  });
+});
+
+//Initiate socket.io server
+server.listen(3000, function() {
+  log('Messaging service listening on *:3000');
+});
+
+
+
+
+
+
+
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -68,3 +111,8 @@ app.post('/login',
 );
 
 module.exports = app;
+
+//Logs string to console with timestamp
+function log(s) {
+  console.log("[" + new Date().toTimeString().substr(0,8) + "] " + s);
+}
