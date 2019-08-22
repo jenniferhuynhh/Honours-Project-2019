@@ -190,6 +190,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	height: 100%;
 	width: 100%;
 	overflow: auto;
+	vertical-align: bottom;
 }
 
 .messaging_table {
@@ -213,6 +214,10 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 .send_button {
 	display: inline-block;
 	width: 50px;
+}
+
+.msg {
+	margin: 8px 0px;
 }
 
 /*** Weapon Firing module ***/ 

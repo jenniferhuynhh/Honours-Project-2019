@@ -48,11 +48,6 @@ server.listen(3000, function() {
 
 
 
-
-
-
-
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');

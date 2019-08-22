@@ -16,9 +16,11 @@ function MessagingModule() {
 		this.display.classList.add('messaging_module');
 
 		//Create messaging module elements
-		this.messages = document.createElement("td");
-		this.messages.colSpan = 2;
+		var messages_td = document.createElement("td");
+		messages_td.colSpan = 2;
+		this.messages = document.createElement("div");
 		this.messages.classList.add('messages_box');
+		messages_td.appendChild(this.messages);
 
 		var message_textbox_td = document.createElement("td");
 		message_textbox_td.classList.add('message_textbox_td');
@@ -41,13 +43,13 @@ function MessagingModule() {
 		var table = document.createElement("table");
 		table.classList.add('messaging_table');
 		var row1 = document.createElement("tr");
-		row1.style.height = "100%";
+		//row1.style.height = "100%";
 		var row2 = document.createElement("tr");
 		row2.classList.add('input_row');
 
+		row1.appendChild(messages_td);
 		row2.appendChild(message_textbox_td);
 		row2.appendChild(send_button_td);
-		row1.appendChild(this.messages);
 		table.appendChild(row1);
 		table.appendChild(row2);
 		form.appendChild(table);
