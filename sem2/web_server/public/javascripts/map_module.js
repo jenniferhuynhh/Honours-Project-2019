@@ -1,11 +1,11 @@
 var MapModule = (function() {
-	//Public
+	//Private
 	var ftms_ui; //FTMS UI system this module is linked to
 	var icon_size = 15; //Size of milsymbol symbols
 	var display;
 	var viewer;
 
-	//private
+	//Public
 	return {
 		initialise: function(ftms) {
 			//Link FTMS UI system

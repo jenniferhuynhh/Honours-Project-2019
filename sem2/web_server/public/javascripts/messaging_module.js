@@ -1,5 +1,5 @@
 var MessagingModule = (function() {
-	//Public
+	//Private
 	var ftms_ui;
 	var display;
 	var messages;
@@ -7,7 +7,7 @@ var MessagingModule = (function() {
 	var send_button;
 	var socket;
 
-	//Private
+	//Public
 	return {
 		initialise: function(ftms) {
 			//Link FTMS UI system

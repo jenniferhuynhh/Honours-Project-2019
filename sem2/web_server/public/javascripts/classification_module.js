@@ -1,6 +1,5 @@
 var ClassificationModule = (function() {
-
-	//private
+	//Private
 	var ftms_ui;
 	var display;
 	var div1, div2, div3;
@@ -10,10 +9,10 @@ var ClassificationModule = (function() {
 	var land_types, sea_types, air_types, subsurface_types;
 	var track_domains, track_affiliations;
 
-	//public
+	//Public
 	return {
 		//Declares track types/domains/affilitations and generates display elements
-		initialise: function(ftms){
+		initialise: function(ftms) {
 			//links FTMS UI system
 			ftms_ui = ftms;
 
@@ -58,7 +57,7 @@ var ClassificationModule = (function() {
 			div2.setAttribute('class', 'center_align');
 			
 			div2_buttons = [];
-			for (var i = 0; i < track_domains.length; i++){
+			for (var i = 0; i < track_domains.length; i++) {
 				div2_buttons.push(this.generateButton(track_domains[i], 'domain'));
 				div2.appendChild(div2_buttons[i]);
 			}
@@ -69,7 +68,7 @@ var ClassificationModule = (function() {
 			div3.setAttribute('class', 'center_align');
 
 			div3_buttons = [];
-			for (var i = 0; i < track_affiliations.length; i++){
+			for (var i = 0; i < track_affiliations.length; i++) {
 				div3_buttons.push(this.generateButton(track_affiliations[i], 'affiliation'));
 				div3.appendChild(div3_buttons[i]);
 			}
@@ -82,13 +81,13 @@ var ClassificationModule = (function() {
 		},
 
 		//Generates a button with a value and an onclick function that changes the property of a track
-		generateButton: function(s, property){
+		generateButton: function(s, property) {
 			var button = document.createElement('input');
 			button.setAttribute('class', 'unhighlighted_classification_buttons');
 			button.setAttribute('type', 'button');
 			button.setAttribute('value', s);
 			var self = this;
-			button.addEventListener('click', function(){
+			button.addEventListener('click', function() {
 				self.updateTrack(property, s.toLowerCase());
 			});
 
@@ -96,7 +95,7 @@ var ClassificationModule = (function() {
 		},
 
 		//Updates a tracks data when needed (dropdown change/button press)
-		updateTrack: function(property, value){
+		updateTrack: function(property, value) {
 			var track_id = ftms_ui.track_table_module.selected_track_id;
 			//If nothing is selected
 			if(track_id < 0) {
@@ -116,7 +115,7 @@ var ClassificationModule = (function() {
 		},
 		
 		//Updates the dropdown menu and buttons to reflect track properties
-		updateDisplay: function(){
+		updateDisplay: function() {
 			var track_id = ftms_ui.track_table_module.selected_track_id;
 			//If nothing is selected
 			if(track_id < 0) {
@@ -179,7 +178,7 @@ var ClassificationModule = (function() {
 		},
 
 		//Clears the dropdown menu and deselects domain and affiliation buttons
-		clearFields: function(){
+		clearFields: function() {
 			div1_menu.innerHTML = "";
 			for(var i = 0; i < div2_buttons.length; i++) {
 				div2_buttons[i].setAttribute('class', 'unhighlighted_classification_buttons');

@@ -7,7 +7,7 @@ var WindowManager = (function() {
 	//public
 	return {
 		//Initialises GoldenLayout window manager components
-		initialise: function(ftms){
+		initialise: function(ftms) {
 			log("Window manager initialising...");
 		
 			//Link FTMS UI system
@@ -75,12 +75,12 @@ var WindowManager = (function() {
 		},
 
 		//Displays all windows
-		showAll: function(){
+		showAll: function() {
 			display.init();
 		},
 
 		//Appends given element to component with given windowName
-		appendToWindow: function(windowName, element){
+		appendToWindow: function(windowName, element) {
 			display.registerComponent(windowName, function(container, componentState) {
 				container.getElement()[0].appendChild(element);
 			});

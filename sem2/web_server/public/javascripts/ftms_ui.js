@@ -10,11 +10,11 @@ var FTMS_UI = (function(){
 		alert_module: null,
 		messaging_module: null,
 
-		initialise: function(){
+		initialise: function() {
 			this.window_manager = WindowManager;
 			this.window_manager.initialise(this);
 
-			this.simulator = new Simulator();
+			this.simulator = Simulator;
 			this.simulator.initialise(this);
 
 			this.map_module = MapModule;
@@ -43,7 +43,7 @@ var FTMS_UI = (function(){
 			this.simulator.test();
 		},
 
-		run: function(){
+		run: function() {
 			this.simulator.run();
 		}
 	}

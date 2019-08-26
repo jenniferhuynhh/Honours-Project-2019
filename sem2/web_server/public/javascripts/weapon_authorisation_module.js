@@ -1,6 +1,5 @@
 var WeaponAuthorisationModule = (function() {
-
-	//private
+	//Private
 	var ftms_ui;
 	var display;
 	var div1;
@@ -8,7 +7,7 @@ var WeaponAuthorisationModule = (function() {
 	var weapons_buttons = [];
 	var authorise_button;
 
-	//public 
+	//Public 
 	return {
 		initialise: function(ftms) {
 			//link FTMS UI system
@@ -34,7 +33,7 @@ var WeaponAuthorisationModule = (function() {
 			authorise_button.setAttribute('type', 'button');
 			authorise_button.setAttribute('value', 'Request Authorisation');
 			var self = this; 
-			authorise_button.addEventListener('click', function(){
+			authorise_button.addEventListener('click', function() {
 				if (this.className == 'unhighlighted_authorise_button'){
 					this.setAttribute('class', 'highlighted_authorise_button');
 				}
@@ -52,13 +51,12 @@ var WeaponAuthorisationModule = (function() {
 			//append display to window
 			ftms_ui.window_manager.appendToWindow('Weapon Authorisation Module', display);
 		},
-
-		generateWeaponsButtons: function(s){
+		generateWeaponsButtons: function(s) {
 			var button = document.createElement('input');
 			button.setAttribute('class', 'unhighlighted_weapons_buttons');
 			button.setAttribute('type', 'button');
 			button.setAttribute('value', s);
-			button.addEventListener('click', function(){
+			button.addEventListener('click', function() {
 				if (this.className == 'unhighlighted_weapons_buttons') {
 					this.setAttribute('class', 'highlighted_weapons_buttons');
 				} else {
@@ -68,10 +66,9 @@ var WeaponAuthorisationModule = (function() {
 
 			return button;
 		},
-
-		toggleDisabled: function(){
-			for(var i = 0; i < weapons_buttons.length; i++){
-				if(authorise_button.className == 'highlighted_authorise_button'){
+		toggleDisabled: function() {
+			for(var i = 0; i < weapons_buttons.length; i++) {
+				if(authorise_button.className == 'highlighted_authorise_button') {
 					weapons_buttons[i].disabled = true;
 					weapons_buttons[i].classList.add('disabled_button');
 				}

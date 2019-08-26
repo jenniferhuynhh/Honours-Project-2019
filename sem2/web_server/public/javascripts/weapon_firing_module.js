@@ -1,6 +1,5 @@
 var WeaponFiringModule = (function() {
-
-	//private
+	//Private
 	var ftms_ui;
 	var display;
 	var div1;
@@ -8,7 +7,7 @@ var WeaponFiringModule = (function() {
 	var weapons_buttons = [];
 	var fire_button;
 
-	//public
+	//Public
 	return {
 		initialise: function(ftms) {
 			//link FTMS UI system
@@ -34,14 +33,14 @@ var WeaponFiringModule = (function() {
 			fire_button.setAttribute('class', 'unhighlighted_fire_button');
 			fire_button.setAttribute('type', 'button');
 			fire_button.setAttribute('value', 'FIRE');
-			fire_button.addEventListener('mousedown', function(){
+			fire_button.addEventListener('mousedown', function() {
 				this.classList.add('highlighted_fire_button');
 			})
-			fire_button.addEventListener('mouseup', function(){
+			fire_button.addEventListener('mouseup', function() {
 				this.classList.remove('highlighted_fire_button');
 			})
-			fire_button.addEventListener('click', function(){			
-				for(var i=0; i<weapons_buttons.length; i++){
+			fire_button.addEventListener('click', function() {			
+				for(var i=0; i<weapons_buttons.length; i++) {
 					weapons_buttons[i].classList.remove('highlighted_weapons_buttons');
 				}
 				//var audio = new Audio('../resources/boom.mp3');
@@ -57,13 +56,13 @@ var WeaponFiringModule = (function() {
 			ftms_ui.window_manager.appendToWindow('Weapon Firing Module', display);
 		},
 
-		generateWeaponsButtons: function(s){
+		generateWeaponsButtons: function(s) {
 			var button = document.createElement('input');
 			button.setAttribute('class', 'unhighlighted_weapons_buttons');
 			button.setAttribute('type', 'button');
 			button.setAttribute('value', s);
-			button.addEventListener('click', function(){
-				if(this.classList.contains('highlighted_weapons_buttons')){
+			button.addEventListener('click', function() {
+				if(this.classList.contains('highlighted_weapons_buttons')) {
 					this.classList.remove('highlighted_weapons_buttons');
 				} 
 				else{

@@ -3,11 +3,11 @@ var TrackTableModule = (function() {
 	var ftms_ui; //FTMS UI system this module is linked to
 	var display;
 	var track_table; //the table that track data will be displayed in
-	//var selected_track_id; //ID of the currently selected track
 	var header_elements; //Labels to be displayed in header
 
+	//Public
 	return {
-		selected_track_id: -1,
+		selected_track_id: -1, //ID of the currently selected track
 		initialise: function(ftms) {
 			//Link FTMS UI system
 			ftms_ui = ftms;
