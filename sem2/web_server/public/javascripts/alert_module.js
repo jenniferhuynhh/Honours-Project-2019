@@ -1,26 +1,27 @@
-function AlertModule() {
-	this.ftms_ui;
-	this.display;
-	this.alerts;
+var AlertModule = (function() {
+	//Private
+	var ftms_ui;
+	var display;
+	var alerts;
 
-	//Create display and populate alerts array
-	this.initialise = function(ftms_ui) {
-		//Link FTMS UI system
-		this.ftms_ui = ftms_ui;
+	//Public
+	return {
+		initialise: function(ftms) {
+			//Link FTMS UI system
+			ftms_ui = ftms;
 
-		//Create div for alerts to sit in
-		this.display = document.createElement('div');
-		this.display.setAttribute('class', 'alert_module');
+			//Create div for alerts to sit in
+			display = document.createElement('div');
+			display.setAttribute('class', 'alert_module');
 
-		//Possible alerts to be shown (for simulation)
-		this.alerts = ['Incoming missle!', 'Hostile track moving.', 'Unknown track.', 'Friendly track.', 'Hostile track.'];
+			//Possible alerts to be shown (for simulation)
+			alerts = ['Incoming missle!', 'Hostile track moving.', 'Unknown track.', 'Friendly track.', 'Hostile track.'];
 
-		//Append display to window
-		this.ftms_ui.window_manager.appendToWindow('Alert Module', this.display);
+			//Append display to window
+			ftms_ui.window_manager.appendToWindow('Alert Module', display);
+		},
+		outputRandomAlert: function() {
+			display.innerHTML = alerts[randomInt(0, alerts.length)] + '<br>' + display.innerHTML;
+		}
 	}
-
-	//Appends a random alert to the top of the alert module display
-	this.outputRandomAlert = function() {
-		this.display.innerHTML = this.alerts[randomInt(0, this.alerts.length)] + '<br>' + this.display.innerHTML;
-	}
-}
+}());
