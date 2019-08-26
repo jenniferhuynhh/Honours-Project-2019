@@ -1,84 +1,91 @@
-function WindowManager() {
-	this.ftms_ui; //FTMS UI system this module is linked to
-	this.display; //GoldenLayout object
+var WindowManager = (function() {
+	
+	//private
+	var ftms_ui; //FTMS UI system this module is linked to
+	var display; //GoldenLayout object
 
-	//Initialises GoldenLayout window manager components
-	this.initialise = function(ftms_ui) {
-		log("Window manager initialising...");
+	//public
+	return {
+		//Initialises GoldenLayout window manager components
+		initialise: function(ftms){
+			log("Window manager initialising...");
 		
-		//Link FTMS UI system
-		this.ftms_ui = ftms_ui;
+			//Link FTMS UI system
+			ftms_ui = ftms;
 
-		var config = {
-			settings: {
-				showPopoutIcon: false
-			},
-			content: [{
-				type: 'row',
-				content:[{
-					type: 'column',
+			var config = {
+				settings: {
+					showPopoutIcon: false
+				},
+				content: [{
+					type: 'row',
 					content:[{
-						type: 'component',
-						componentName: 'Map Module',
-						isClosable: false
-					},{
-						type: 'row',
+						type: 'column',
 						content:[{
 							type: 'component',
-							componentName: 'Alert Module',
-							isClosable: false,
-							width: 65
-						},{
-							type: 'component',
-							componentName: 'Messaging Module',
+							componentName: 'Map Module',
 							isClosable: false
+						},{
+							type: 'row',
+							content:[{
+								type: 'component',
+								componentName: 'Alert Module',
+								isClosable: false,
+								width: 65
+							},{
+								type: 'component',
+								componentName: 'Messaging Module',
+								isClosable: false
+							}],
+							height: 20
 						}],
-						height: 20
-					}],
-					width: 65
-				},{
-					type: 'column',
-					content:[{
-						type: 'component',
-						componentName: 'Track Table Module',
-						isClosable: false
+						width: 65
 					},{
-						type: 'component',
-						componentName: 'Track Classification Module',
-						isClosable: false,
-						height: 40
-					},{
-						type: 'stack',
-						content: [{
+						type: 'column',
+						content:[{
 							type: 'component',
-							componentName: 'Weapon Authorisation Module',
-							isClosable: false,
-							height: 30
+							componentName: 'Track Table Module',
+							isClosable: false
 						},{
 							type: 'component',
-							componentName: 'Weapon Firing Module',
+							componentName: 'Track Classification Module',
 							isClosable: false,
-							height: 30
+							height: 40
+						},{
+							type: 'stack',
+							content: [{
+								type: 'component',
+								componentName: 'Weapon Authorisation Module',
+								isClosable: false,
+								height: 30
+							},{
+								type: 'component',
+								componentName: 'Weapon Firing Module',
+								isClosable: false,
+								height: 30
+							}]
 						}]
 					}]
 				}]
-			}]
-		};
+			};
 
-		this.display = new GoldenLayout(config);
+			display = new GoldenLayout(config);
 
-		log("Window manager initialised");
+			log("Window manager initialised");
+		},
+
+		//Displays all windows
+		showAll: function(){
+			display.init();
+		},
+
+		//Appends given element to component with given windowName
+		appendToWindow: function(windowName, element){
+			display.registerComponent(windowName, function(container, componentState) {
+				container.getElement()[0].appendChild(element);
+			});
+		}	
 	}
+}());
 
-	//Displays all windows
-	this.showAll = function() {
-		this.display.init();
-	}
 
-	//Appends given element to component with given windowName
-	this.appendToWindow = function(windowName, element) {
-		this.display.registerComponent(windowName, function(container, componentState) {
-		    container.getElement()[0].appendChild(element);
-		});
-	}
-}

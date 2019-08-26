@@ -9,7 +9,7 @@ function FTMS_UI() {
 	this.messaging_module;
 
 	this.initialise = function() {
-		this.window_manager = new WindowManager();
+		this.window_manager = WindowManager;
 		this.window_manager.initialise(this);
 
 		this.simulator = new Simulator();
@@ -21,7 +21,7 @@ function FTMS_UI() {
 		this.track_table_module = new TrackTableModule();
 		this.track_table_module.initialise(this);
 
-		this.classification_module = new ClassificationModule();
+		this.classification_module = ClassificationModule;
 		this.classification_module.initialise(this);
 
 		this.weapon_authorisation_module = WeaponAuthorisationModule;
