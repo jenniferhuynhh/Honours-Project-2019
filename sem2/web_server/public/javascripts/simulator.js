@@ -73,7 +73,7 @@ function Simulator() {
 
 	//Returns track with matching ID
 	this.getTrack = function(id) {
-		return this.tracks.get(id);
+		return this.tracks.get(Number(id));
 	}
 
 	//Removes a track from the track array by ID

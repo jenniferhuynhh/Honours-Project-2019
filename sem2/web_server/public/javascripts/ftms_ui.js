@@ -24,10 +24,10 @@ function FTMS_UI() {
 		this.classification_module = new ClassificationModule();
 		this.classification_module.initialise(this);
 
-		this.weapon_authorisation_module = new WeaponAuthorisationModule();
+		this.weapon_authorisation_module = WeaponAuthorisationModule;
 		this.weapon_authorisation_module.initialise(this);
 
-		this.weapon_firing_module = new WeaponFiringModule();
+		this.weapon_firing_module = WeaponFiringModule;
 		this.weapon_firing_module.initialise(this);
 
 		this.alert_module = AlertModule;
