@@ -15,7 +15,7 @@ function FTMS_UI() {
 		this.simulator = new Simulator();
 		this.simulator.initialise(this);
 
-		this.map_module = new MapModule();
+		this.map_module = MapModule;
 		this.map_module.initialise(this);
 
 		this.track_table_module = new TrackTableModule();
@@ -33,10 +33,12 @@ function FTMS_UI() {
 		this.alert_module = AlertModule;
 		this.alert_module.initialise(this);
 
-		this.messaging_module = new MessagingModule();
+		this.messaging_module = MessagingModule;
 		this.messaging_module.initialise(this);
 
 		this.window_manager.showAll();
+
+		this.simulator.test();
 	}
 
 	this.run = function() {

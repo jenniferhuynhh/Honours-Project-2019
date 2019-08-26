@@ -17,6 +17,17 @@ function Simulator() {
 		log("Simulator initialised");
 	};
 
+	this.test = function() {
+
+		var t1 = new Track(123, 26.576489, 56.423728, 0, 20, 270, "friendly", "sea");
+		this.tracks.set(t1.id, t1);
+		this.ftms_ui.map_module.paintTrack(t1);
+
+		//Display data of new track positions
+		this.ftms_ui.track_table_module.updateTrackTable();
+
+	}
+
 	this.socket.on('track', function(message){
 		if (message[0] == "{"){
 			var jsonTrack = JSON.parse(message);
@@ -41,7 +52,7 @@ function Simulator() {
 				self.tracks.set(id, t);
 			}
 
-			// Tells the map to draw the track
+			//Tells the map to draw the track
 			self.ftms_ui.map_module.paintTrack(t);
 
 			//Display data of new track positions
@@ -73,7 +84,7 @@ function Simulator() {
 
 	//Returns track with matching ID
 	this.getTrack = function(id) {
-		return this.tracks.get(id);
+		return this.tracks.get(Number(id));
 	}
 
 	//Removes a track from the track array by ID

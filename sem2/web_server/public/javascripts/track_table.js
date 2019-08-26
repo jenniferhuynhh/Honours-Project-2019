@@ -75,10 +75,10 @@ function TrackTableModule() {
 		row.addEventListener("click", function() {
 			if(self.selected_track_id == this.cells[0].innerHTML) {
 				self.selected_track_id = -1;
-				self.ftms_ui.map_module.viewer.selectedEntity = undefined;
+				self.ftms_ui.map_module.getViewer().selectedEntity = undefined;
 			} else {
 				self.selected_track_id = this.cells[0].innerHTML;
-				self.ftms_ui.map_module.viewer.selectedEntity = self.ftms_ui.map_module.viewer.entities.getById(this.cells[0].innerHTML)
+				self.ftms_ui.map_module.getViewer().selectedEntity = self.ftms_ui.map_module.getViewer().entities.getById(this.cells[0].innerHTML)
 			}
 			self.ftms_ui.map_module.render();
 			self.updateTrackTable();
@@ -121,7 +121,7 @@ function TrackTableModule() {
 		}
 
 		//Update or add track's data
-		tracks.forEach(function(value, key, map){
+		tracks.forEach(function(value, key, map) {
 			for(var j = 1; j < self.track_table.rows.length; j++) {
 				if(self.track_table.rows[j].cells[0].innerHTML == value.id) { //If track data is already on table
 					self.updateEntry(value);
@@ -134,7 +134,7 @@ function TrackTableModule() {
 
 		//Delete missing track's data
 		for(var i = 1; i < this.track_table.rows.length; i++) {
-			if(!tracks.has(this.track_table.rows[i].cells[0].innerHTML)) {
+			if(!tracks.has(Number(this.track_table.rows[i].cells[0].innerHTML))) {
 				this.track_table.removeChild(this.track_table.rows[i--]);
 			}
 		}
