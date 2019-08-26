@@ -18,7 +18,7 @@ function FTMS_UI() {
 		this.map_module = MapModule;
 		this.map_module.initialise(this);
 
-		this.track_table_module = new TrackTableModule();
+		this.track_table_module = TrackTableModule;
 		this.track_table_module.initialise(this);
 
 		this.classification_module = ClassificationModule;

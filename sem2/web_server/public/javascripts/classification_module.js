@@ -3,19 +3,12 @@ var ClassificationModule = (function() {
 	//private
 	var ftms_ui;
 	var display;
-	var div1;
-	var div2;
-	var div3;
+	var div1, div2, div3;
 	var div1_menu;
-	var div2_buttons;
-	var div3_buttons;
+	var div2_buttons, div3_buttons;
 
-	var land_types;
-	var sea_types;
-	var air_types;
-	var subsurface_types;
-	var track_domains;
-	var track_affiliations;
+	var land_types, sea_types, air_types, subsurface_types;
+	var track_domains, track_affiliations;
 
 	//public
 	return {

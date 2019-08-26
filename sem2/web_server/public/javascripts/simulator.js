@@ -5,7 +5,7 @@ function Simulator() {
 	this.tick_rate = 0.5; //tick time in seconds
 	this.tracks = new Map(); //Map of tracks, mapped to their unique ID
 	this.socket = io();
-	var self = this
+	var self = this;
 
 	//Initialises renderer and populates tracks
 	this.initialise = function(ftms_ui) {
