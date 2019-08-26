@@ -102,7 +102,7 @@ function ClassificationModule() {
 	}
 
 	//Updates a tracks data when needed (dropdown change/button press)
-	this.updateTrack = function(property,value) {
+	this.updateTrack = function(property, value) {
 		var track_id = this.ftms_ui.track_table_module.selected_track_id;
 		//If nothing is selected
 		if(track_id < 0) {
