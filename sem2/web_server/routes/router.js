@@ -11,14 +11,14 @@ router.get('/', function(req, res, next) {
 				return next(error);
 			} else {
 				if (user === null) {
-					return res.sendFile(path.join(__dirname, "../public", "/login.html"));
+					return res.sendFile(path.join(__dirname, "../ui/public", "/login.html"));
 				} else {
 					req.session.userId = user._id;
 					return res.redirect('/ftms');
 				}
 			}
 		});
-	//res.sendFile(path.join(__dirname, "../public", "/login.html")); //path.join(__dirname + '/login.html')
+	//res.sendFile(path.join(__dirname, "../ui/public", "/login.html")); //path.join(__dirname + '/login.html')
 });
 
 // POST for login or resgistration attempts
@@ -76,7 +76,14 @@ router.get('/ftms', function (req, res, next) {
 					return next(err);
 				} else {
 					res.cookie('role', user.role);
-					return res.sendFile(path.join(__dirname, "../public", "/ftms.html"));
+					if(user.role == "ts") {
+						return res.sendFile(path.join(__dirname, "../ui/roles/ts", "/ftms.html"));
+					} else if(user.role == "wo") {
+						return res.sendFile(path.join(__dirname, "../ui/roles/wo", "/ftms.html"));
+					} else if(user.role == "fs") {
+						return res.sendFile(path.join(__dirname, "../ui/roles/fs", "/ftms.html"));
+					}
+					return res.sendFile(path.join(__dirname, "../ui/public", "/ftms.html"));
 				}
 			}
 		});
@@ -84,7 +91,7 @@ router.get('/ftms', function (req, res, next) {
 
 // GET for logout
 router.get('/register', function (req, res, next) {
-	res.sendFile(path.join(__dirname, "../public", "/register.html"));
+	res.sendFile(path.join(__dirname, "../ui/public", "/register.html"));
 });
 
 // GET route after registering
