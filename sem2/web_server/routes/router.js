@@ -3,13 +3,27 @@ var router = express.Router();
 var User = require('../models/user.js');
 var path = require('path');
 
-/* GET index */
+// GET login page if not logged in, GET ftms if logged in
 router.get('/', function(req, res, next) {
-	res.sendFile(path.join(__dirname, "../public", "/login.html")); //path.join(__dirname + '/login.html')
+	User.findById(req.session.userId)
+		.exec(function (error, user) {
+			if (error) {
+				return next(error);
+			} else {
+				if (user === null) {
+					return res.sendFile(path.join(__dirname, "../public", "/login.html"));
+				} else {
+					req.session.userId = user._id;
+					return res.redirect('/ftms');
+				}
+			}
+		});
+	//res.sendFile(path.join(__dirname, "../public", "/login.html")); //path.join(__dirname + '/login.html')
 });
 
+// POST for login or resgistration attempts
 router.post('/', function(req, res, next) {
-	console.log("register attempted");
+	//Register attempt
 	if (
 	req.body.username &&
 	req.body.role &&
@@ -22,17 +36,15 @@ router.post('/', function(req, res, next) {
 			password: req.body.password
 		}
 
-		//use schema.create to insert data into the db
 		User.create(userData, function (err, user) {
 			if (err) {
-				console.log("unsuccessful register");
-				return next(err)
+				return next(err);
 			} else {
-				console.log("user registered");
 				req.session.userId = user._id;
 				return res.redirect('/');
 			}
 		});
+	//Login attempt
 	} else if(req.body.logusername && req.body.logpassword) {
 		User.authenticate(req.body.logusername, req.body.logpassword, function (error, user) {
 			if (error || !user) {
@@ -51,8 +63,7 @@ router.post('/', function(req, res, next) {
 	}
 })
 
-
-// GET route after registering
+// GET route for ftms system after logging in
 router.get('/ftms', function (req, res, next) {
 	User.findById(req.session.userId)
 		.exec(function (error, user) {
@@ -64,12 +75,17 @@ router.get('/ftms', function (req, res, next) {
 					err.status = 400;
 					return next(err);
 				} else {
-					return res.sendFile(path.join(__dirname, "../public", "/index.html"));
+					res.cookie('role', user.role);
+					return res.sendFile(path.join(__dirname, "../public", "/ftms.html"));
 				}
 			}
 		});
 });
 
+// GET for logout
+router.get('/register', function (req, res, next) {
+	res.sendFile(path.join(__dirname, "../public", "/register.html"));
+});
 
 // GET route after registering
 router.get('/profile', function (req, res, next) {
@@ -89,10 +105,11 @@ router.get('/profile', function (req, res, next) {
 		});
 });
 
-// GET for logout logout
+// GET for logout
 router.get('/logout', function (req, res, next) {
 	if (req.session) {
 		// delete session object
+		res.clearCookie("role");
 		req.session.destroy(function (err) {
 			if (err) {
 				return next(err);
