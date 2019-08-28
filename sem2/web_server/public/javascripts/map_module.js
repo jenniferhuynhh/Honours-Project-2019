@@ -32,7 +32,7 @@ var MapModule = (function() {
 				geocoder : false
 			});
 
-			// Online mode
+			// Online mode - Includes Imagery and Terrain sections
 			// viewer = new Cesium.Viewer(display, {
 			// 	animation: false,
 			// 	selectionIndicator: false,
@@ -47,20 +47,20 @@ var MapModule = (function() {
 			//////////////////////////////////////////////////////////////////////////
 
 			// Remove default base layer
-			viewer.imageryLayers.remove(viewer.imageryLayers.get(0));
+			// viewer.imageryLayers.remove(viewer.imageryLayers.get(0));
 
 			// Add Sentinel-2 imagery
-			viewer.imageryLayers.addImageryProvider(new Cesium.IonImageryProvider({ assetId: 3954 }));
+			// viewer.imageryLayers.addImageryProvider(new Cesium.IonImageryProvider({ assetId: 3954 }));
 
 			//////////////////////////////////////////////////////////////////////////
 			// Loading Terrain
 			//////////////////////////////////////////////////////////////////////////
 
 			// Load Cesium World Terrain
-			viewer.terrainProvider = Cesium.createWorldTerrain({
-				requestWaterMask : true, // required for water effects
-				requestVertexNormals : true // required for terrain lighting
-			});
+			// viewer.terrainProvider = Cesium.createWorldTerrain({
+			// 	requestWaterMask : true, // required for water effects
+			// 	requestVertexNormals : true // required for terrain lighting
+			// });
 
 			//////////////////////////////////////////////////////////////////////////
 			// Configuring the Scene
