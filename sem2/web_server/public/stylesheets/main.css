@@ -242,3 +242,8 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	color: grey;
 }
 
+
+/*** Header Bar ***/
+.header_table {
+	width: 100%;
+}
