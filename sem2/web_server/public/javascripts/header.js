@@ -31,18 +31,25 @@ var Header = (function() {
 			}
 			header_table.appendChild(header_bar);
 			document.getElementById("header").appendChild(header_table);
-			this.updateTime();
+			this.updateHeader();
 		},
 
-		updateTime: function(){
+		//updates the date and time every millisecond
+		updateHeader: function(){
 			var self = this;
 
 			setTimeout(function(){
 				var t = new Date();
 				document.getElementById("header_date").innerHTML = t.getDate() + '/' + (t.getMonth()+1) + '/' + t.getFullYear();
 				document.getElementById("header_time").innerHTML = t.getHours() + ':' + t.getMinutes() + ':' + t.getSeconds();
-				self.updateTime();
+				var ownship = ftms_ui.simulator.getTrack(123);
+				document.getElementById("header_course").innerHTML = "Course: " + ownship.course.toFixed(3) + "°";
+				document.getElementById("header_speed").innerHTML = "Course: " + ownship.speed.toFixed(3) + " knots";
+				document.getElementById("header_long").innerHTML = "Course: " + ownship.longitude.toFixed(8);
+				document.getElementById("header_lat").innerHTML = "Course: " + ownship.latitude.toFixed(8);
+				self.updateHeader();
 			}, 1000);
-		}
+		},
+
 	}
 }());
