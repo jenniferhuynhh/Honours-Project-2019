@@ -34,7 +34,7 @@ var Header = (function() {
 			this.updateHeader();
 		},
 
-		//updates the date and time every millisecond
+		//updates the header every millisecond
 		updateHeader: function(){
 			var self = this;
 
@@ -49,7 +49,6 @@ var Header = (function() {
 				document.getElementById("header_lat").innerHTML = "Course: " + ownship.latitude.toFixed(8);
 				self.updateHeader();
 			}, 1000);
-		},
-
+		}
 	}
 }());
