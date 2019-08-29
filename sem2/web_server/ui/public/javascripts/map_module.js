@@ -20,12 +20,25 @@ var MapModule = (function() {
 			Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNTNlZjU4NS05ZDZlLTRiMTUtOGVmYi1lYTIwNjk2ODcyN2IiLCJpZCI6MTA2ODQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTcxNTk1ODl9.pefjm_v8G065frNjyPdGYd9ggHaMdKBfukjjMbgTg6M';
 			//Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJiNGM3NmUyMS0yNWY5LTQ5MmMtYjQ0ZS1hYTliMjY2MzFhYzYiLCJpZCI6OTcwNCwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU1NDc3NTg2N30.U4oXqg5SHWnf22tUsRCb2aHrOp1aMF0TK3YmWC39Prc';
 			
+			// Offline mode 
 			viewer = new Cesium.Viewer(display, {
+				imageryProvider : Cesium.createTileMapServiceImageryProvider({
+					url : Cesium.buildModuleUrl('Assets/Textures/NaturalEarthII')
+				}),
 				animation: false,
 				selectionIndicator: false,
 				timeline: false,
-				baseLayerPicker: false
+				baseLayerPicker : false,
+				geocoder : false
 			});
+
+			// Online mode - Includes Imagery and Terrain sections
+			// viewer = new Cesium.Viewer(display, {
+			// 	animation: false,
+			// 	selectionIndicator: false,
+			// 	timeline: false,
+			// 	baseLayerPicker: false
+			// });
 
 			viewer.scene.mode = Cesium.SceneMode.SCENE2D;
 
@@ -34,20 +47,20 @@ var MapModule = (function() {
 			//////////////////////////////////////////////////////////////////////////
 
 			// Remove default base layer
-			viewer.imageryLayers.remove(viewer.imageryLayers.get(0));
+			// viewer.imageryLayers.remove(viewer.imageryLayers.get(0));
 
 			// Add Sentinel-2 imagery
-			viewer.imageryLayers.addImageryProvider(new Cesium.IonImageryProvider({ assetId: 3954 }));
+			// viewer.imageryLayers.addImageryProvider(new Cesium.IonImageryProvider({ assetId: 3954 }));
 
 			//////////////////////////////////////////////////////////////////////////
 			// Loading Terrain
 			//////////////////////////////////////////////////////////////////////////
 
 			// Load Cesium World Terrain
-			viewer.terrainProvider = Cesium.createWorldTerrain({
-				requestWaterMask : true, // required for water effects
-				requestVertexNormals : true // required for terrain lighting
-			});
+			// viewer.terrainProvider = Cesium.createWorldTerrain({
+			// 	requestWaterMask : true, // required for water effects
+			// 	requestVertexNormals : true // required for terrain lighting
+			// });
 
 			//////////////////////////////////////////////////////////////////////////
 			// Configuring the Scene
