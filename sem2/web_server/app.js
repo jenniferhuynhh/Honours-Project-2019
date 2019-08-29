@@ -120,7 +120,7 @@ protoBuilder = protobuf.load("tdn.proto", function(err, root){
 try {
   const client = new kafka.KafkaClient('localhost:9092');
   
-  let consumer = new kafka.Consumer(
+  let trackConsumer = new kafka.Consumer(
     client,
     [{ topic: 'tdn-systrk', partition: 0 }],
     {
@@ -132,14 +132,37 @@ try {
     }
   );
 
-  consumer.on('message', async function(message) {
+  trackConsumer.on('message', async function(message) {
     var dec = protoMessageType.decode(message.value);
     io.emit('track', JSON.stringify(dec));
 
-  })
-  consumer.on('error', function(err) {
+  });
+
+  trackConsumer.on('error', function(err) {
     console.log('error', err);
   });
+
+  // let alertConsumer = new kafka.Consumer(
+  //   client,
+  //   [{ topic: 'alerts', partition: 0 }],
+  //   {
+  //     autoCommit: true,
+  //     fetchMaxWaitMs: 1000,
+  //     fetchMaxBytes: 1024 * 1024,
+  //     encoding: 'buffer',
+  //     fromOffset: false
+  //   }
+  // );
+
+  // alertConsumer.on('message', async function(message) {
+  //   var dec = protoMessageType.decode(message.value);
+  //   io.emit('alert', JSON.stringify(dec));
+
+  // });
+  
+  // alertConsumer.on('error', function(err) {
+  //   console.log('error', err);
+  // });
 }catch(e) {
   console.log(e);
 }
