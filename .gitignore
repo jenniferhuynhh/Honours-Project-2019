@@ -1,3 +1,4 @@
 
 *.log
 sem1\kafka_2.12-2.2.0\logs
+sem1/kafka_2.12-2.2.0/logs
