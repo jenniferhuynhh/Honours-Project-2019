@@ -118,11 +118,11 @@ protoBuilder = protobuf.load("tdn.proto", function(err, root){
 });
 
 try {
-  const client = new kafka.KafkaClient('localhost:9092');
+  let trackClient = new kafka.KafkaClient({kafkaHost:'localhost:9092'});
   
   let trackConsumer = new kafka.Consumer(
-    client,
-    [{ topic: 'tdn-systrk', partition: 0 }],
+    trackClient,
+    [{ topic: 'tracks', partition: 0 }],
     {
       autoCommit: true,
       fetchMaxWaitMs: 1000,
@@ -132,38 +132,48 @@ try {
     }
   );
 
-  trackConsumer.on('message', async function(message) {
+  trackConsumer.on('message', function(message) {
+    console.log('Kafka Track');
     var dec = protoMessageType.decode(message.value);
-    io.emit('track', JSON.stringify(dec));
+    console.log(dec);
+    io.emit('track', dec);
 
   });
-
+  
   trackConsumer.on('error', function(err) {
     console.log('error', err);
   });
+}catch(e){
+  console.log(e);
+}
 
-  // let alertConsumer = new kafka.Consumer(
-  //   client,
-  //   [{ topic: 'alerts', partition: 0 }],
-  //   {
-  //     autoCommit: true,
-  //     fetchMaxWaitMs: 1000,
-  //     fetchMaxBytes: 1024 * 1024,
-  //     encoding: 'buffer',
-  //     fromOffset: false
-  //   }
-  // );
-
-  // alertConsumer.on('message', async function(message) {
-  //   var dec = protoMessageType.decode(message.value);
-  //   io.emit('alert', JSON.stringify(dec));
-
-  // });
+try {
+  let alertClient = new kafka.KafkaClient({kafkaHost:'localhost:9092'});
   
-  // alertConsumer.on('error', function(err) {
-  //   console.log('error', err);
-  // });
-}catch(e) {
+  let alertConsumer = new kafka.Consumer(
+    alertClient,
+    [{ topic: 'alerts', partition: 0 }],
+    {
+      autoCommit: true,
+      fetchMaxWaitMs: 1000,
+      fetchMaxBytes: 1024 * 1024,
+      encoding: 'buffer',
+      fromOffset: false
+    }
+  );
+
+  alertConsumer.on('message', function(message) {
+    console.log('Kafka Alert');
+    var dec = protoMessageType.decode(message.value);
+    console.log(dec);
+    io.emit('alert', dec);
+
+  });
+  
+  alertConsumer.on('error', function(err) {
+    console.log('error', err);
+  });
+}catch(e){
   console.log(e);
 }
 

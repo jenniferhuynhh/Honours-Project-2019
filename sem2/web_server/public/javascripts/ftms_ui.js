@@ -40,7 +40,7 @@ var FTMS_UI = (function(){
 
 			this.window_manager.showAll();
 
-			this.simulator.test();
+			// this.simulator.test();
 		},
 
 		run: function() {

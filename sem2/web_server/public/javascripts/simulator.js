@@ -15,37 +15,35 @@ var Simulator = (function() {
 
 			//Link FTMS UI system
 			ftms_ui = ftms;
-
+			var self = this;
 			socket.on('track', function(message){
-				if (message[0] == "{") {
-					var jsonTrack = JSON.parse(message);
-					var id = jsonTrack.trackId;
-					var lat = jsonTrack.latitude;
-					var long = jsonTrack.longitude;
-					var alt = jsonTrack.altitude;
-					var speed = jsonTrack.speed;
-					var course = jsonTrack.course;
-					var aff = jsonTrack.state;
-					var t = this.tracks.get(id);
+				// var jsonTrack = JSON.parse(message);
+				var id = message.trackId;
+				var lat = message.latitude;
+				var long = message.longitude;
+				var alt = message.altitude;
+				var speed = message.speed;
+				var course = message.course;
+				var aff = message.state;
+				var t = self.tracks.get(id);
 
-					if (t !== undefined){
-						t.latitude = lat;
-						t.longitude = long;
-						t.altitude = alt;
-						if (aff != "UNKNOWN")
-							t.affiliation = aff.toLowerCase();
-					}
-					else{
-						t = new Track(id, lat, long, alt, speed, course, aff.toLowerCase(), "sea");
-						this.tracks.set(id, t);
-					}
-
-					//Tells the map to draw the track
-					ftms_ui.map_module.paintTrack(t);
-
-					//Display data of new track positions
-					ftms_ui.track_table_module.updateTrackTable();
+				if (t !== undefined){
+					t.latitude = lat;
+					t.longitude = long;
+					t.altitude = alt;
+					if (aff != "UNKNOWN")
+						t.affiliation = aff.toLowerCase();
 				}
+				else{
+					t = new Track(id, lat, long, alt, speed, course, aff.toLowerCase(), "sea");
+					self.tracks.set(id, t);
+				}
+
+				//Tells the map to draw the track
+				ftms_ui.map_module.paintTrack(t);
+
+				//Display data of new track positions
+				ftms_ui.track_table_module.updateTrackTable();
 			});
 
 			log("Simulator initialised");
