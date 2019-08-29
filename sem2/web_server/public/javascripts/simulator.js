@@ -17,6 +17,7 @@ var Simulator = (function() {
 			ftms_ui = ftms;
 
 			socket.on('track', function(message){
+				console.log(message);
 				if (message[0] == "{") {
 					var jsonTrack = JSON.parse(message);
 					var id = jsonTrack.trackId;

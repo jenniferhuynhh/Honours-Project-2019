@@ -10,8 +10,13 @@ var users = require('./routes/users');
 
 var app = express();
 
+// Apache Kafka
+var kafka = require('kafka-node');
 
-
+// Protocol Buffer
+var protobuf = require("protobufjs");
+var protoBuilder;
+var protoMessageType;
 
 //Socket.io
 var server = require('http').createServer(app);
@@ -106,6 +111,38 @@ app.post('/login',
 );
 
 module.exports = app;
+
+// Kafka/protobuf.js
+protoBuilder = protobuf.load("tdn.proto", function(err, root){
+  protoMessageType = root.lookup("tdn.SystemTrack");
+});
+
+try {
+  const client = new kafka.KafkaClient('localhost:9092');
+  
+  let consumer = new kafka.Consumer(
+    client,
+    [{ topic: 'tdn-systrk', partition: 0 }],
+    {
+      autoCommit: true,
+      fetchMaxWaitMs: 1000,
+      fetchMaxBytes: 1024 * 1024,
+      encoding: 'buffer',
+      fromOffset: false
+    }
+  );
+
+  consumer.on('message', async function(message) {
+    var dec = protoMessageType.decode(message.value);
+    io.emit('track', JSON.stringify(dec));
+
+  })
+  consumer.on('error', function(err) {
+    console.log('error', err);
+  });
+}catch(e) {
+  console.log(e);
+}
 
 //Logs string to console with timestamp
 function log(s) {
