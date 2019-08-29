@@ -45,9 +45,9 @@ var Header = (function() {
 				document.getElementById("header_time").innerHTML = t.getHours() + ':' + t.getMinutes() + ':' + t.getSeconds();
 				var ownship = ftms_ui.simulator.getTrack(123);
 				document.getElementById("header_course").innerHTML = "Course: " + ownship.course.toFixed(3) + "°";
-				document.getElementById("header_speed").innerHTML = "Course: " + ownship.speed.toFixed(3) + " knots";
-				document.getElementById("header_long").innerHTML = "Course: " + ownship.longitude.toFixed(8);
-				document.getElementById("header_lat").innerHTML = "Course: " + ownship.latitude.toFixed(8);
+				document.getElementById("header_speed").innerHTML = "Speed: " + ownship.speed.toFixed(3) + " knots";
+				document.getElementById("header_long").innerHTML = "Long: " + ownship.longitude.toFixed(8);
+				document.getElementById("header_lat").innerHTML = "Lat: " + ownship.latitude.toFixed(8);
 				self.updateHeader();
 			}, 1000);
 		}
