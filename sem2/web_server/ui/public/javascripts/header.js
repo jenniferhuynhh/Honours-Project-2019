@@ -31,6 +31,7 @@ var Header = (function() {
 			}
 			header_table.appendChild(header_bar);
 			document.getElementById("header").appendChild(header_table);
+			document.getElementById("header_logout").innerHTML = "<a href='logout/'>Logout</a>";
 			this.updateHeader();
 		},
 
