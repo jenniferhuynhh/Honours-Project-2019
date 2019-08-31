@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login</title>
+	<link rel="stylesheet" href="public/stylesheets/style.css">
+</head>
+<body>
+
+<!--<h3>Login</h3>
+<form method='POST' action='/' target="_self">
+	<input type="textbox" name="logusername" /><br>
+	<input type="password" name="logpassword" /><br>
+    <input type="submit" value="Submit">
+</form>
+<a href="/register"><p>Register Here...</p></a>-->
+
+	<section class="forms-section">
+	  <h1 class="section-title">FTMS</h1>
+	  <div class="forms">
+	    <div class="form-wrapper is-active">
+	      <button type="button" class="switcher switcher-login">
+	        Login
+	        <span class="underline"></span>
+	      </button>
+	      <form class="form form-login" method='POST' action='/' target="_self">
+	        <fieldset>
+	          <legend>Please, enter your username and password for login.</legend>
+	          <div class="input-block">
+	            <label for="login-username">Username</label>
+	            <input id="login-username" type="textbox" name="logusername" required>
+	          </div>
+	          <div class="input-block">
+	            <label for="login-password">Password</label>
+	            <input id="login-password" type="password" name="logpassword" required>
+	          </div>
+	        </fieldset>
+	        <button type="submit" class="btn-login">Login</button>
+	      </form>
+	    </div>
+	    <div class="form-wrapper">
+	      <button type="button" class="switcher switcher-signup">
+	        Register
+	        <span class="underline"></span>
+	      </button>
+	      <form class="form form-signup" method='POST' action='/' target="_self">
+	        <fieldset>
+	          <legend>Please, enter your username, password and password confirmation to register.</legend>
+	          <div class="input-block">
+	            <label for="signup-username">Username</label>
+	            <input id="signup-username" type="textbox" name="username" required>
+	          </div>
+	          <div class="input-block">
+	            <label for="signup-role">Role</label>
+	            <input id="signup-role" type="textbox" name="role" required>
+	          </div>
+	          <div class="input-block">
+	            <label for="signup-password">Password</label>
+	            <input id="signup-password" type="password" name="password" required>
+	          </div>
+	          <div class="input-block">
+	            <label for="signup-password-confirm">Confirm password</label>
+	            <input id="signup-password-confirm" type="password" name="passwordConf" required>
+	          </div>
+	        </fieldset>
+	        <button type="submit" class="btn-signup">Submit</button>
+	      </form>
+	    </div>
+	  </div>
+	</section>
+	<script type="text/javascript" src="public/javascripts/form_switch.js"></script>
+
+</body>
+</html>
