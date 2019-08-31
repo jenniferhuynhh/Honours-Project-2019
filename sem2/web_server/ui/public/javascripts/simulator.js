@@ -18,7 +18,7 @@ var Simulator = (function() {
 			var self = this;
 			socket.on('track', function(message){
 				// var jsonTrack = JSON.parse(message);
-				var id = message.trackId;
+				var id = Number(message.trackId);
 				var lat = message.latitude;
 				var long = message.longitude;
 				var alt = message.altitude;
@@ -48,16 +48,16 @@ var Simulator = (function() {
 
 			log("Simulator initialised");
 		},
-		test: function() {
+		// test: function() {
 
-			var t1 = new Track(123, 26.576489, 56.423728, 0, 20, 270, "friendly", "sea");
-			this.tracks.set(t1.id, t1);
-			ftms_ui.map_module.paintTrack(t1);
+			// var t1 = new Track(123, 26.576489, 56.423728, 0, 20, 270, "friendly", "sea");
+			// this.tracks.set(t1.id, t1);
+			// ftms_ui.map_module.paintTrack(t1);
 
-			//Display data of new track positions
-			ftms_ui.track_table_module.updateTrackTable();
+			// //Display data of new track positions
+			// ftms_ui.track_table_module.updateTrackTable();
 
-		},
+		// },
 		//Begins the tick cycle
 		run: function() {
 			log("Simulator running...");
@@ -81,11 +81,11 @@ var Simulator = (function() {
 		},
 		//Returns track with matching ID
 		getTrack: function(id) {
-			return this.tracks.get(Number(id));
+			return this.tracks.get(id);
 		},
 		//Removes a track from the track array by ID
 		removeTrack: function(id) {
-			this.tracks.delete(Number(id));
+			this.tracks.delete(id);
 		}
 	}
 }());

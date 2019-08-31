@@ -104,7 +104,6 @@ var TrackTableModule = (function() {
 
 			//If table is empty, add all existing tracks
 			if(track_table.rows.length <= 1) {
-				console.log(1);
 				tracks.forEach(function(value, key, map){
 					self.addEntry(value);
 				});
@@ -113,7 +112,6 @@ var TrackTableModule = (function() {
 
 			//If no tracks exist, empty table
 			if(tracks.size == 0) {
-				console.log(2);
 				while(track_table.rows.length > 1) {
 					track_table.removeChild(track_table.rows[1]);
 				}
@@ -122,25 +120,22 @@ var TrackTableModule = (function() {
 
 			//Update or add track's data
 			tracks.forEach(function(value, key, map) {
-				// console.log(key);
 				for(var j = 1; j < track_table.rows.length; j++) {
 					if(track_table.rows[j].cells[0].innerHTML == value.id) { //If track data is already on table
-						// console.log('Update');
 						self.updateEntry(value);
 						break;
 					} else if (j == track_table.rows.length-1) { //If not found
-						// console.log('add');
 						self.addEntry(value);
 					}
 				}
 			});
 
 			//Delete missing track's data
-			for(var i = 1; i < track_table.rows.length; i++) {
-				if(!tracks.has(Number(track_table.rows[i].cells[0].innerHTML))) {
-					track_table.removeChild(track_table.rows[i--]);
-				}
-			}
+			// for(var i = 1; i < track_table.rows.length; i++) {
+			// 	if(!tracks.has(track_table.rows[i].cells[0].innerHTML)) {
+			// 		track_table.removeChild(track_table.rows[i--]);
+			// 	}
+			// }
 		}
 	}
 }());
