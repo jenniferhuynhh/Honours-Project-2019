@@ -72,13 +72,15 @@ var TrackTableModule = (function() {
 			//Handle track selecting
 			var self = this;
 			row.addEventListener("click", function() {
+				
 				if(self.selected_track_id == this.cells[0].innerHTML) {
 					self.selected_track_id = -1;
 					ftms_ui.map_module.getViewer().selectedEntity = undefined;
 				} else {
-					self.selected_track_id = this.cells[0].innerHTML;
+					self.selected_track_id = Number(this.cells[0].innerHTML);
 					ftms_ui.map_module.getViewer().selectedEntity = ftms_ui.map_module.getViewer().entities.getById(this.cells[0].innerHTML)
 				}
+
 				ftms_ui.map_module.render();
 				self.updateTrackTable();
 				ftms_ui.classification_module.updateDisplay();

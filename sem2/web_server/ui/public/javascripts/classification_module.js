@@ -117,11 +117,12 @@ var ClassificationModule = (function() {
 		//Updates the dropdown menu and buttons to reflect track properties
 		updateDisplay: function() {
 			var track_id = ftms_ui.track_table_module.selected_track_id;
+			
 			//If nothing is selected
 			if(track_id < 0) {
 				this.clearFields(); 
 				return;
-			} 
+			}
 
 			var track = ftms_ui.simulator.getTrack(track_id);
 
