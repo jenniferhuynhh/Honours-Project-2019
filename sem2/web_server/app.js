@@ -20,7 +20,7 @@ var protoBuilder;
 var protoMessageType;
 
 //connect to mongo
-mongoose.connect('mongodb://localhost:27017/tmsdb');
+mongoose.connect('mongodb://localhost:27017/tmsdb', {useNewUrlParser: true});
 var db = mongoose.connection;
 
 //use sessions for tracking logins
@@ -63,8 +63,6 @@ server.listen(3000, function() {
   log('Messaging service listening on *:3000');
 });
 
-
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -99,13 +97,26 @@ app.use(function(err, req, res, next) {
 
 module.exports = app;
 
-// Kafka/protobuf.js
+// Protobuffer from proto file provided by clients
 protoBuilder = protobuf.load("tdn.proto", function(err, root){
   protoMessageType = root.lookup("tdn.SystemTrack");
 });
 
+// Kafka code to create consumer for tracks
 try {
   let trackClient = new kafka.KafkaClient({kafkaHost:'localhost:9092'});
+
+  trackClient.loadMetadataForTopics(["tracks"], (err, response) => {
+    if (err){
+      console.log(err);
+      return
+    }
+
+    if (response[1].error){
+      console.log("Tracks topic not found and has now been created.")
+      return 
+    }
+  });
   
   let trackConsumer = new kafka.Consumer(
     trackClient,
@@ -131,12 +142,27 @@ try {
     console.log('error', err);
   });
 }catch(e){
+  console.log('Problem with Creating Kafka Consumer (Tracks) - Below');
   console.log(e);
+  console.log('Problem with Creating Kafka Consumer (Tracks) - Above');
 }
 
+// Kafka code to create consumer for alerts
 try {
   let alertClient = new kafka.KafkaClient({kafkaHost:'localhost:9092'});
   
+  alertClient.loadMetadataForTopics(["alerts"], (err, response) => {
+    if (err){
+      console.log(err);
+      return
+    }
+
+    if (response[1].error){
+      console.log("Alerts topic not found and has now been created.")
+      return 
+    }
+  });
+
   let alertConsumer = new kafka.Consumer(
     alertClient,
     [{ topic: 'alerts', partition: 0 }],
@@ -161,7 +187,9 @@ try {
     console.log('error', err);
   });
 }catch(e){
+  console.log('Problem with Creating Kafka Consumer (Alerts) - Below');
   console.log(e);
+  console.log('Problem with Creating Kafka Consumer (Alerts) - Above');
 }
 
 //Logs string to console with timestamp
