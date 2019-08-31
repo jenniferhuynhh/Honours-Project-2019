@@ -59,26 +59,26 @@ var Simulator = (function() {
 
 		// },
 		//Begins the tick cycle
-		run: function() {
-			log("Simulator running...");
-			//Begin iterations
-			this.tick();
-		},
-		//Recursive function that drives the simulator
-		tick: function() {
+		// run: function() {
+		// 	log("Simulator running...");
+		// 	//Begin iterations
+		// 	this.tick();
+		// },
+		// //Recursive function that drives the simulator
+		// tick: function() {
 
-			//10% chance for a new alert to appear
-			if(Math.random() < 0.10) {
-				ftms_ui.alert_module.outputRandomAlert();
-			}
+		// 	//10% chance for a new alert to appear
+		// 	if(Math.random() < 0.10) {
+		// 		ftms_ui.alert_module.outputRandomAlert();
+		// 	}
 
-			//Repeat every 'tick_rate' seconds iteratively
-			var self = this;
-			if(++i == iterations) return; //Exit case
-			setTimeout(function() {
-				self.tick();
-			}, tick_rate * 1000);
-		},
+		// 	//Repeat every 'tick_rate' seconds iteratively
+		// 	var self = this;
+		// 	if(++i == iterations) return; //Exit case
+		// 	setTimeout(function() {
+		// 		self.tick();
+		// 	}, tick_rate * 1000);
+		// },
 		//Returns track with matching ID
 		getTrack: function(id) {
 			return this.tracks.get(id);

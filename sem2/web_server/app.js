@@ -104,9 +104,10 @@ protoBuilder = protobuf.load("tdn.proto", function(err, root){
 
 // Kafka code to create consumer for tracks
 try {
+  let trackTopic = 'tdn-systrk';
   let trackClient = new kafka.KafkaClient({kafkaHost:'localhost:9092'});
 
-  trackClient.loadMetadataForTopics(["tracks"], (err, response) => {
+  trackClient.loadMetadataForTopics([trackTopic], (err, response) => {
     if (err){
       console.log(err);
       return
@@ -120,7 +121,7 @@ try {
   
   let trackConsumer = new kafka.Consumer(
     trackClient,
-    [{ topic: 'tracks', partition: 0 }],
+    [{ topic: trackTopic, partition: 0 }],
     {
       autoCommit: true,
       fetchMaxWaitMs: 1000,
@@ -131,9 +132,7 @@ try {
   );
 
   trackConsumer.on('message', function(message) {
-    console.log('Kafka Track');
     var dec = protoMessageType.decode(message.value);
-    console.log(dec);
     io.emit('track', dec);
 
   });
@@ -149,9 +148,10 @@ try {
 
 // Kafka code to create consumer for alerts
 try {
+  let alertTopic = 'tdn-alert'
   let alertClient = new kafka.KafkaClient({kafkaHost:'localhost:9092'});
   
-  alertClient.loadMetadataForTopics(["alerts"], (err, response) => {
+  alertClient.loadMetadataForTopics([alertTopic], (err, response) => {
     if (err){
       console.log(err);
       return
@@ -165,7 +165,7 @@ try {
 
   let alertConsumer = new kafka.Consumer(
     alertClient,
-    [{ topic: 'alerts', partition: 0 }],
+    [{ topic: alertTopic, partition: 0 }],
     {
       autoCommit: true,
       fetchMaxWaitMs: 1000,

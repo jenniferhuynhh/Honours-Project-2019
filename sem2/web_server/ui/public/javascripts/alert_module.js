@@ -3,6 +3,7 @@ var AlertModule = (function() {
 	var ftms_ui;
 	var display;
 	var alerts;
+	var socket = io();
 
 	//Public
 	return {
@@ -19,9 +20,14 @@ var AlertModule = (function() {
 
 			//Append display to window
 			ftms_ui.window_manager.appendToWindow('Alert Module', display);
+
+			socket.on('alert', function(message){
+				console.log('Got Alert:');
+				console.log(message);
+			});
 		},
-		outputRandomAlert: function() {
-			display.innerHTML = alerts[randomInt(0, alerts.length)] + '<br>' + display.innerHTML;
-		}
+		// outputRandomAlert: function() {
+		// 	display.innerHTML = alerts[randomInt(0, alerts.length)] + '<br>' + display.innerHTML;
+		// }
 	}
 }());
