@@ -1,54 +1,77 @@
 var Header = (function() {
-
-	//private
+	//Private
 	var ftms_ui;
 	var display;
-	var header_table;
-	var header_elements;
-	var date,time;
+	var header_cells = {};
 
-	//public
+	//Public
 	return {
-		initialise: function(ftms){
+		initialise: function(ftms) {
 			//link FTMS UI system
 			ftms_ui = ftms;
 
-			header_table = document.createElement("table");
-			header_table.setAttribute("class", "header_table");
+			display = document.createElement("table");
+			display.setAttribute("class", "header_table");
 
-			var today = new Date();
-			date = today.getDate() + '/' + (today.getMonth()+1) + '/' + today.getFullYear();
-			time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
-
-			header_elements = ["Course: ", "Speed: ", "Long: ", "Lat: ", date, time, "Role: ", "Logout"];
-			header_ids = ["header_course", "header_speed", "header_long", "header_lat", "header_date", "header_time", "header_role", "header_logout"];
-			var header_bar = document.createElement("tr");
-			for(var i = 0; i < header_elements.length; i++) {
+			//Create header table
+			var header_cells_names = ["course", "speed", "long", "lat", "date", "time", "role", "logout"];
+			var header_row = document.createElement("tr");
+			for(var i = 0; i < header_cells_names.length; i++) {
 				var th = document.createElement("th");
-				th.setAttribute("id", header_ids[i]);
-				th.appendChild(document.createTextNode(header_elements[i]));
-				header_bar.appendChild(th);
+				header_row.appendChild(th);
+				header_cells[header_cells_names[i]] = th; //Make cells accessible later
 			}
-			header_table.appendChild(header_bar);
-			document.getElementById("header").appendChild(header_table);
-			document.getElementById("header_logout").innerHTML = "<a href='logout/'>Logout</a>";
+			display.appendChild(header_row);
+			document.getElementById("header").appendChild(display);
+
+			//Get user's role
+			var role;
+			switch(getCookie("role")) {
+				case "ts": role = "Track Supervisor";
+						   break;
+				case "wo": role = "Warfare Officer";
+						   break;
+				case "fs": role = "Firing Officer";
+						   break;
+			}
+			header_cells["role"].innerHTML = "Role: " + role;
+
+			//Make logout link
+			var logout_link = document.createElement("a");
+			logout_link.setAttribute("href", "logout/");
+			logout_link.innerHTML = "Logout";
+			header_cells["logout"].appendChild(logout_link);
+
 			this.updateHeader();
+			this.updateHeaderLoop();
 		},
 
-		//updates the header every millisecond
-		updateHeader: function(){
-			var self = this;
+		//Updates the header
+		updateHeader: function() {
+			var t = new Date();
+			header_cells["date"].innerHTML = t.toLocaleDateString();
+			header_cells["time"].innerHTML = t.toLocaleTimeString();
+			var ownship = ftms_ui.simulator.getTrack(123); //will need to change eventually
+			if(ownship) {
+				header_cells["course"].innerHTML = "Course: " + ownship.course.toFixed(3) + "°";
+				header_cells["speed"].innerHTML = "Speed: " + ownship.speed.toFixed(3) + " knots";
+				header_cells["long"].innerHTML = "Long: " + ownship.longitude.toFixed(8);
+				header_cells["lat"].innerHTML = "Lat: " + ownship.latitude.toFixed(8);
+			} else {
+				header_cells["course"].innerHTML = "Course:";
+				header_cells["speed"].innerHTML = "Speed:";
+				header_cells["long"].innerHTML = "Long:";
+				header_cells["lat"].innerHTML = "Lat:";
+			}
+			
+		},
 
-			setTimeout(function(){
-				var t = new Date();
-				document.getElementById("header_date").innerHTML = t.getDate() + '/' + (t.getMonth()+1) + '/' + t.getFullYear();
-				document.getElementById("header_time").innerHTML = t.getHours() + ':' + t.getMinutes() + ':' + t.getSeconds();
-				var ownship = ftms_ui.simulator.getTrack(123);
-				document.getElementById("header_course").innerHTML = "Course: " + ownship.course.toFixed(3) + "°";
-				document.getElementById("header_speed").innerHTML = "Speed: " + ownship.speed.toFixed(3) + " knots";
-				document.getElementById("header_long").innerHTML = "Long: " + ownship.longitude.toFixed(8);
-				document.getElementById("header_lat").innerHTML = "Lat: " + ownship.latitude.toFixed(8);
-				self.updateHeader();
+		//Updates the header every second
+		updateHeaderLoop: function() {
+			var self = this;
+			setTimeout(function() {
+				self.updateHeader()
+				self.updateHeaderLoop();
 			}, 1000);
 		}
 	}
