@@ -148,12 +148,14 @@ try {
 
 // Kafka code to create consumer for alerts
 try {
-  let alertTopic = 'tdn-alert'
+  let alertTopic = 'tdn-alerts'
   let alertClient = new kafka.KafkaClient({kafkaHost:'localhost:9092'});
   
   alertClient.loadMetadataForTopics([alertTopic], (err, response) => {
     if (err){
+      console.log("Error1");
       console.log(err);
+      console.log("");
       return
     }
 
