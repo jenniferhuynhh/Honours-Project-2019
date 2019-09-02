@@ -7,8 +7,10 @@ var FTMS_UI = (function(){
 		track_table_module: null,
 		classification_module: null,
 		weapon_authorisation_module: null,
+		weapon_firing_module: null,
 		alert_module: null,
 		messaging_module: null,
+		header: null,
 
 		initialise: function() {
 			this.window_manager = WindowManager;
@@ -34,6 +36,9 @@ var FTMS_UI = (function(){
 
 			this.messaging_module = MessagingModule;
 			this.messaging_module.initialise(this);
+
+			this.header = Header;
+			this.header.initialise(this);
 
 			this.window_manager.showAll();
 
