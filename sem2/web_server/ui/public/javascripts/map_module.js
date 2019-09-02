@@ -170,10 +170,10 @@ var MapModule = (function() {
 			var ent = viewer.entities.getById(id);
 			viewer.entities.remove(ent);
 		},
-		//Renders the current state of the simulator
+		//Renders the current state of the tracks
 		render: function() {
 			//Grab new track data
-			var tracks = ftms_ui.simulator.tracks;
+			var tracks = ftms_ui.track_manager.tracks;
 			
 			//Paint tracks
 			var self = this;

@@ -9,6 +9,7 @@ var Simulator = (function() {
 	//Public
 	return {
 		tracks: new Map(), //Map of tracks, mapped to their unique ID
+
 		//Initialises renderer and populates tracks
 		initialise: function(ftms) {
 			log("Simulator initialising...");
@@ -16,7 +17,7 @@ var Simulator = (function() {
 			//Link FTMS UI system
 			ftms_ui = ftms;
 
-			socket.on('track', function(message){
+			/*socket.on('track', function(message){
 				if (message[0] == "{") {
 					var jsonTrack = JSON.parse(message);
 					var id = jsonTrack.trackId;
@@ -46,26 +47,18 @@ var Simulator = (function() {
 					//Display data of new track positions
 					ftms_ui.track_table_module.updateTrackTable();
 				}
-			});
+			});*/
 
 			log("Simulator initialised");
 		},
-		test: function() {
-
-			var t1 = new Track(123, 26.576489, 56.423728, 0, 20, 270, "friendly", "sea");
-			this.tracks.set(t1.id, t1);
-			ftms_ui.map_module.paintTrack(t1);
-
-			//Display data of new track positions
-			ftms_ui.track_table_module.updateTrackTable();
-
-		},
+		
 		//Begins the tick cycle
 		run: function() {
 			log("Simulator running...");
 			//Begin iterations
 			this.tick();
 		},
+
 		//Recursive function that drives the simulator
 		tick: function() {
 
@@ -81,10 +74,12 @@ var Simulator = (function() {
 				self.tick();
 			}, tick_rate * 1000);
 		},
+
 		//Returns track with matching ID
 		getTrack: function(id) {
 			return this.tracks.get(Number(id));
 		},
+
 		//Removes a track from the track array by ID
 		removeTrack: function(id) {
 			this.tracks.delete(Number(id));

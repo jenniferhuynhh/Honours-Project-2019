@@ -44,7 +44,7 @@ var FTMS_UI = (function(){
 
 			this.window_manager.showAll();
 
-			this.simulator.test();
+			this.track_manager.test();
 		},
 
 		run: function() {

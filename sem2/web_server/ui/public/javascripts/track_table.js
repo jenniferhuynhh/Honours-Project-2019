@@ -99,7 +99,7 @@ var TrackTableModule = (function() {
 		//Updates track data table with current track data
 		updateTrackTable: function() {
 			//Grab track data
-			var tracks = ftms_ui.simulator.tracks;
+			var tracks = ftms_ui.track_manager.tracks;
 			var self = this;
 
 			//If table is empty, add all existing tracks
@@ -125,6 +125,7 @@ var TrackTableModule = (function() {
 						self.updateEntry(value);
 						break;
 					} else if (j == track_table.rows.length-1) { //If not found
+						console.log(value);
 						self.addEntry(value);
 					}
 				}
