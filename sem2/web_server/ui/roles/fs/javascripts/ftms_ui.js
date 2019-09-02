@@ -2,7 +2,6 @@ var FTMS_UI = (function(){
 	//Public
 	return {
 		window_manager: null,
-		simulator: null,
 		track_manager: null,
 		map_module: null,
 		track_table_module: null,
@@ -11,12 +10,9 @@ var FTMS_UI = (function(){
 		alert_module: null,
 		messaging_module: null,
 
-		initialise: function() {
+		init: function() {
 			this.window_manager = WindowManager;
 			this.window_manager.initialise(this);
-
-			this.simulator = Simulator;
-			this.simulator.initialise(this);
 
 			this.track_manager = TrackManager;
 			this.track_manager.init(this);
@@ -42,10 +38,6 @@ var FTMS_UI = (function(){
 			this.window_manager.showAll();
 
 			this.track_manager.test();
-		},
-
-		run: function() {
-			this.simulator.run();
 		}
 	}
 }());

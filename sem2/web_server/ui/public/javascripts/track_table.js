@@ -125,7 +125,6 @@ var TrackTableModule = (function() {
 						self.updateEntry(value);
 						break;
 					} else if (j == track_table.rows.length-1) { //If not found
-						console.log(value);
 						self.addEntry(value);
 					}
 				}

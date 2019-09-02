@@ -106,8 +106,9 @@ var MapModule = (function() {
 					ftms_ui.track_table_module.selected_track_id = viewer.selectedEntity.id;
 				} else {
 					ftms_ui.track_table_module.selected_track_id = -1;
+					ftms_ui.track_table_module.updateTrackTable();
+					ftms_ui.map_module.render();
 				}
-				ftms_ui.track_table_module.updateTrackTable();
 				ftms_ui.classification_module.updateDisplay();
 			}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 			

@@ -18,7 +18,7 @@ var TrackManager = (function() {
 					var parsed_track = JSON.parse(json_track);
 
 					var existing_track = self.tracks.get(parsed_track.track_id);
-					if(existing_track) {
+					if(existing_track) { //If track exists, update properties
 						existing_track.latitude = parsed_track.latitude;
 						existing_track.longitude = parsed_track.longitude;
 						existing_track.altitude = parsed_track.altitude;
@@ -27,10 +27,10 @@ var TrackManager = (function() {
 						if(parsed_track.state != "UNKNOWN") {
 							existing_track.affiliation = parsed_track.state.toLowerCase();
 						}
+					} else { //If existing track not found, create new track
+						var new_track = new Track(parsed_track.track_id, parsed_track.latitude, parsed_track.longitude, parsed_track.altitude, parsed_track.speed, parsed_track.course, parsed_track.state.toLowerCase(), "sea");
+						self.tracks.set(new_track.id, new_track);
 					}
-
-					var new_track = new Track(parsed_track.track_id, parsed_track.latitude, parsed_track.longitude, parsed_track.altitude, parsed_track.speed, parsed_track.course, parsed_track.state.toLowerCase(), "sea");
-					self.tracks.set(new_track.id, new_track);
 
 					//Tells the map to draw the new track
 					ftms_ui.map_module.paintTrack(new_track);
