@@ -56,7 +56,7 @@ var WindowManager = (function() {
 				}]
 			};
 
-			display = new GoldenLayout(config);
+			display = new GoldenLayout(config,document.getElementById("goldenlayout"));
 
 			log("Window manager initialised");
 		},

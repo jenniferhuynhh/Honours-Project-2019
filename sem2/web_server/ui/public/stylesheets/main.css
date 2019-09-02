@@ -242,3 +242,20 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	color: grey;
 }
 
+
+/*** Header Bar ***/
+.header_table {
+	width: 100%;
+	height: 100%;
+	background-color: #707070;
+	color: white;
+	font-size: 13px;
+	font-family: Arial;
+	padding-bottom: 0.5%;
+	table-layout: fixed;
+}
+
+.header_table th {
+	font-weight: normal;
+}
+
