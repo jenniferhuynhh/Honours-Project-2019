@@ -49,8 +49,8 @@ var Header = (function() {
 		//Updates the header
 		updateHeader: function() {
 			var t = new Date();
-			header_cells["date"].innerHTML = t.toLocaleDateString();
-			header_cells["time"].innerHTML = t.toLocaleTimeString();
+			header_cells["date"].innerHTML = t.toLocaleDateString('en-AU');
+			header_cells["time"].innerHTML = t.toLocaleTimeString('en-US');
 			var ownship = ftms_ui.simulator.getTrack(123); //will need to change eventually
 			if(ownship) {
 				header_cells["course"].innerHTML = "Course: " + ownship.course.toFixed(3) + "°";
