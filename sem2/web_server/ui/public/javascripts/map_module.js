@@ -99,15 +99,17 @@ var MapModule = (function() {
 			//////////////////////////////////////////////////////////////////////////
 
 			//Handle on-click entity selecting
+			var self = this;
 			var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
 			handler.setInputAction(function(click) {
 				var pickedObject = viewer.scene.pick(click.position);
 				if(Cesium.defined(pickedObject)) {
 					ftms_ui.track_table_module.selected_track_id = viewer.selectedEntity.id;
 				} else {
+					var previously_selected_track= ftms_ui.track_manager.getTrack(ftms_ui.track_table_module.selected_track_id);
 					ftms_ui.track_table_module.selected_track_id = -1;
 					ftms_ui.track_table_module.updateTrackTable();
-					ftms_ui.map_module.render();
+					self.paintTrack(previously_selected_track);
 				}
 				ftms_ui.classification_module.updateDisplay();
 			}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
@@ -174,7 +176,7 @@ var MapModule = (function() {
 		//Renders the current state of the tracks
 		render: function() {
 			//Grab new track data
-			var tracks = ftms_ui.track_manager.tracks;
+			var tracks = ftms_ui.track_manager.getTracks();
 			
 			//Paint tracks
 			var self = this;
