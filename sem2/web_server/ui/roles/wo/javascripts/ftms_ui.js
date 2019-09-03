@@ -2,7 +2,7 @@ var FTMS_UI = (function(){
 	//Public
 	return {
 		window_manager: null,
-		simulator: null,
+		track_manager: null,
 		map_module: null,
 		track_table_module: null,
 		weapon_authorisation_module: null,
@@ -11,12 +11,12 @@ var FTMS_UI = (function(){
 		messaging_module: null,
 		header: null,
 
-		initialise: function() {
+		init: function() {
 			this.window_manager = WindowManager;
 			this.window_manager.initialise(this);
 
-			this.simulator = Simulator;
-			this.simulator.initialise(this);
+			this.track_manager = TrackManager;
+			this.track_manager.init(this);
 
 			this.map_module = MapModule;
 			this.map_module.initialise(this);
@@ -41,11 +41,7 @@ var FTMS_UI = (function(){
 
 			this.window_manager.showAll();
 
-			this.simulator.test();
-		},
-
-		run: function() {
-			this.simulator.run();
+			this.track_manager.test();
 		}
 	}
 }());

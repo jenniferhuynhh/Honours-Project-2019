@@ -1,5 +1,5 @@
 function Track(track_id, lat, long, alt, speed, course, affiliation, domain) {
-	this.id = track_id; //unique ID
+	this.id = Number(track_id); //unique ID
 	this.latitude = lat; //-34.912955
 	this.longitude = long; //138.365660
 	this.altitude = alt;

@@ -19,7 +19,24 @@ var AlertModule = (function() {
 
 			//Append display to window
 			ftms_ui.window_manager.appendToWindow('Alert Module', display);
+
+			this.tick();
 		},
+
+		//Recursive function that simulates alerts
+		tick: function() {
+
+			//10% chance for a new alert to appear
+			if(Math.random() < 0.20) {
+				this.outputRandomAlert();
+			}
+
+			var self = this;
+			setTimeout(function() {
+				self.tick();
+			}, 1000);
+		},
+
 		outputRandomAlert: function() {
 			display.innerHTML = alerts[randomInt(0, alerts.length)] + '<br>' + display.innerHTML;
 		}

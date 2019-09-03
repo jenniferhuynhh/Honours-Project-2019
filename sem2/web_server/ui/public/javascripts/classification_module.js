@@ -103,7 +103,7 @@ var ClassificationModule = (function() {
 				return;
 			} 
 
-			var track = ftms_ui.simulator.getTrack(track_id);
+			var track = ftms_ui.track_manager.getTrack(track_id);
 			if(property == 'affiliation') {
 				track.affiliation = value;
 			} else if(property == 'domain') {
@@ -123,7 +123,7 @@ var ClassificationModule = (function() {
 				return;
 			} 
 
-			var track = ftms_ui.simulator.getTrack(track_id);
+			var track = ftms_ui.track_manager.getTrack(track_id);
 
 			//Update dropdown menu
 			var selected_array;
