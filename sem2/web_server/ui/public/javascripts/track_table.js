@@ -7,7 +7,6 @@ var TrackTableModule = (function() {
 
 	//Public
 	return {
-		selected_track_id: -1, //ID of the currently selected track
 		initialise: function(ftms) {
 			//Link FTMS UI system
 			ftms_ui = ftms;
@@ -45,7 +44,7 @@ var TrackTableModule = (function() {
 			}
 
 			//Highlight the selected row
-			if(track.id == this.selected_track_id) {
+			if(ftms_ui.getSelectedTrack() == track) {
 				row.setAttribute("class", "highlighted_" + track.affiliation + "_data");
 			} else {
 				row.setAttribute("class", track.affiliation + "_data");
@@ -72,12 +71,13 @@ var TrackTableModule = (function() {
 			//Handle track selecting
 			var self = this;
 			row.addEventListener("click", function() {
-				if(self.selected_track_id == this.cells[0].innerHTML) {
-					self.selected_track_id = -1;
+				var row_track = ftms_ui.track_manager.getTrack(this.cells[0].innerHTML);
+				if(ftms_ui.getSelectedTrack() == row_track) { //Unselect
+					ftms_ui.setSelectedTrack(null);
 					ftms_ui.map_module.getViewer().selectedEntity = undefined;
-				} else {
-					self.selected_track_id = this.cells[0].innerHTML;
-					ftms_ui.map_module.getViewer().selectedEntity = ftms_ui.map_module.getViewer().entities.getById(this.cells[0].innerHTML)
+				} else { //Select
+					ftms_ui.setSelectedTrack(row_track);
+					ftms_ui.map_module.getViewer().selectedEntity = ftms_ui.map_module.getViewer().entities.getById(row_track.id)
 				}
 				ftms_ui.map_module.render();
 				self.updateTrackTable();
