@@ -63,6 +63,11 @@ var WindowManager = (function() {
 								componentName: 'Weapon Firing Module',
 								isClosable: false,
 								height: 30
+							},{
+								type: 'component',
+								componentName: 'Authorisation Approval Module',
+								isClosable: false;
+								height: 30
 							}]
 						}]
 					}]
