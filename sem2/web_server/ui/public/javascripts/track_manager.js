@@ -2,13 +2,15 @@ var TrackManager = (function() {
 	//Private
 	var ftms_ui; //FTMS UI system this module is linked to
 	var tracks = new Map(); //Map of tracks, mapped to their unique ID
-	var socket = io();
+	var socket;
 
 	//Public
 	return {
 		init: function(ftms) {
 			//Link FTMS UI system
 			ftms_ui = ftms;
+
+			socket = ftms_ui.socket;
 
 			var self = this;
 			//Receive new tracks

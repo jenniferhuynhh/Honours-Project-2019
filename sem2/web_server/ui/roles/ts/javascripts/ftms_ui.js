@@ -1,7 +1,7 @@
 var FTMS_UI = (function() {
 	//Private
 	var selected_track;
-	
+
 	//Public
 	return {
 		window_manager: null,
@@ -12,8 +12,12 @@ var FTMS_UI = (function() {
 		alert_module: null,
 		messaging_module: null,
 		header: null,
+		socket: null,
 
+		//Initialises all modules and shows them
 		init: function() {
+			this.socket = io();
+			
 			this.window_manager = WindowManager;
 			this.window_manager.initialise(this);
 
