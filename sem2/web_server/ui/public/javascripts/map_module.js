@@ -104,10 +104,11 @@ var MapModule = (function() {
 			handler.setInputAction(function(click) {
 				var pickedObject = viewer.scene.pick(click.position);
 				if(Cesium.defined(pickedObject)) {
-					ftms_ui.track_table_module.selected_track_id = viewer.selectedEntity.id;
+					ftms_ui.setSelectedTrack(ftms_ui.track_manager.getTrack(viewer.selectedEntity.id));
 				} else {
-					var previously_selected_track= ftms_ui.track_manager.getTrack(ftms_ui.track_table_module.selected_track_id);
-					ftms_ui.track_table_module.selected_track_id = -1;
+					var previously_selected_track = ftms_ui.getSelectedTrack();
+					if(!previously_selected_track) return;
+					ftms_ui.setSelectedTrack(null);
 					ftms_ui.track_table_module.updateTrackTable();
 					self.paintTrack(previously_selected_track);
 				}
@@ -145,7 +146,7 @@ var MapModule = (function() {
 
 			//Create milsymbol
 			var color_mode = 'Light';
-			if (ftms_ui.track_table_module.selected_track_id == track.id) {
+			if (ftms_ui.getSelectedTrack() == track) {
 				color_mode = 'Dark';
 			}
 			var icon = new ms.Symbol(icon_id, {size: icon_size, colorMode: color_mode}).asCanvas();
