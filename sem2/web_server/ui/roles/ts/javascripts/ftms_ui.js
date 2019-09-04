@@ -1,7 +1,4 @@
 var FTMS_UI = (function() {
-	//Private
-	var selected_track;
-
 	//Public
 	return {
 		window_manager: null,
@@ -45,16 +42,6 @@ var FTMS_UI = (function() {
 			this.window_manager.showAll();
 
 			this.track_manager.test();
-		},
-
-		//Returns selected track
-		getSelectedTrack: function() {
-			return selected_track;
-		},
-
-		//Sets selected track
-		setSelectedTrack: function(track) {
-			selected_track = track;
 		}
 	}
 }());

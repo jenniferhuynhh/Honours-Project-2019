@@ -31,6 +31,7 @@ var TrackTableModule = (function() {
 			//Show table
 			ftms_ui.window_manager.appendToWindow('Track Table Module', display);
 
+			ftms_ui.track_manager.setListener(this);
 			this.update();
 		},
 		//Updates given track's row
@@ -44,7 +45,7 @@ var TrackTableModule = (function() {
 			}
 
 			//Highlight the selected row
-			if(ftms_ui.getSelectedTrack() == track) {
+			if(ftms_ui.track_manager.getSelectedTrack() == track) {
 				row.setAttribute("class", "highlighted_" + track.affiliation + "_data");
 			} else {
 				row.setAttribute("class", track.affiliation + "_data");
@@ -72,16 +73,13 @@ var TrackTableModule = (function() {
 			var self = this;
 			row.addEventListener("click", function() {
 				var row_track = ftms_ui.track_manager.getTrack(this.cells[0].innerHTML);
-				if(ftms_ui.getSelectedTrack() == row_track) { //Unselect
-					ftms_ui.setSelectedTrack(null);
+				if(ftms_ui.track_manager.getSelectedTrack() == row_track) { //Unselect
+					ftms_ui.track_manager.setSelectedTrack(null);
 					ftms_ui.map_module.getViewer().selectedEntity = undefined;
 				} else { //Select
-					ftms_ui.setSelectedTrack(row_track);
+					ftms_ui.track_manager.setSelectedTrack(row_track);
 					ftms_ui.map_module.getViewer().selectedEntity = ftms_ui.map_module.getViewer().entities.getById(row_track.id)
 				}
-				ftms_ui.map_module.update();
-				self.update();
-				ftms_ui.classification_module.update();
 			});
 
 			//Create cells

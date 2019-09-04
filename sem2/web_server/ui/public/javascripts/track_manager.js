@@ -4,6 +4,7 @@ var TrackManager = (function() {
 	var tracks; //Map of tracks, mapped to their unique ID
 	var listeners = [];
 	var socket;
+	var selected_track;
 
 	//Public
 	return {
@@ -37,12 +38,6 @@ var TrackManager = (function() {
 						track = new Track(parsed_track.trackId, parsed_track.latitude, parsed_track.longitude, parsed_track.altitude, parsed_track.speed, parsed_track.course, parsed_track.state.toLowerCase(), "sea");
 						self.setTrack(track);
 					}
-
-					//Tells the map to draw the new track
-					ftms_ui.map_module.paintTrack(track);
-
-					//Display data of new track positions
-					ftms_ui.track_table_module.update();
 				}
 			});
 		},
@@ -54,6 +49,7 @@ var TrackManager = (function() {
 				return;
 			}
 			tracks.set(track.id, track);
+			this.callListeners();
 		},
 
 		//Returns track with matching ID (READ)
@@ -81,6 +77,17 @@ var TrackManager = (function() {
 			return tracks;
 		},
 
+		//Returns selected track
+		getSelectedTrack: function() {
+			return selected_track;
+		},
+
+		//Sets selected track
+		setSelectedTrack: function(track) {
+			selected_track = track;
+			this.callListeners();
+		},
+
 		//Registers a listener
 		setListener: function(listener) {
 			listeners.push(listener);
@@ -98,8 +105,8 @@ var TrackManager = (function() {
 			var test_listener = {
 				update: function() {log("listener called")}
 			};
-			this.setListener(test_listener);
-			
+			//this.setListener(test_listener);
+
 			var t1 = new Track(123, 26.576489, 56.423728, 0, 20, 270, "friendly", "sea");
 			this.setTrack(t1);
 			//var t2 = new Track(123, 26.576489, 56.423728, 0, 20, 270, "neutral", "land");
