@@ -101,20 +101,22 @@ var ClassificationModule = (function() {
 			if(!track) {
 				this.clearFields(); 
 				return;
-			} 
-
-			if(property == 'affiliation') {
-				track.affiliation = value;
-			} else if(property == 'domain') {
-				track.domain = value;
-			} else if(property == 'type') {
-				track.type = value; 
 			}
-			this.updateDisplay();
+
+			var updateData = {};
+			if(property == 'affiliation') {
+				updateData.affiliation = value;
+			} else if(property == 'domain') {
+				updateData.domain = value;
+			} else if(property == 'type') {
+				updateData.type = value; 
+			}
+			ftms_ui.track_manager.updateTrack(track, updateData);
+			this.update();
 		},
 		
 		//Updates the dropdown menu and buttons to reflect track properties
-		updateDisplay: function() {
+		update: function() {
 			var track = ftms_ui.getSelectedTrack();
 			//If nothing is selected
 			if(!track) {
@@ -170,8 +172,8 @@ var ClassificationModule = (function() {
 				}
 			}
 
-			ftms_ui.track_table_module.updateTrackTable();
-			ftms_ui.map_module.render();
+			ftms_ui.track_table_module.update();
+			ftms_ui.map_module.update();
 		},
 
 		//Clears the dropdown menu and deselects domain and affiliation buttons

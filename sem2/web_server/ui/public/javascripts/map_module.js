@@ -109,10 +109,10 @@ var MapModule = (function() {
 					var previously_selected_track = ftms_ui.getSelectedTrack();
 					if(!previously_selected_track) return;
 					ftms_ui.setSelectedTrack(null);
-					ftms_ui.track_table_module.updateTrackTable();
+					ftms_ui.track_table_module.update();
 					self.paintTrack(previously_selected_track);
 				}
-				ftms_ui.classification_module.updateDisplay();
+				ftms_ui.classification_module.update();
 			}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 			
 			ftms_ui.window_manager.appendToWindow('Map Module', display);
@@ -174,8 +174,8 @@ var MapModule = (function() {
 			var ent = viewer.entities.getById(id);
 			viewer.entities.remove(ent);
 		},
-		//Renders the current state of the tracks
-		render: function() {
+		//Updates the current state of all tracks
+		update: function() {
 			//Grab new track data
 			var tracks = ftms_ui.track_manager.getTracks();
 			

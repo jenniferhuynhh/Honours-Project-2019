@@ -31,7 +31,7 @@ var TrackTableModule = (function() {
 			//Show table
 			ftms_ui.window_manager.appendToWindow('Track Table Module', display);
 
-			this.updateTrackTable();
+			this.update();
 		},
 		//Updates given track's row
 		updateEntry: function(track) {
@@ -79,9 +79,9 @@ var TrackTableModule = (function() {
 					ftms_ui.setSelectedTrack(row_track);
 					ftms_ui.map_module.getViewer().selectedEntity = ftms_ui.map_module.getViewer().entities.getById(row_track.id)
 				}
-				ftms_ui.map_module.render();
-				self.updateTrackTable();
-				ftms_ui.classification_module.updateDisplay();
+				ftms_ui.map_module.update();
+				self.update();
+				ftms_ui.classification_module.update();
 			});
 
 			//Create cells
@@ -97,7 +97,7 @@ var TrackTableModule = (function() {
 			this.updateEntry(track);
 		},
 		//Updates track data table with current track data
-		updateTrackTable: function() {
+		update: function() {
 			//Grab track data
 			var tracks = ftms_ui.track_manager.getTracks();
 			var self = this;

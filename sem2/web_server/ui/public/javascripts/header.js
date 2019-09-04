@@ -42,12 +42,12 @@ var Header = (function() {
 			logout_link.innerHTML = "Logout";
 			header_cells["logout"].appendChild(logout_link);
 
-			this.updateHeader();
-			this.updateHeaderLoop();
+			this.update();
+			this.updateLoop();
 		},
 
 		//Updates the header
-		updateHeader: function() {
+		update: function() {
 			var t = new Date();
 			header_cells["date"].innerHTML = t.toLocaleDateString('en-AU');
 			header_cells["time"].innerHTML = t.toLocaleTimeString('en-US');
@@ -63,15 +63,14 @@ var Header = (function() {
 				header_cells["long"].innerHTML = "Long:";
 				header_cells["lat"].innerHTML = "Lat:";
 			}
-			
 		},
 
 		//Updates the header every second
-		updateHeaderLoop: function() {
+		updateLoop: function() {
 			var self = this;
 			setTimeout(function() {
-				self.updateHeader()
-				self.updateHeaderLoop();
+				self.update()
+				self.updateLoop();
 			}, 1000);
 		}
 	}
