@@ -96,14 +96,13 @@ var ClassificationModule = (function() {
 
 		//Updates a tracks data when needed (dropdown change/button press)
 		updateTrack: function(property, value) {
-			var track_id = ftms_ui.track_table_module.selected_track_id;
+			var track = ftms_ui.getSelectedTrack();
 			//If nothing is selected
-			if(track_id < 0) {
+			if(!track) {
 				this.clearFields(); 
 				return;
 			} 
 
-			var track = ftms_ui.track_manager.getTrack(track_id);
 			if(property == 'affiliation') {
 				track.affiliation = value;
 			} else if(property == 'domain') {
@@ -116,14 +115,12 @@ var ClassificationModule = (function() {
 		
 		//Updates the dropdown menu and buttons to reflect track properties
 		updateDisplay: function() {
-			var track_id = ftms_ui.track_table_module.selected_track_id;
+			var track = ftms_ui.getSelectedTrack();
 			//If nothing is selected
-			if(track_id < 0) {
+			if(!track) {
 				this.clearFields(); 
 				return;
-			} 
-
-			var track = ftms_ui.track_manager.getTrack(track_id);
+			}
 
 			//Update dropdown menu
 			var selected_array;
