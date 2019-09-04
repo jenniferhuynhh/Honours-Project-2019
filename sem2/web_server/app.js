@@ -132,9 +132,8 @@ try {
   );
 
   trackConsumer.on('message', function(message) {
-    var dec = protoMessageType.decode(message.value);
+    let dec = protoMessageType.decode(message.value);
     io.emit('track', dec);
-
   });
   
   trackConsumer.on('error', function(err) {
@@ -172,14 +171,16 @@ try {
       autoCommit: true,
       fetchMaxWaitMs: 1000,
       fetchMaxBytes: 1024 * 1024,
-      encoding: 'buffer',
+      // encoding: 'buffer',
+      encoding: 'utf-8',
       fromOffset: false
     }
   );
 
   alertConsumer.on('message', function(message) {
     console.log('Kafka Alert');
-    var dec = protoMessageType.decode(message.value);
+    // let dec = protoMessageType.decode(message.value);
+    let dec = JSON.parse(message.value);
     console.log(dec);
     io.emit('alert', dec);
 
