@@ -33,13 +33,18 @@ var WeaponAuthorisationModule = (function() {
 			authorise_button.setAttribute('value', 'Request Authorisation');
 			var self = this; 
 			authorise_button.addEventListener('click', function() {
-				if (this.className == 'unhighlighted_authorise_button'){
+				/*if (this.className == 'unhighlighted_authorise_button'){
 					this.setAttribute('class', 'highlighted_authorise_button');
 				}
 				else{
 					this.setAttribute('class', 'unhighlighted_authorise_button');
 				}
-				self.toggleDisabled();
+				self.toggleDisabled();*/
+				var data = {
+					trackId: ftms_ui.getSelectedTrack().id,
+					weaponIds: self.getSelectedWeapons() 
+				}
+				ftms_ui.socket.emit("send_request", data);
 			});
 			div2.appendChild(authorise_button);
 
@@ -76,6 +81,15 @@ var WeaponAuthorisationModule = (function() {
 					weapons_buttons[i].classList.remove('disabled_button');
 				}	 
 			}
-		}
+		},
+		getSelectedWeapons: function(){
+			var res = [];
+			for(var i = 0; i < weapons_buttons.length; i++) {
+				if(weapons_buttons[i].className == 'highlighted_weapons_buttons'){
+					res.push(weapons_buttons[i].value);
+				}
+			}
+			return res;
+		} 
 	}
 }());
