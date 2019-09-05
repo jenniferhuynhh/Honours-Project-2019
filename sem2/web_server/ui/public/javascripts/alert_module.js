@@ -4,7 +4,7 @@ var AlertModule = (function() {
 	var display;
 	var socket = io();
 
-	addAlert(alertJson){
+	function addAlert(alertJson){
 		let alert = document.createElement("button");
 
 		// Alert class makes it not look like a button, severity changes colour

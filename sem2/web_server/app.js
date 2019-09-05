@@ -132,7 +132,9 @@ try {
   );
 
   trackConsumer.on('message', function(message) {
+    // console.log('Kafka Track');
     let dec = protoMessageType.decode(message.value);
+    // console.log(dec);
     io.emit('track', dec);
   });
   
