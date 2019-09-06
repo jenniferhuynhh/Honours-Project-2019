@@ -102,100 +102,116 @@ protoBuilder = protobuf.load("tdn.proto", function(err, root){
   protoMessageType = root.lookup("tdn.SystemTrack");
 });
 
-// Kafka code to create consumer for tracks
-try {
-  let trackTopic = 'tdn-systrk';
-  let trackClient = new kafka.KafkaClient({kafkaHost:'localhost:9092'});
+var trackTopic = 'tdn-systrk';
+var trackOffset;
+var alertTopic = 'tdn-alerts';
+var alertOffset;
+var offsetClient = new kafka.KafkaClient({kafkaHost:'localhost:9092'});
+var offset = new kafka.Offset(offsetClient);
+var trackClient = new kafka.KafkaClient({kafkaHost:'localhost:9092'});
+var trackConsumer;
+var alertClient = new kafka.KafkaClient({kafkaHost:'localhost:9092'});
+var alertConsumer;
 
-  trackClient.loadMetadataForTopics([trackTopic], (err, response) => {
+// Gets metadata of topics in an attempt to create them
+offsetClient.loadMetadataForTopics([trackTopic, alertTopic], (err, response) => {
+  if (err){
+    console.log("Error getting metadata of topics");
+    return console.log(err);
+  }
+
+  // Gets latest offset of topics so they consume from the latest messages
+  offset.fetchLatestOffsets([trackTopic, alertTopic], function(err, offset){
     if (err){
-      console.log(err);
-      return
+      console.log('Error Getting Kafka Offsets');
+      return console.log(err);
     }
 
-    if (response[1].error){
-      console.log("Tracks topic not found and has now been created.")
-      return 
-    }
-  });
-  
-  let trackConsumer = new kafka.Consumer(
-    trackClient,
-    [{ topic: trackTopic, partition: 0 }],
-    {
-      autoCommit: true,
-      fetchMaxWaitMs: 1000,
-      fetchMaxBytes: 1024 * 1024,
-      encoding: 'buffer',
-      fromOffset: false
-    }
-  );
+    trackOffset = offset[trackTopic][0];
+    alertOffset = offset[alertTopic][0];
 
-  trackConsumer.on('message', function(message) {
-    // console.log('Kafka Track');
-    let dec = protoMessageType.decode(message.value);
-    // console.log(dec);
-    io.emit('track', dec);
+    // Create track consumer and set it's event listeners
+    trackConsumer = new kafka.Consumer(
+      trackClient,
+      [{ topic: trackTopic, partition: 0, offset: trackOffset }],
+      {
+        autoCommit: true,
+        fetchMaxWaitMs: 1000,
+        fetchMaxBytes: 1024 * 1024,
+        encoding: 'buffer',
+        fromOffset: true
+      }
+    );
+    trackConsumer.on('message', function(message) {
+      var dec = protoMessageType.decode(message.value);
+      io.emit('track', dec);
+    });
+    trackConsumer.on('error', function(err) {
+      console.log('error', err);
+    });
+
+    // Create alert consumer and set it's event listeners
+    alertConsumer = new kafka.Consumer(
+      alertClient,
+      [{ topic: alertTopic, partition: 0, offset: alertOffset }],
+      {
+        autoCommit: true,
+        fetchMaxWaitMs: 1000,
+        fetchMaxBytes: 1024 * 1024,
+        // encoding: 'buffer',
+        encoding: 'utf-8',
+        fromOffset: true
+      }
+    );
+    alertConsumer.on('message', function(message) {
+      // var dec = protoMessageType.decode(message.value);
+      var dec = JSON.parse(message.value);
+      // console.log(dec);
+      io.emit('alert', dec);
+
+    });
+    alertConsumer.on('error', function(err) {
+      console.log('error', err);
+    });
   });
-  
-  trackConsumer.on('error', function(err) {
-    console.log('error', err);
-  });
-}catch(e){
-  console.log('Problem with Creating Kafka Consumer (Tracks) - Below');
-  console.log(e);
-  console.log('Problem with Creating Kafka Consumer (Tracks) - Above');
-}
+});
+
+
+
+
+// Kafka code to create consumer for tracks
+
+
+// }catch(e){
+//   console.log('Problem with Creating Kafka Consumer (Tracks) - Below');
+//   console.log(e);
+//   console.log('Problem with Creating Kafka Consumer (Tracks) - Above');
+// }
 
 // Kafka code to create consumer for alerts
-try {
-  let alertTopic = 'tdn-alerts'
-  let alertClient = new kafka.KafkaClient({kafkaHost:'localhost:9092'});
+// try {
   
-  alertClient.loadMetadataForTopics([alertTopic], (err, response) => {
-    if (err){
-      console.log("Error1");
-      console.log(err);
-      console.log("");
-      return
-    }
-
-    if (response[1].error){
-      console.log("Alerts topic not found and has now been created.")
-      return 
-    }
-  });
-
-  let alertConsumer = new kafka.Consumer(
-    alertClient,
-    [{ topic: alertTopic, partition: 0 }],
-    {
-      autoCommit: true,
-      fetchMaxWaitMs: 1000,
-      fetchMaxBytes: 1024 * 1024,
-      // encoding: 'buffer',
-      encoding: 'utf-8',
-      fromOffset: false
-    }
-  );
-
-  alertConsumer.on('message', function(message) {
-    console.log('Kafka Alert');
-    // let dec = protoMessageType.decode(message.value);
-    let dec = JSON.parse(message.value);
-    console.log(dec);
-    io.emit('alert', dec);
-
-  });
   
-  alertConsumer.on('error', function(err) {
-    console.log('error', err);
-  });
-}catch(e){
-  console.log('Problem with Creating Kafka Consumer (Alerts) - Below');
-  console.log(e);
-  console.log('Problem with Creating Kafka Consumer (Alerts) - Above');
-}
+//   alertClient.loadMetadataForTopics([alertTopic], (err, response) => {
+//     if (err){
+//       console.log("Error1");
+//       console.log(err);
+//       console.log("");
+//       return
+//     }
+
+//     if (response[1].error){
+//       console.log("Alerts topic not found and has now been created.")
+//       return 
+//     }
+//   });
+
+//   var 
+// }catch(e){
+//   console.log('Problem with Creating Kafka Consumer (Alerts) - Below');
+//   console.log(e);
+//   console.log('Problem with Creating Kafka Consumer (Alerts) - Above');
+// }
 
 //Logs string to console with timestamp
 function log(s) {

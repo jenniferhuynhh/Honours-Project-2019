@@ -10,7 +10,7 @@ var AlertModule = (function() {
 		// Alert class makes it not look like a button, severity changes colour
 		alert.setAttribute('class', `alert ${alertJson.severity}`);
 
-		alert.value = alertJson.text;
+		alert.innerHTML = alertJson.text;
 
 		alert.addEventListener('click', function(){
 			alert.classList.add('dull');
@@ -35,6 +35,7 @@ var AlertModule = (function() {
 			socket.on('alert', function(message){
 				console.log('Got Alert:');
 				console.log(message);
+				addAlert(message);
 			});
 		}
 		// outputRandomAlert: function() {
