@@ -33,8 +33,6 @@ var AlertModule = (function() {
 			ftms_ui.window_manager.appendToWindow('Alert Module', display);
 
 			socket.on('alert', function(message){
-				console.log('Got Alert:');
-				console.log(message);
 				addAlert(message);
 			});
 		}
