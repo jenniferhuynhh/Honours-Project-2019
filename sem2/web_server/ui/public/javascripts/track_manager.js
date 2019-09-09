@@ -59,11 +59,15 @@ var TrackManager = (function() {
 
 		//Updates track (UPDATE)
 		updateTrack: function(track, properties) {
+			//Update track locally
 			for(var prop in properties) {
 				if(Object.prototype.hasOwnProperty.call(track, prop)) {
 					track[prop] = properties[prop];
 				}
 			}
+			//Send track update to track server
+			ftms_ui.event_manager.sendTrackUpdate(track);
+			
 			this.callListeners();
 		},
 

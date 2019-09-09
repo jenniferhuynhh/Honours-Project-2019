@@ -13,7 +13,7 @@ var EventManager = (function() {
 		},
 
 		sendTrackUpdate: function(track) {
-			socket.emit('track_update', track);
+			socket.emit('send_track_update', track);
 		}
 
 		//EventManager.sendTrackUpdate(FTMS_UI.track_manager.getTrack(123));

@@ -82,7 +82,7 @@ io.on('connection', function(socket) {
 
 	//KAFKA PRODUCER
 	//Send updated track information
-	socket.on('track_update', function(track) {
+	socket.on('send_track_update', function(track) {
 		var payload = [{
 			topic: 'tdn-ui-changes',
 			messages: JSON.stringify(track),
