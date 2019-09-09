@@ -78,6 +78,8 @@ var ClassificationModule = (function() {
 			display.appendChild(div2);
 			display.appendChild(div3);
 			ftms_ui.window_manager.appendToWindow('Track Classification Module', display);
+
+			ftms_ui.track_manager.setListener(this);
 		},
 
 		//Generates a button with a value and an onclick function that changes the property of a track
@@ -96,26 +98,27 @@ var ClassificationModule = (function() {
 
 		//Updates a tracks data when needed (dropdown change/button press)
 		updateTrack: function(property, value) {
-			var track = ftms_ui.getSelectedTrack();
+			var track = ftms_ui.track_manager.getSelectedTrack();
 			//If nothing is selected
 			if(!track) {
 				this.clearFields(); 
 				return;
-			} 
-
-			if(property == 'affiliation') {
-				track.affiliation = value;
-			} else if(property == 'domain') {
-				track.domain = value;
-			} else if(property == 'type') {
-				track.type = value; 
 			}
-			this.updateDisplay();
+
+			var updateData = {};
+			if(property == 'affiliation') {
+				updateData.affiliation = value;
+			} else if(property == 'domain') {
+				updateData.domain = value;
+			} else if(property == 'type') {
+				updateData.type = value; 
+			}
+			ftms_ui.track_manager.updateTrack(track, updateData);
 		},
 		
 		//Updates the dropdown menu and buttons to reflect track properties
-		updateDisplay: function() {
-			var track = ftms_ui.getSelectedTrack();
+		update: function() {
+			var track = ftms_ui.track_manager.getSelectedTrack();
 			//If nothing is selected
 			if(!track) {
 				this.clearFields(); 
@@ -169,9 +172,6 @@ var ClassificationModule = (function() {
 					div3_buttons[i].setAttribute('class', 'unhighlighted_classification_buttons');
 				}
 			}
-
-			ftms_ui.track_table_module.updateTrackTable();
-			ftms_ui.map_module.render();
 		},
 
 		//Clears the dropdown menu and deselects domain and affiliation buttons
