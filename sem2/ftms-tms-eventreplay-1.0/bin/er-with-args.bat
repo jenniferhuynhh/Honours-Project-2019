@@ -1,0 +1,1 @@
+ftms-tms-eventreplay.bat  --DataBaseHost="localhost" --DataBasePort="27017" --DataBaseName="tmsdb" --KafkaSysTracksTopic="tdn-systrk" KafkaAlertsTopic="tdn-alerts"
