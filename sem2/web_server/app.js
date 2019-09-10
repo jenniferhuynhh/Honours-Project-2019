@@ -35,6 +35,8 @@ try {
 	);
 	kafkaProducer = new kafka.Producer(kafkaClient);
 
+	//kafkaClient.createTopics([{topic: 'tdn-ui-changes', partitions: 1, replicationFactor: 1}], function(error, result) {});
+
 	kafkaConsumer.on('error', function(err) {
 		console.log('error', err);
 	});
@@ -89,9 +91,7 @@ io.on('connection', function(socket) {
 			partition: 0
 		}];
 
-		kafkaProducer.send(payload, function(err, data) {
-			console.log(data);
-		});
+		kafkaProducer.send(payload, function(err, data) {});
 	});
 
 	//socket.emit('track', '{"_id":"5ce3779e44fa621aba9623d5","track_id":8000,"name":"nav","timestamp":"1558411165217","eventType":"UPDATE","trackNumber":0,"lastTimeMeasurement":0,"latitude":26.573105999999996,"longitude":56.789406004293305,"altitude":56.789406004293305,"speed":10.000000120227241,"course":270.0000004350488,"state":"UNKNOWN","truthId":"","sensorId":0}');
@@ -100,7 +100,7 @@ io.on('connection', function(socket) {
 //Kafka consumer implementation
 kafkaConsumer.on('message', async function(message) {
 	var dec = protoMessageType.decode(message.value);
-	io.emit('track', JSON.stringify(dec));
+	io.emit('recieve_track_update', JSON.stringify(dec));
 });
 
 //Initiate socket.io server
