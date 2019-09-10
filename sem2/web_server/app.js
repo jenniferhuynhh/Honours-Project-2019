@@ -35,7 +35,7 @@ try {
 	);
 	kafkaProducer = new kafka.Producer(kafkaClient);
 
-	//kafkaClient.createTopics([{topic: 'tdn-ui-changes', partitions: 1, replicationFactor: 1}], function(error, result) {});
+	//kafkaClient.createTopics([{topic: 'tdn-alerts', partitions: 1, replicationFactor: 1}], function(error, result) {});
 
 	kafkaConsumer.on('error', function(err) {
 		console.log('error', err);
