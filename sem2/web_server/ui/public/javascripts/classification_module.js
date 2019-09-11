@@ -114,6 +114,8 @@ var ClassificationModule = (function() {
 				updateData.type = value; 
 			}
 			ftms_ui.track_manager.updateTrack(track, updateData);
+			//Send track update to track server
+			ftms_ui.event_manager.sendTrackUpdate(track);
 		},
 		
 		//Updates the dropdown menu and buttons to reflect track properties
