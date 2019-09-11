@@ -23,11 +23,17 @@ var TrackManager = (function() {
 					longitude: incoming_track.longitude,
 					altitude: incoming_track.altitude,
 					speed: incoming_track.speed,
-					course: incoming_track.course,
-					type: incoming_track.type,
-					affiliation: incoming_track.affiliation,
-					domain: incoming_track.domain
+					course: incoming_track.course
 				};
+				if(incoming_track.type != undefined) {
+					updateData.type = incoming_track.type;
+				}
+				if(incoming_track.affiliation != undefined) {
+					updateData.affiliation = incoming_track.affiliation;
+				}
+				if(incoming_track.domain != undefined) {
+					updateData.domain = incoming_track.domain;
+				}
 				this.updateTrack(track, updateData);
 			} else { //If existing track not found, create new track
 				track = new Track(incoming_track.trackId, incoming_track.latitude, incoming_track.longitude, incoming_track.altitude, incoming_track.speed, incoming_track.course, "unknown", "sea");

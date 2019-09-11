@@ -12,12 +12,7 @@ var protobuf = require("protobufjs");
 
 var app = express();
 
-//Kafka consumer/producer setup and protobuf setup
-var protoMessageType;
-var protoBuilder = protobuf.load("tdn.proto", function(err, root){
-	protoMessageType = root.lookup("tdn.SystemTrack");
-});
-
+//Kafka consumer/producer setup
 var kafkaClient, kafkaConsumer, kafkaProducer;
 try {
 	kafkaClient = new kafka.KafkaClient();
@@ -35,8 +30,6 @@ try {
 		}
 	);
 	//kafkaProducer = new kafka.Producer(kafkaClient);
-
-	//kafkaClient.createTopics([{topic: 'tdn-alerts', partitions: 1, replicationFactor: 1}], function(error, result) {});
 
 	kafkaConsumer.on('error', function(err) {
 		console.log('error', err);
@@ -85,7 +78,7 @@ io.on('connection', function(socket) {
 
 	//CLASSIFICATION MODULE
 	//Send updated track information (with Andy's backend ready)
-	/*socket.on('send_track_update', function(track) {
+	/*socket.on('send_track_update', function(track, updatedData) {
 		var payload = [{
 			topic: 'tdn-ui-changes',
 			messages: JSON.stringify(track),
@@ -95,21 +88,46 @@ io.on('connection', function(socket) {
 		kafkaProducer.send(payload, function(err, data) {});
 	});*/
 	//Send updated track information (without Andy's backend, using sysTracksUpdates collection)
-	socket.on('send_track_update', function(track) {
-		Track.create(track, function (err, user) {
-			if(err) return console.log(err);
+	socket.on('send_track_update', function(track, updatedData) {
+		updatedData.trackId = track.trackId;
+		Track.updateOne({trackId: track.trackId}, updatedData, function(error, writeOpResult) {
+			if(!writeOpResult.nModified) {
+				Track.create(updatedData, function(err, user) {
+					if(err) return console.log(err);
+				});
+			}
 			io.emit('recieve_track_update', JSON.stringify(track));
 		});
 	});
-
-	//socket.emit('track', '{"_id":"5ce3779e44fa621aba9623d5","track_id":8000,"name":"nav","timestamp":"1558411165217","eventType":"UPDATE","trackNumber":0,"lastTimeMeasurement":0,"latitude":26.573105999999996,"longitude":56.789406004293305,"altitude":56.789406004293305,"speed":10.000000120227241,"course":270.0000004350488,"state":"UNKNOWN","truthId":"","sensorId":0}');
 });
 
-//Kafka consumer implementation
+//Kafka consumer + protobuf implementation
 //CLASSIFICATION MODULE
-kafkaConsumer.on('message', async function(message) {
-	var dec = protoMessageType.decode(message.value);
-	io.emit('recieve_track_update', JSON.stringify(dec));
+var protoBuilder = protobuf.load("tdn.proto", function(err, root){
+	var proto_SystemTrack = root.lookup("tdn.SystemTrack");
+
+	kafkaConsumer.on('message', async function(message) {
+		if(message.topic == "tdn-systrk") {
+			var dec = proto_SystemTrack.decode(message.value);
+			var track = JSON.parse(JSON.stringify(dec));
+			Track.findOne({trackId: track.trackId}, function(error, found_track) {
+				if(err) return console.log(err);
+
+				if(found_track) { //If changes to track found, overlay those changes before sending to clients
+					//console.log(found_track);
+					for(var prop in found_track) {
+						if(Object.prototype.hasOwnProperty.call(found_track, prop)) {
+							//console.log(prop);
+							track[prop] = found_track[prop];
+						}
+					}
+					//console.log("");
+					//console.log(track);
+				}
+				io.emit('recieve_track_update', JSON.stringify(track));
+			});
+		}
+	});
 });
 
 //Initiate socket.io server
