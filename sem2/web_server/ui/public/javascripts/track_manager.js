@@ -23,11 +23,14 @@ var TrackManager = (function() {
 					longitude: incoming_track.longitude,
 					altitude: incoming_track.altitude,
 					speed: incoming_track.speed,
-					course: incoming_track.course
+					course: incoming_track.course,
+					type: incoming_track.type,
+					affiliation: incoming_track.affiliation,
+					domain: incoming_track.domain
 				};
 				this.updateTrack(track, updateData);
 			} else { //If existing track not found, create new track
-				track = new Track(incoming_track.trackId, incoming_track.latitude, incoming_track.longitude, incoming_track.altitude, incoming_track.speed, incoming_track.course, incoming_track.state.toLowerCase(), "sea");
+				track = new Track(incoming_track.trackId, incoming_track.latitude, incoming_track.longitude, incoming_track.altitude, incoming_track.speed, incoming_track.course, "unknown", "sea");
 				this.setTrack(track);
 			}
 		},
@@ -55,6 +58,8 @@ var TrackManager = (function() {
 					track[prop] = properties[prop];
 				}
 			}
+
+			//console.log(track);
 			
 			this.callListeners();
 		},

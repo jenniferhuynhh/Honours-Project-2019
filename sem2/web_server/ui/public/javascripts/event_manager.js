@@ -23,6 +23,7 @@ var EventManager = (function() {
 		},
 
 		sendTrackUpdate: function(track) {
+			track.trackId = track.id;
 			socket.emit('send_track_update', track);
 		}
 	}

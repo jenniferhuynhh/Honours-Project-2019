@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var Track = require('./models/track.js');
 var session = require('express-session');
 var kafka = require('kafka-node');
 var protobuf = require("protobufjs");
@@ -33,7 +34,7 @@ try {
 			fromOffset: false
 		}
 	);
-	kafkaProducer = new kafka.Producer(kafkaClient);
+	//kafkaProducer = new kafka.Producer(kafkaClient);
 
 	//kafkaClient.createTopics([{topic: 'tdn-alerts', partitions: 1, replicationFactor: 1}], function(error, result) {});
 
@@ -45,7 +46,7 @@ try {
 }
 
 //Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/tmsdb');
+mongoose.connect('mongodb://localhost:27017/tmsdb', {useNewUrlParser: true});
 
 //Use sessions for tracking logins
 app.use(session({
@@ -82,9 +83,9 @@ io.on('connection', function(socket) {
 		io.emit('chat_message', socket.username, message);
 	});
 
-	//KAFKA PRODUCER
-	//Send updated track information
-	socket.on('send_track_update', function(track) {
+	//CLASSIFICATION MODULE
+	//Send updated track information (with Andy's backend ready)
+	/*socket.on('send_track_update', function(track) {
 		var payload = [{
 			topic: 'tdn-ui-changes',
 			messages: JSON.stringify(track),
@@ -92,12 +93,20 @@ io.on('connection', function(socket) {
 		}];
 
 		kafkaProducer.send(payload, function(err, data) {});
+	});*/
+	//Send updated track information (without Andy's backend, using sysTracksUpdates collection)
+	socket.on('send_track_update', function(track) {
+		Track.create(track, function (err, user) {
+			if(err) return console.log(err);
+			io.emit('recieve_track_update', JSON.stringify(track));
+		});
 	});
 
 	//socket.emit('track', '{"_id":"5ce3779e44fa621aba9623d5","track_id":8000,"name":"nav","timestamp":"1558411165217","eventType":"UPDATE","trackNumber":0,"lastTimeMeasurement":0,"latitude":26.573105999999996,"longitude":56.789406004293305,"altitude":56.789406004293305,"speed":10.000000120227241,"course":270.0000004350488,"state":"UNKNOWN","truthId":"","sensorId":0}');
 });
 
 //Kafka consumer implementation
+//CLASSIFICATION MODULE
 kafkaConsumer.on('message', async function(message) {
 	var dec = protoMessageType.decode(message.value);
 	io.emit('recieve_track_update', JSON.stringify(dec));
