@@ -127,9 +127,5 @@ router.get('/logout', function (req, res, next) {
 	}
 });
 
-router.post('/send_request', function(req, res, next){
-	console.log('request sent');
-	next();
-});
 
 module.exports = router;

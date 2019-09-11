@@ -24,6 +24,14 @@ var EventManager = (function() {
 
 		sendTrackUpdate: function(track) {
 			socket.emit('send_track_update', track);
+		},
+
+		recieveAuthorisationRequest: function(data) {
+			ftms_ui.authorisation_approval_module.receiveRequests(data);
+		},
+
+		sendAuthorisationRequest: function(data) {
+			socket.emit('send_request', data);
 		}
 	}
 }());

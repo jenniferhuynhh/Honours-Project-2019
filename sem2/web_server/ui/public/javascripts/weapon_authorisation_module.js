@@ -41,10 +41,10 @@ var WeaponAuthorisationModule = (function() {
 				}
 				self.toggleDisabled();*/
 				var data = {
-					trackId: ftms_ui.getSelectedTrack().id,
+					trackId: ftms_ui.track_manager.getSelectedTrack().id,
 					weaponIds: self.getSelectedWeapons() 
 				}
-				ftms_ui.socket.emit("send_request", data);
+				ftms_ui.event_manager.sendAuthorisationRequest(data);
 			});
 			div2.appendChild(authorise_button);
 
