@@ -31,6 +31,7 @@ var WeaponFiringModule = (function() {
 			fire_button = document.createElement('input');
 			fire_button.setAttribute('class', 'unhighlighted_fire_button');
 			fire_button.setAttribute('type', 'button');
+			fire_button.setAttribute('disabled', '');
 			fire_button.setAttribute('value', 'FIRE');
 			fire_button.addEventListener('mousedown', function() {
 				this.classList.add('highlighted_fire_button');
@@ -59,6 +60,7 @@ var WeaponFiringModule = (function() {
 			var button = document.createElement('input');
 			button.setAttribute('class', 'unhighlighted_weapons_buttons');
 			button.setAttribute('type', 'button');
+			button.setAttribute('disabled','');
 			button.setAttribute('value', s);
 			button.addEventListener('click', function() {
 				if(this.classList.contains('highlighted_weapons_buttons')) {

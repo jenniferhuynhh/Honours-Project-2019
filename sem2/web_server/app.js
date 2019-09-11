@@ -102,8 +102,14 @@ io.on('connection', function(socket) {
 	socket.on('send_request', function(data){
 		data.requestId = requestCount++;
 		data.status = "Pending...";
-		io.to('wo').emit('receive_request', data);
-		io.to('fs').emit('receive_confirmation', data);
+		//io.to('wo').emit('receive_request', data);
+		//io.to('fs').emit('receive_confirmation', data);
+		io.emit('receive_request', data);
+		io.emit('receive_confirmation', data);
+	});
+
+	socket.on('send_request_status', function(data){
+		io.emit('receive_request_status', data);
 	});
 
 	//socket.emit('track', '{"_id":"5ce3779e44fa621aba9623d5","track_id":8000,"name":"nav","timestamp":"1558411165217","eventType":"UPDATE","trackNumber":0,"lastTimeMeasurement":0,"latitude":26.573105999999996,"longitude":56.789406004293305,"altitude":56.789406004293305,"speed":10.000000120227241,"course":270.0000004350488,"state":"UNKNOWN","truthId":"","sensorId":0}');

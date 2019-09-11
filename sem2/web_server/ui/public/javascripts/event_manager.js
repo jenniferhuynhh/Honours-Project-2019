@@ -23,6 +23,10 @@ var EventManager = (function() {
 			socket.on('receive_confirmation', function(data) {
 				self.receiveConfirmation(data);
 			});
+
+			socket.on('receive_request_status', function(data) {
+				self.receiveRequestStatus(data);
+			});
 		},
 
 		recieveTrackUpdate: function(json_track) {
@@ -44,6 +48,14 @@ var EventManager = (function() {
 
 		receiveConfirmation: function(data) {
 			ftms_ui.authorisation_approval_module.receiveConfirmation(data);
+		},
+
+		sendRequestStatus: function(data) {
+			socket.emit('send_request_status', data);
+		},
+
+		receiveRequestStatus: function(data) {
+			ftms_ui.authorisation_approval_module.receiveRequestStatus(data);
 		}
 	}
 }());
