@@ -1,8 +1,9 @@
 var TrackManager = (function() {
 	//Private
 	var ftms_ui; //FTMS UI system this module is linked to
-	var tracks = new Map(); //Map of tracks, mapped to their unique ID
-	var socket;
+	var tracks; //Map of tracks, mapped to their unique ID
+	var listeners = [];
+	var selected_track;
 
 	//Public
 	return {
@@ -10,66 +11,103 @@ var TrackManager = (function() {
 			//Link FTMS UI system
 			ftms_ui = ftms;
 
-			socket = ftms_ui.socket;
-
-			var self = this;
-			//Receive new tracks
-			socket.on('track', function(json_track) {
-				if(json_track[0] == "{") {
-					var parsed_track = JSON.parse(json_track);
-
-					var track = self.getTrack(parsed_track.trackId);
-					if(track) { //If track exists, update properties
-						track.latitude = parsed_track.latitude;
-						track.longitude = parsed_track.longitude;
-						track.altitude = parsed_track.altitude;
-						track.speed = parsed_track.speed;
-						track.course = parsed_track.course;
-						if(parsed_track.state != "UNKNOWN") {
-							track.affiliation = parsed_track.state.toLowerCase();
-						}
-					} else { //If existing track not found, create new track
-						track = new Track(parsed_track.trackId, parsed_track.latitude, parsed_track.longitude, parsed_track.altitude, parsed_track.speed, parsed_track.course, parsed_track.state.toLowerCase(), "sea");
-						self.setTrack(track);
-					}
-
-					//Tells the map to draw the new track
-					ftms_ui.map_module.paintTrack(track);
-
-					//Display data of new track positions
-					ftms_ui.track_table_module.updateTrackTable();
-				}
-			});
+			tracks = new Map();
 		},
 
-		//Adds a track for testing purposes
-		test: function() {
-			var t1 = new Track(123, 26.576489, 56.423728, 0, 20, 270, "friendly", "sea");
-			this.setTrack(t1);
-			ftms_ui.map_module.paintTrack(t1);
-
-			//Display data of new track positions
-			ftms_ui.track_table_module.updateTrackTable();
+		//Handles recieving a new track from the EventManager
+		recieveTrackUpdate: function(incoming_track) {
+			var track = this.getTrack(incoming_track.trackId);
+			if(track) { //If track exists, update properties
+				var updateData = {
+					latitude: incoming_track.latitude,
+					longitude: incoming_track.longitude,
+					altitude: incoming_track.altitude,
+					speed: incoming_track.speed,
+					course: incoming_track.course
+				};
+				this.updateTrack(track, updateData);
+			} else { //If existing track not found, create new track
+				track = new Track(incoming_track.trackId, incoming_track.latitude, incoming_track.longitude, incoming_track.altitude, incoming_track.speed, incoming_track.course, incoming_track.state.toLowerCase(), "sea");
+				this.setTrack(track);
+			}
 		},
 
-		//Returns track with matching ID
+		//Sets track (CREATE)
+		setTrack: function(track) {
+			if(this.getTrack(track.id)) { //If track with given ID already exists, stop
+				log("Error: Track with ID '" + track.id + "' already exists!");
+				return;
+			}
+			tracks.set(track.id, track);
+			this.callListeners();
+		},
+
+		//Returns track with matching ID (READ)
 		getTrack: function(id) {
 			return tracks.get(Number(id));
 		},
 
-		//Sets track
-		setTrack: function(track) {
-			tracks.set(Number(track.id), track);
+		//Updates track (UPDATE)
+		updateTrack: function(track, properties) {
+			//Update track locally
+			for(var prop in properties) {
+				if(Object.prototype.hasOwnProperty.call(track, prop)) {
+					track[prop] = properties[prop];
+				}
+			}
+			
+			this.callListeners();
 		},
 
-		//Removes a track from the track array by ID
-		removeTrack: function(id) {
+		//Removes a track from the track array by ID (DELETE)
+		deleteTrack: function(id) {
 			tracks.delete(Number(id));
 		},
 
-		//Sets track
+		//Gets all tracks
 		getTracks: function() {
 			return tracks;
 		},
+
+		//Sets selected track
+		setSelectedTrack: function(track) {
+			selected_track = track;
+			this.callListeners();
+		},
+
+		//Returns selected track
+		getSelectedTrack: function() {
+			return selected_track;
+		},
+
+		//Registers a listener
+		setListener: function(listener) {
+			listeners.push(listener);
+		},
+
+		//Calls update() function of all listeners
+		callListeners: function() {
+			for(var i = 0; i < listeners.length; i++) {
+				listeners[i].update();
+			}
+		},
+
+		//Adds a track for testing purposes
+		test: function() {
+			var test_listener = {
+				update: function() {log("listener called")}
+			};
+			//this.setListener(test_listener);
+
+			var t1 = new Track(123, 26.576489, 56.423728, 0, 20, 270, "friendly", "sea");
+			this.setTrack(t1);
+			//var t2 = new Track(123, 26.576489, 56.423728, 0, 20, 270, "neutral", "land");
+			//this.setTrack(t2);
+			this.updateTrack(t1, {affiliation: "hostile"});
+			ftms_ui.map_module.paintTrack(t1);
+
+			//Display data of new track positions
+			ftms_ui.track_table_module.update();
+		}
 	}
 }());

@@ -1,10 +1,8 @@
 var FTMS_UI = (function() {
-	//Private
-	var selected_track;
-
 	//Public
 	return {
 		window_manager: null,
+		event_manager: null,
 		track_manager: null,
 		map_module: null,
 		track_table_module: null,
@@ -20,6 +18,9 @@ var FTMS_UI = (function() {
 			
 			this.window_manager = WindowManager;
 			this.window_manager.initialise(this);
+			
+			this.event_manager = EventManager;
+			this.event_manager.init(this);
 
 			this.track_manager = TrackManager;
 			this.track_manager.init(this);
@@ -45,16 +46,6 @@ var FTMS_UI = (function() {
 			this.window_manager.showAll();
 
 			this.track_manager.test();
-		},
-
-		//Returns selected track
-		getSelectedTrack: function() {
-			return selected_track;
-		},
-
-		//Sets selected track
-		setSelectedTrack: function(track) {
-			selected_track = track;
 		}
 	}
 }());
