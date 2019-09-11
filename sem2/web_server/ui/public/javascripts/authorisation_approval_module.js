@@ -95,8 +95,8 @@ var AuthorisationApprovalModule = (function() {
 		},
 
 		generateResponseNotification: function(data) {
-			var requests_table = document.createElement("table");
-			requests_table.setAttribute("class", "requests_table");
+			var response_table = document.createElement("table");
+			response_table.setAttribute("class", "response_table");
 
 			var row = document.createElement("tr");
 
@@ -136,11 +136,11 @@ var AuthorisationApprovalModule = (function() {
 			row.appendChild(cell2);
 			row.appendChild(status_cell);
 
-			requests_table.appendChild(row);
+			response_table.appendChild(row);
 
-			display.appendChild(requests_table);
+			display.appendChild(response_table);
 
-			return requests_table;
+			return response_table;
 		},
 
 		receiveRequestStatus: function(data) {
