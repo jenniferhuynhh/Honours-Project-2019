@@ -11,6 +11,8 @@ var protobuf = require("protobufjs");
 
 var app = express();
 
+var requestCount = 0;
+
 //Kafka consumer/producer setup and protobuf setup
 var protoMessageType;
 var protoBuilder = protobuf.load("tdn.proto", function(err, root){
@@ -65,8 +67,10 @@ io.on('connection', function(socket) {
 
 	//MESSAGING MODULE
 	//Send user connect message
-	socket.on('username', function(username) {
+	socket.on('username', function(username, role) {
 		socket.username = username;
+		socket.role = role;
+		socket.join(socket.role);
 		io.emit('is_online', socket.username);
 	});
 
@@ -96,7 +100,10 @@ io.on('connection', function(socket) {
 
 	//Weapon Authorisation 
 	socket.on('send_request', function(data){
-		io.emit('send_request', data);
+		data.requestId = requestCount++;
+		data.status = "Pending...";
+		io.to('wo').emit('receive_request', data);
+		io.to('fs').emit('receive_confirmation', data);
 	});
 
 	//socket.emit('track', '{"_id":"5ce3779e44fa621aba9623d5","track_id":8000,"name":"nav","timestamp":"1558411165217","eventType":"UPDATE","trackNumber":0,"lastTimeMeasurement":0,"latitude":26.573105999999996,"longitude":56.789406004293305,"altitude":56.789406004293305,"speed":10.000000120227241,"course":270.0000004350488,"state":"UNKNOWN","truthId":"","sensorId":0}');

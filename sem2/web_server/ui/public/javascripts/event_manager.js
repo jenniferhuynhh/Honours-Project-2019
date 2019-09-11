@@ -15,6 +15,14 @@ var EventManager = (function() {
 			socket.on('recieve_track_update', function(track) {
 				self.recieveTrackUpdate(track);
 			});
+
+			socket.on('receive_request', function(data) {
+				self.receiveAuthorisationRequest(data);
+			});
+
+			socket.on('receive_confirmation', function(data) {
+				self.receiveConfirmation(data);
+			});
 		},
 
 		recieveTrackUpdate: function(json_track) {
@@ -26,12 +34,16 @@ var EventManager = (function() {
 			socket.emit('send_track_update', track);
 		},
 
-		recieveAuthorisationRequest: function(data) {
+		receiveAuthorisationRequest: function(data) {
 			ftms_ui.authorisation_approval_module.receiveRequests(data);
 		},
 
 		sendAuthorisationRequest: function(data) {
 			socket.emit('send_request', data);
+		},
+
+		receiveConfirmation: function(data) {
+			ftms_ui.authorisation_approval_module.receiveConfirmation(data);
 		}
 	}
 }());

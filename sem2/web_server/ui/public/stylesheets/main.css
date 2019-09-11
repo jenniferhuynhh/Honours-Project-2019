@@ -263,19 +263,24 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 /*** Authorisation Approval Module ***/
 .requests_table {
 	width: 100%;
-	height: 55px;
+	height: 45px;
+	border-collapse: collapse;
+	border-bottom: #212121 2px solid;
 }
 
 .cell1 {
 	background-color: #A1A1A1;
-	width: 70%;
+	width: 35%;
 	font-size: 14px;
+	text-align: left;
+	vertical-align: middle;
+	padding-left: 5px;
 }
 
 .tick_cell {
-	background-color: green;
+	background-color: #00802b;
 	width: 15%;
-	color: #0d1a00;
+	color: #212121;
 	font-size: 30px;
 	vertical-align: middle;
 }
@@ -283,7 +288,15 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 .cross_cell {
 	background-color: #a01414;
 	width: 15%;
-	color: #1a0000;
+	color: #212121;
 	font-size: 30px;
 	vertical-align: middle;
+}
+
+.status_cell {
+	width: 30%;
+	vertical-align: middle;
+	background-color: mediumblue;
+	color: lightgrey;
+	font-size: 14px;
 }
