@@ -90,13 +90,24 @@ var AuthorisationApprovalModule = (function() {
 		},
 
 		receiveConfirmation: function(data) {
-			data.uiElement = this.generateResponseNotification(data);
+			data.resElement = this.generateResponseNotification(data);
 			requests.set(data.requestId, data);	
 		},
 
 		generateResponseNotification: function(data) {
 			var response_table = document.createElement("table");
 			response_table.setAttribute("class", "response_table");
+			response_table.addEventListener("click", function(){
+				var response = requests.get(data.requestId);
+				if(response.status == "Approved"){
+					ftms_ui.weapon_firing_module.disableButtons();
+					ftms_ui.weapon_firing_module.unselectButtons();
+					ftms_ui.weapon_firing_module.requestId = data.requestId;
+					for(var i = 0; i < data.weaponIds.length; i++){
+						ftms_ui.weapon_firing_module.weapons_buttons[data.weaponIds[i]-1].disabled = false;
+					}
+				}
+			});
 
 			var row = document.createElement("tr");
 
@@ -145,9 +156,13 @@ var AuthorisationApprovalModule = (function() {
 
 		receiveRequestStatus: function(data) {
 			var request = requests.get(data.requestId);
-			console.log(request);
 			request.status = data.status;
-			request.uiElement.rows[0].cells[2].innerHTML = request.status;
+			request.resElement.rows[0].cells[2].innerHTML = request.status;
+		},
+
+		deleteResponse: function(requestId) {
+			var response = requests.get(requestId);
+			display.removeChild(response.resElement);
 		}
 	}
 }());

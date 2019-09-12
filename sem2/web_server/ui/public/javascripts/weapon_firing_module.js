@@ -3,11 +3,13 @@ var WeaponFiringModule = (function() {
 	var ftms_ui;
 	var display;
 	var div1, div2;
-	var weapons_buttons = [];
 	var fire_button;
 
 	//Public
 	return {
+		weapons_buttons: [],
+		requestId: null,
+
 		initialise: function(ftms) {
 			//link FTMS UI system
 			ftms_ui = ftms;
@@ -21,8 +23,8 @@ var WeaponFiringModule = (function() {
 			//separate div for weapons buttons 
 			div1 = document.createElement('div');	
 			for (var i = 0; i < weapons_button_names.length; i++) {
-				weapons_buttons.push(this.generateWeaponsButtons(weapons_button_names[i]));
-				div1.appendChild(weapons_buttons[i]);
+				this.weapons_buttons.push(this.generateWeaponsButtons(weapons_button_names[i]));
+				div1.appendChild(this.weapons_buttons[i]);
 			}
 
 			//seprate div for fire button 
@@ -31,21 +33,22 @@ var WeaponFiringModule = (function() {
 			fire_button = document.createElement('input');
 			fire_button.setAttribute('class', 'unhighlighted_fire_button');
 			fire_button.setAttribute('type', 'button');
-			fire_button.setAttribute('disabled', '');
+			fire_button.disabled = false;
 			fire_button.setAttribute('value', 'FIRE');
 			fire_button.addEventListener('mousedown', function() {
 				this.classList.add('highlighted_fire_button');
-			})
+			});
 			fire_button.addEventListener('mouseup', function() {
 				this.classList.remove('highlighted_fire_button');
-			})
-			fire_button.addEventListener('click', function() {			
-				for(var i=0; i<weapons_buttons.length; i++) {
-					weapons_buttons[i].classList.remove('highlighted_weapons_buttons');
-				}
+			});
+			var self = this;
+			fire_button.addEventListener('click', function() {
+				self.unselectButtons();
+				self.disableButtons();
+				ftms_ui.authorisation_approval_module.deleteResponse(self.requestId);
 				//var audio = new Audio('../resources/boom.mp3');
 				//audio.play();
-			})
+			});
 			div2.appendChild(fire_button);
 
 			//append the weapons and button divs to display
@@ -60,7 +63,7 @@ var WeaponFiringModule = (function() {
 			var button = document.createElement('input');
 			button.setAttribute('class', 'unhighlighted_weapons_buttons');
 			button.setAttribute('type', 'button');
-			button.setAttribute('disabled','');
+			button.disabled = true;
 			button.setAttribute('value', s);
 			button.addEventListener('click', function() {
 				if(this.classList.contains('highlighted_weapons_buttons')) {
@@ -72,6 +75,18 @@ var WeaponFiringModule = (function() {
 			});
 
 			return button;
+		},
+
+		unselectButtons: function() {
+			for(var i=0; i<this.weapons_buttons.length; i++) {
+					this.weapons_buttons[i].classList.remove('highlighted_weapons_buttons');
+			}
+		},
+
+		disableButtons: function() {
+			for(var i=0; i<this.weapons_buttons.length; i++) {
+				this.weapons_buttons[i].disabled = true;
+			}
 		}
 	}
 }());
