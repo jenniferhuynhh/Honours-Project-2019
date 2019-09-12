@@ -34,8 +34,9 @@ var EventManager = (function() {
 			ftms_ui.track_manager.recieveTrackUpdate(parsed_track);
 		},
 
-		sendTrackUpdate: function(track) {
-			socket.emit('send_track_update', track);
+		sendTrackUpdate: function(track, updatedData) {
+			track.trackId = track.id;
+			socket.emit('send_track_update', track, updatedData);
 		},
 
 		receiveAuthorisationRequest: function(data) {
@@ -59,4 +60,3 @@ var EventManager = (function() {
 		}
 	}
 }());
-//EventManager.sendTrackUpdate(FTMS_UI.track_manager.getTrack(123));
