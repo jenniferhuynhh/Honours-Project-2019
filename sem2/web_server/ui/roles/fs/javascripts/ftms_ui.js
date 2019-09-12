@@ -1,21 +1,31 @@
-var FTMS_UI = (function(){
+var FTMS_UI = (function() {
 	//Public
 	return {
 		window_manager: null,
-		simulator: null,
+		event_manager: null,
+		track_manager: null,
 		map_module: null,
 		track_table_module: null,
 		classification_module: null,
 		weapon_authorisation_module: null,
+		weapon_firing_module: null,
 		alert_module: null,
 		messaging_module: null,
+		header: null,
+		socket: null,
 
-		initialise: function() {
+		//Initialises all modules and shows them
+		init: function() {
+			this.socket = io();
+
 			this.window_manager = WindowManager;
 			this.window_manager.initialise(this);
+			
+			this.event_manager = EventManager;
+			this.event_manager.init(this);
 
-			this.simulator = Simulator;
-			this.simulator.initialise(this);
+			this.track_manager = TrackManager;
+			this.track_manager.init(this);
 
 			this.map_module = MapModule;
 			this.map_module.initialise(this);
@@ -35,13 +45,12 @@ var FTMS_UI = (function(){
 			this.messaging_module = MessagingModule;
 			this.messaging_module.initialise(this);
 
+			this.header = Header;
+			this.header.initialise(this);
+
 			this.window_manager.showAll();
 
-			// this.simulator.test();
-		},
-
-		run: function() {
-			this.simulator.run();
+			this.track_manager.test();
 		}
 	}
 }());

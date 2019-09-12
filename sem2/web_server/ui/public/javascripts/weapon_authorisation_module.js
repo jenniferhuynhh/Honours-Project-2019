@@ -2,8 +2,7 @@ var WeaponAuthorisationModule = (function() {
 	//Private
 	var ftms_ui;
 	var display;
-	var div1;
-	var div2;
+	var div1, div2;
 	var weapons_buttons = [];
 	var authorise_button;
 

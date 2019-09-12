@@ -60,7 +60,7 @@ var MessagingModule = (function() {
 			ftms_ui.window_manager.appendToWindow('Messaging Module', display);
 
 			//Socket config
-			socket = io();
+			socket = ftms_ui.socket;
 
 			//Submit new message
 			var self = this;
@@ -77,7 +77,7 @@ var MessagingModule = (function() {
 
 			//Show log/logoff messages
 			socket.on('is_online', function(username) {
-				self.displayMessage('🔵 <i>' + username + ' joined the chat.</i>'); //😭
+				self.displayMessage(' 🔵<i>' + username + ' joined the chat.</i>'); //😭
 			});
 
 			socket.on('is_offline', function(username) {

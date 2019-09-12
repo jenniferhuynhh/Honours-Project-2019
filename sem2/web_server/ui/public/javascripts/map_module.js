@@ -99,19 +99,23 @@ var MapModule = (function() {
 			//////////////////////////////////////////////////////////////////////////
 
 			//Handle on-click entity selecting
+			var self = this;
 			var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
 			handler.setInputAction(function(click) {
 				var pickedObject = viewer.scene.pick(click.position);
 				if(Cesium.defined(pickedObject)) {
-					ftms_ui.track_table_module.selected_track_id = viewer.selectedEntity.id;
+					ftms_ui.track_manager.setSelectedTrack(ftms_ui.track_manager.getTrack(viewer.selectedEntity.id));
 				} else {
-					ftms_ui.track_table_module.selected_track_id = -1;
+					var previously_selected_track = ftms_ui.track_manager.getSelectedTrack();
+					if(!previously_selected_track) return;
+					ftms_ui.track_manager.setSelectedTrack(null);
+					self.paintTrack(previously_selected_track);
 				}
-				ftms_ui.track_table_module.updateTrackTable();
-				ftms_ui.classification_module.updateDisplay();
 			}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 			
 			ftms_ui.window_manager.appendToWindow('Map Module', display);
+
+			ftms_ui.track_manager.setListener(this);
 		},
 		//Places/updates a track on viewer
 		paintTrack: function(track) {
@@ -142,7 +146,7 @@ var MapModule = (function() {
 
 			//Create milsymbol
 			var color_mode = 'Light';
-			if (ftms_ui.track_table_module.selected_track_id == track.id) {
+			if (ftms_ui.track_manager.getSelectedTrack() == track) {
 				color_mode = 'Dark';
 			}
 			var icon = new ms.Symbol(icon_id, {size: icon_size, colorMode: color_mode}).asCanvas();
@@ -170,10 +174,10 @@ var MapModule = (function() {
 			var ent = viewer.entities.getById(id);
 			viewer.entities.remove(ent);
 		},
-		//Renders the current state of the simulator
-		render: function() {
+		//Updates the current state of all tracks
+		update: function() {
 			//Grab new track data
-			var tracks = ftms_ui.simulator.tracks;
+			var tracks = ftms_ui.track_manager.getTracks();
 			
 			//Paint tracks
 			var self = this;

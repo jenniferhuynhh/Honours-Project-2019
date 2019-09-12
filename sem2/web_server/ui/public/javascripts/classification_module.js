@@ -78,6 +78,8 @@ var ClassificationModule = (function() {
 			display.appendChild(div2);
 			display.appendChild(div3);
 			ftms_ui.window_manager.appendToWindow('Track Classification Module', display);
+
+			ftms_ui.track_manager.setListener(this);
 		},
 
 		//Generates a button with a value and an onclick function that changes the property of a track
@@ -96,35 +98,34 @@ var ClassificationModule = (function() {
 
 		//Updates a tracks data when needed (dropdown change/button press)
 		updateTrack: function(property, value) {
-			var track_id = ftms_ui.track_table_module.selected_track_id;
+			var track = ftms_ui.track_manager.getSelectedTrack();
 			//If nothing is selected
-			if(track_id < 0) {
+			if(!track) {
 				this.clearFields(); 
 				return;
-			} 
-
-			var track = ftms_ui.simulator.getTrack(track_id);
-			if(property == 'affiliation') {
-				track.affiliation = value;
-			} else if(property == 'domain') {
-				track.domain = value;
-			} else if(property == 'type') {
-				track.type = value; 
 			}
-			this.updateDisplay();
+
+			var updateData = {};
+			if(property == 'affiliation') {
+				updateData.affiliation = value;
+			} else if(property == 'domain') {
+				updateData.domain = value;
+			} else if(property == 'type') {
+				updateData.type = value; 
+			}
+			ftms_ui.track_manager.updateTrack(track, updateData);
+			//Send track update to track server
+			ftms_ui.event_manager.sendTrackUpdate(track);
 		},
 		
 		//Updates the dropdown menu and buttons to reflect track properties
-		updateDisplay: function() {
-			var track_id = ftms_ui.track_table_module.selected_track_id;
-			
+		update: function() {
+			var track = ftms_ui.track_manager.getSelectedTrack();
 			//If nothing is selected
-			if(track_id < 0) {
+			if(!track) {
 				this.clearFields(); 
 				return;
 			}
-
-			var track = ftms_ui.simulator.getTrack(track_id);
 
 			//Update dropdown menu
 			var selected_array;
@@ -173,9 +174,6 @@ var ClassificationModule = (function() {
 					div3_buttons[i].setAttribute('class', 'unhighlighted_classification_buttons');
 				}
 			}
-
-			ftms_ui.track_table_module.updateTrackTable();
-			ftms_ui.map_module.render();
 		},
 
 		//Clears the dropdown menu and deselects domain and affiliation buttons
