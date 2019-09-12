@@ -115,11 +115,20 @@ var protoBuilder = protobuf.load("tdn.proto", function(err, root){
 
 				if(found_track) { //If changes to track found, overlay those changes before sending to clients
 					//console.log(found_track);
-					for(var prop in found_track) {
+					/*for(var prop in found_track) {
 						if(Object.prototype.hasOwnProperty.call(found_track, prop)) {
 							//console.log(prop);
 							track[prop] = found_track[prop];
 						}
+					}*/
+					if (found_track.affiliation != undefined) {
+						track.affiliation = found_track.affiliation;
+					}
+					if (found_track.domain != undefined) {
+						track.domain = found_track.domain;
+					}
+					if (found_track.type != undefined) {
+						track.type = found_track.type;
 					}
 					//console.log("");
 					//console.log(track);
