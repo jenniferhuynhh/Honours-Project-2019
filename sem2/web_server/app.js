@@ -108,10 +108,10 @@ io.on('connection', function(socket) {
 	socket.on('send_request', function(data){
 		data.requestId = requestCount++;
 		data.status = "Pending...";
-		//io.to('wo').emit('receive_request', data);
-		//io.to('fs').emit('receive_confirmation', data);
-		io.emit('receive_request', data);
-		io.emit('receive_confirmation', data);
+		io.to('wo').emit('receive_request', data);
+		io.to('fs').emit('receive_confirmation', data);
+		//io.emit('receive_request', data);
+		//io.emit('receive_confirmation', data);
 	});
 
 	socket.on('send_request_status', function(data){
