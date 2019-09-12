@@ -87,7 +87,7 @@ var MessagingModule = (function() {
 			//Randomly select username
 			var roles = ['Track Supervisor', 'Warfare Officer', 'Firing Officer'];
 			var username = roles[randomInt(0, roles.length)];
-			socket.emit('username', username);
+			socket.emit('username', username, getCookie("role"));
 		},
 		sendMessage: function() {
 			socket.emit('chat_message', message_textbox.value);

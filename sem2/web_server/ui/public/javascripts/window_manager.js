@@ -52,6 +52,11 @@ var WindowManager = (function() {
 							isClosable: false,
 							height: 40
 						},{
+							type: 'component',
+							componentName: 'Authorisation Approval Module',
+							isClosable: false;
+							height: 30
+						},{
 							type: 'stack',
 							content: [{
 								type: 'component',

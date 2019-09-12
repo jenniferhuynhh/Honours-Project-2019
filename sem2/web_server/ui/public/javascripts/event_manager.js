@@ -15,6 +15,18 @@ var EventManager = (function() {
 			socket.on('recieve_track_update', function(track) {
 				self.recieveTrackUpdate(track);
 			});
+
+			socket.on('receive_request', function(data) {
+				self.receiveAuthorisationRequest(data);
+			});
+
+			socket.on('receive_confirmation', function(data) {
+				self.receiveConfirmation(data);
+			});
+
+			socket.on('receive_request_status', function(data) {
+				self.receiveRequestStatus(data);
+			});
 		},
 
 		recieveTrackUpdate: function(json_track) {
@@ -25,6 +37,26 @@ var EventManager = (function() {
 		sendTrackUpdate: function(track, updatedData) {
 			track.trackId = track.id;
 			socket.emit('send_track_update', track, updatedData);
+		},
+
+		receiveAuthorisationRequest: function(data) {
+			ftms_ui.authorisation_approval_module.receiveRequests(data);
+		},
+
+		sendAuthorisationRequest: function(data) {
+			socket.emit('send_request', data);
+		},
+
+		receiveConfirmation: function(data) {
+			ftms_ui.authorisation_approval_module.receiveConfirmation(data);
+		},
+
+		sendRequestStatus: function(data) {
+			socket.emit('send_request_status', data);
+		},
+
+		receiveRequestStatus: function(data) {
+			ftms_ui.authorisation_approval_module.receiveRequestStatus(data);
 		}
 	}
 }());

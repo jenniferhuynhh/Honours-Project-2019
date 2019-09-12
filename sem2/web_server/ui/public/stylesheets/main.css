@@ -175,7 +175,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 }
 
 .highlighted_authorise_button {
-	background: #af2424;
+	background-color: #999999;
 	color: white;
 }
 
@@ -259,3 +259,52 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	font-weight: normal;
 }
 
+
+/*** Authorisation Approval Module ***/
+.requests_table, .response_table {
+	width: 100%;
+	height: 45px;
+	border-collapse: collapse;
+	border-bottom: #212121 2px solid;
+}
+
+.cell1 {
+	background-color: #A1A1A1;
+	width: 35%;
+	font-size: 14px;
+	text-align: left;
+	vertical-align: middle;
+	padding-left: 5px;
+}
+
+.tick_cell {
+	background-color: #00802b;
+	width: 15%;
+	color: #212121;
+	font-size: 30px;
+	vertical-align: middle;
+}
+
+.tick_cell:hover {
+	background-color: #009933;
+}
+
+.cross_cell {
+	background-color: #a01414;
+	width: 15%;
+	color: #212121;
+	font-size: 30px;
+	vertical-align: middle;
+}
+
+.cross_cell:hover {
+	background-color: #cc1919;
+}
+
+.status_cell {
+	width: 30%;
+	vertical-align: middle;
+	background-color: mediumblue;
+	color: lightgrey;
+	font-size: 14px;
+}
