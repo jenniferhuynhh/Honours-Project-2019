@@ -48,7 +48,7 @@ var TrackManager = (function() {
 				return;
 			}
 			tracks.set(track.id, track);
-			this.callListeners();
+			this.callListeners(track);
 		},
 
 		//Returns track with matching ID (READ)
@@ -64,15 +64,13 @@ var TrackManager = (function() {
 					track[prop] = properties[prop];
 				}
 			}
-
-			//console.log(track);
-			
-			this.callListeners();
+			this.callListeners(track);
 		},
 
 		//Removes a track from the track array by ID (DELETE)
 		deleteTrack: function(id) {
 			tracks.delete(Number(id));
+			//this.callListeners(id);
 		},
 
 		//Gets all tracks
@@ -83,7 +81,7 @@ var TrackManager = (function() {
 		//Sets selected track
 		setSelectedTrack: function(track) {
 			selected_track = track;
-			this.callListeners();
+			this.callListeners(track);
 		},
 
 		//Returns selected track
@@ -97,28 +95,22 @@ var TrackManager = (function() {
 		},
 
 		//Calls update() function of all listeners
-		callListeners: function() {
+		callListeners: function(track) {
 			for(var i = 0; i < listeners.length; i++) {
-				listeners[i].update();
+				listeners[i].update(track);
 			}
 		},
 
 		//Adds a track for testing purposes
 		test: function() {
-			var test_listener = {
-				update: function() {log("listener called")}
-			};
+			//var test_listener = {
+			//	update: function() {log("listener called")}
+			//};
 			//this.setListener(test_listener);
 
 			var t1 = new Track(123, 26.576489, 56.423728, 0, 20, 270, "friendly", "sea");
 			this.setTrack(t1);
-			//var t2 = new Track(123, 26.576489, 56.423728, 0, 20, 270, "neutral", "land");
-			//this.setTrack(t2);
 			this.updateTrack(t1, {affiliation: "hostile"});
-			ftms_ui.map_module.paintTrack(t1);
-
-			//Display data of new track positions
-			ftms_ui.track_table_module.update();
 		}
 	}
 }());

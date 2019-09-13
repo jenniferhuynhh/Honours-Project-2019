@@ -39,11 +39,10 @@ var Header = (function() {
 			logout_link.setAttribute("href", "logout/");
 			logout_link.innerHTML = "Logout";
 			header_cells["logout"].appendChild(logout_link);
-
 			display.appendChild(header_row);
-			document.getElementById("header").appendChild(display);
 
 			ftms_ui.track_manager.setListener(this);
+			document.getElementById("header").appendChild(display);
 
 			this.update();
 			this.updateLoop();

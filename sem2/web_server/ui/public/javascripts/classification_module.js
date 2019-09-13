@@ -77,9 +77,9 @@ var ClassificationModule = (function() {
 			display.appendChild(div1);
 			display.appendChild(div2);
 			display.appendChild(div3);
-			ftms_ui.window_manager.appendToWindow('Track Classification Module', display);
 
 			ftms_ui.track_manager.setListener(this);
+			ftms_ui.window_manager.appendToWindow('Track Classification Module', display);
 		},
 
 		//Generates a button with a value and an onclick function that changes the property of a track

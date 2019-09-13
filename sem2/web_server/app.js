@@ -95,7 +95,7 @@ io.on('connection', function(socket) {
 	socket.on('send_track_update', function(track, updatedData) {
 		updatedData.trackId = track.trackId;
 		Track.updateOne({trackId: track.trackId}, updatedData, function(error, writeOpResult) {
-			if(!writeOpResult.nModified) {
+			if(!writeOpResult.n) {
 				Track.create(updatedData, function(err, user) {
 					if(err) return console.log(err);
 				});

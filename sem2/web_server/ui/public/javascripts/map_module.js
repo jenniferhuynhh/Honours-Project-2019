@@ -113,9 +113,8 @@ var MapModule = (function() {
 				}
 			}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 			
-			ftms_ui.window_manager.appendToWindow('Map Module', display);
-
 			ftms_ui.track_manager.setListener(this);
+			ftms_ui.window_manager.appendToWindow('Map Module', display);
 		},
 		//Places/updates a track on viewer
 		paintTrack: function(track) {
