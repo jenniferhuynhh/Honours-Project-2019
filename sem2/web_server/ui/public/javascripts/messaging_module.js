@@ -76,7 +76,7 @@ var MessagingModule = (function() {
 		},
 
 		onConnect: function(username) {
-			this.displayMessage('🔵<i>' + username + ' joined the chat.</i>'); //😭
+			this.displayMessage('🔵 <i>' + username + ' joined the chat.</i>'); //😭
 		},
 
 		onDisconnect: function(username) {
