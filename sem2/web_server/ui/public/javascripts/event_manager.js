@@ -9,54 +9,66 @@ var EventManager = (function() {
 			//Link FTMS UI system
 			ftms_ui = ftms;
 
-			socket = ftms_ui.socket;
+			//Socket.io library being used for server communications
+			socket = io();
 
-			var self = this;
+			//RECEIVE MESSAGES FROM SERVER
+			//TRACK MANAGER
 			socket.on('recieve_track_update', function(track) {
-				self.recieveTrackUpdate(track);
+				var parsed_track = JSON.parse(track);
+				ftms_ui.track_manager.recieveTrackUpdate(parsed_track);
 			});
 
+			//MESSAGING
+			socket.on('is_online', function(username) {
+				ftms_ui.messaging_module.onConnect(username);
+			});
+
+			socket.on('is_offline', function(username) {
+				ftms_ui.messaging_module.onDisconnect(username);
+			});
+
+			socket.on('chat_message', function(username, message) {
+				ftms_ui.messaging_module.onMessage(username, message);
+			});
+
+			//AUTHORISATION APPROVAL
 			socket.on('receive_request', function(data) {
-				self.receiveAuthorisationRequest(data);
+				ftms_ui.authorisation_approval_module.receiveRequests(data);
 			});
 
 			socket.on('receive_confirmation', function(data) {
-				self.receiveConfirmation(data);
+				ftms_ui.authorisation_approval_module.receiveConfirmation(data);
 			});
 
 			socket.on('receive_request_status', function(data) {
-				self.receiveRequestStatus(data);
+				ftms_ui.authorisation_approval_module.receiveRequestStatus(data);
 			});
 		},
-
-		recieveTrackUpdate: function(json_track) {
-			var parsed_track = JSON.parse(json_track);
-			ftms_ui.track_manager.recieveTrackUpdate(parsed_track);
-		},
-
+		
+		//SEND MESSAGES TO SERVER
+		//TRACK MANAGER
 		sendTrackUpdate: function(track, updatedData) {
 			track.trackId = track.id;
 			socket.emit('send_track_update', track, updatedData);
 		},
 
-		receiveAuthorisationRequest: function(data) {
-			ftms_ui.authorisation_approval_module.receiveRequests(data);
+		//MESSAGING
+		userConnect: function(username, role) {
+			socket.emit('username', username, role);
 		},
 
+		sendMessage: function(message) {
+			socket.emit('chat_message', message);
+		},
+
+		//AUTHORISATION APPROVAL
 		sendAuthorisationRequest: function(data) {
 			socket.emit('send_request', data);
 		},
 
-		receiveConfirmation: function(data) {
-			ftms_ui.authorisation_approval_module.receiveConfirmation(data);
-		},
-
 		sendRequestStatus: function(data) {
 			socket.emit('send_request_status', data);
-		},
-
-		receiveRequestStatus: function(data) {
-			ftms_ui.authorisation_approval_module.receiveRequestStatus(data);
 		}
 	}
 }());
