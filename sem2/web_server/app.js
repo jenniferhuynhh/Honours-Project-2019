@@ -153,8 +153,7 @@ protobuf.load("tdn.proto", function(err, root) {
 
 	kafkaConsumer.on('message', async function(message) {
 		if(message.topic == "tdn-systrk") {
-			var dec = proto.track.decode(message.value);
-			var track = JSON.parse(JSON.stringify(dec));
+			var track = proto.track.decode(message.value);
 			Track.findOne({trackId: track.trackId}, function(error, found_track) {
 				if(err) return console.log(err);
 
@@ -176,11 +175,12 @@ protobuf.load("tdn.proto", function(err, root) {
 						track.type = found_track.type;
 					}
 				}
-				io.emit('recieve_track_update', JSON.stringify(track));
+				io.emit('recieve_track_update', track);
 			});
 		} else if(message.topic == "tdn-alert") {
-			var dec = JSON.parse(message.value);
-			io.emit('alert', dec);
+			//var alert = proto.alert.decode(message.value);
+			var alert = JSON.parse(message.value);
+			io.emit('alert', alert);
 		}
 	});
 });

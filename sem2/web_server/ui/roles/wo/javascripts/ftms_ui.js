@@ -32,7 +32,7 @@ var FTMS_UI = (function() {
 			this.authorisation_approval_module.initialise(this);
 
 			this.alert_module = AlertModule;
-			this.alert_module.initialise(this);
+			this.alert_module.init(this);
 
 			this.messaging_module = MessagingModule;
 			this.messaging_module.initialise(this);
