@@ -46,19 +46,11 @@ var WindowManager = (function() {
 							type: 'component',
 							componentName: 'Track Table Module',
 							isClosable: false
-						},{
-							type: 'stack',
-							content: [{
-								type: 'component',
-								componentName: 'Weapon Authorisation Module',
-								isClosable: false,
-								height: 30
-							},{
-								type: 'component',
-								componentName: 'Weapon Firing Module',
-								isClosable: false,
-								height: 30
-							}]
+						},{						
+							type: 'component',
+							componentName: 'Authorisation Approval Module',
+							isClosable: false,
+							height: 40							
 						}]
 					}]
 				}]

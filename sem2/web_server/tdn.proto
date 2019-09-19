@@ -54,6 +54,9 @@ message SystemTrack {
     NORMAL = 1;
   }
   optional TrackState state = 14;
+  optional int64 domain = 15;
+  optional int64 affiliation = 16;
+  optional int64 trackType = 17;
 }
 
 
@@ -110,4 +113,15 @@ message LaunchCommand {
   required int64 weaponId = 3;
   required int64 systemTrackId = 4;
   required int64 ttlMillis = 5;
+}
+
+message ManualTrack {
+  required string name = 1;
+  required int64 timestamp = 2;
+  required int64 track_id = 3;
+  required double latitude = 4;
+  required double longitude = 5;
+  optional double altitude = 6;
+  optional double speed = 7;
+  optional double course = 8;
 }

@@ -12,43 +12,112 @@ var protobuf = require("protobufjs");
 
 var app = express();
 
-//Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/tmsdb', {useNewUrlParser: true});
+<<<<<<< HEAD
+// Protobuffer from proto file provided by clients
+var protoMessageType;
+var protoBuilder = protobuf.load("tdn.proto", function(err, root){
+  protoMessageType = root.lookup("tdn.SystemTrack");
+});
 
-//Use sessions for tracking logins
-app.use(session({
-	secret: 'gr9jq1Fvih7l4jBp29TnySC6XOw=',
-	resave: true,
-	saveUninitialized: false
-}));
+var trackTopic = 'tdn-systrk';
+var trackOffset;
 
-var topics = ['tdn-systrk', 'tdn-alert', 'tdn-ui-changes'];
+var alertTopic = 'tdn-alerts';
+var alertOffset;
+
+var offsetClient = new kafka.KafkaClient({kafkaHost:'localhost:9092'});
+var offset = new kafka.Offset(offsetClient);
+
+var trackClient = new kafka.KafkaClient({kafkaHost:'localhost:9092'});
+var trackConsumer;
+
+var alertClient = new kafka.KafkaClient({kafkaHost:'localhost:9092'});
+var alertConsumer;
+
+var uiChangeClient = new kafka.KafkaClient({kafkaHost:'localhost:9092'});
+var uiChangeProducer;
+
+// Gets metadata of topics in an attempt to create them
+offsetClient.loadMetadataForTopics([trackTopic, alertTopic, 'tdn-ui-changes'], (err, response) => {
+  if (err){
+    console.log("Error getting metadata of topics");
+    return console.log(err);
+  }
+
+  // Gets latest offset of topics so they consume from the latest messages
+  offset.fetchLatestOffsets([trackTopic, alertTopic], function(err, offset){
+    if (err){
+      console.log('Error Getting Kafka Offsets');
+      return console.log(err);
+    }
+
+    trackOffset = offset[trackTopic][0];
+    alertOffset = offset[alertTopic][0];
+
+    // Create track consumer and set it's event listeners
+    trackConsumer = new kafka.Consumer(
+      trackClient,
+      [{ topic: trackTopic, partition: 0, offset: trackOffset }],
+      {
+        autoCommit: true,
+        fetchMaxWaitMs: 1000,
+        fetchMaxBytes: 1024 * 1024,
+        encoding: 'buffer',
+        fromOffset: true
+      }
+    );
+
+    trackConsumer.on('message', async function(message) {
+      var dec = protoMessageType.decode(message.value);
+      io.emit('recieve_track_update', JSON.stringify(dec));
+    });
+
+    trackConsumer.on('error', function(err) {
+      console.log('error', err);
+    });
+
+    // Create alert consumer and set it's event listeners
+    alertConsumer = new kafka.Consumer(
+      alertClient,
+      [{ topic: alertTopic, partition: 0, offset: alertOffset }],
+      {
+        autoCommit: true,
+        fetchMaxWaitMs: 1000,
+        fetchMaxBytes: 1024 * 1024,
+        // encoding: 'buffer',
+        encoding: 'utf-8',
+        fromOffset: true
+      }
+    );
+
+    alertConsumer.on('message', async function(message) {
+      // var dec = protoMessageType.decode(message.value);
+      var dec = JSON.parse(message.value);
+      // console.log(dec);
+      io.emit('alert', dec);
+
+    });
+    
+    alertConsumer.on('error', function(err) {
+      console.log('error', err);
+    });
+
+    uiChangeProducer = new kafka.Producer(uiChangeClient);
+  });
+});
+
+//connect to MongoDB
+=======
+//Kafka consumer/producer setup
 var kafkaClient, kafkaConsumer, kafkaProducer;
 try {
-	var topicObjects = [];
-	topics.forEach(function(el){topicObjects.push({topic: el});});
-	// Gets metadata of topics in an attempt to create them
-	//var offsetClient = new kafka.KafkaClient();
 	kafkaClient = new kafka.KafkaClient();
-	kafkaClient.loadMetadataForTopics(topics, function(err, res) {
-		if(err) {
-			console.log("Error getting metadata of topics");
-			return console.log(err);
-		}
-	});
-
-	/*var offset = new kafka.Offset(kafkaClient);
-	offset.fetchLatestOffsets(topics, function(err, offset) {
-		if(err) {
-			console.log('Error Getting Kafka Offsets');
-			return console.log(err);
-		}
-		topicObjects = []; topics.forEach(function(el){topicObjects.push({topic: el, offset: offset[el][0]});});
-	});*/
-
 	kafkaConsumer = new kafka.Consumer(
 		kafkaClient,
-		topicObjects, {
+		[{
+			topic: 'tdn-systrk',
+			partition: 0
+		}], {
 			autoCommit: true,
 			fetchMaxWaitMs: 1000,
 			fetchMaxBytes: 1024 * 1024,
@@ -65,11 +134,23 @@ try {
 	console.log(e);
 }
 
+//Connect to MongoDB
+>>>>>>> a639af3e48a00551a4069eb5616809e532aacf28
+mongoose.connect('mongodb://localhost:27017/tmsdb', {useNewUrlParser: true});
+
+//Use sessions for tracking logins
+app.use(session({
+	secret: 'gr9jq1Fvih7l4jBp29TnySC6XOw=',
+	resave: true,
+	saveUninitialized: false
+}));
+
 //Socket.io setup
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
 var requestCount = 0;
+
 //Socket.io implementations
 io.on('connection', function(socket) {
 	var address = socket.handshake.address.split(":").pop(); //Gets client's public IP address
@@ -104,6 +185,10 @@ io.on('connection', function(socket) {
 			messages: JSON.stringify(track),
 			partition: 0
 		}];
+
+<<<<<<< HEAD
+		uiChangeProducer.send(payload, function(err, data) {});
+=======
 		kafkaProducer.send(payload, function(err, data) {});
 	});*/
 	//Send updated track information (without Andy's backend, using sysTracksUpdates collection)
@@ -131,19 +216,23 @@ io.on('connection', function(socket) {
 
 	socket.on('send_request_status', function(data){
 		io.emit('receive_request_status', data);
+>>>>>>> a639af3e48a00551a4069eb5616809e532aacf28
 	});
+
+	//socket.emit('track', '{"_id":"5ce3779e44fa621aba9623d5","track_id":8000,"name":"nav","timestamp":"1558411165217","eventType":"UPDATE","trackNumber":0,"lastTimeMeasurement":0,"latitude":26.573105999999996,"longitude":56.789406004293305,"altitude":56.789406004293305,"speed":10.000000120227241,"course":270.0000004350488,"state":"UNKNOWN","truthId":"","sensorId":0}');
+
 });
 
+<<<<<<< HEAD
+=======
 //Kafka consumer + protobuf implementation
-protobuf.load("tdn.proto", function(err, root) {
-	var proto = {
-		track: root.lookup("tdn.SystemTrack"),
-		alert: root.lookup("tdn.Alert")
-	};
+//CLASSIFICATION MODULE
+var protoBuilder = protobuf.load("tdn.proto", function(err, root){
+	var proto_SystemTrack = root.lookup("tdn.SystemTrack");
 
 	kafkaConsumer.on('message', async function(message) {
 		if(message.topic == "tdn-systrk") {
-			var dec = proto.track.decode(message.value);
+			var dec = proto_SystemTrack.decode(message.value);
 			var track = JSON.parse(JSON.stringify(dec));
 			Track.findOne({trackId: track.trackId}, function(error, found_track) {
 				if(err) return console.log(err);
@@ -156,13 +245,13 @@ protobuf.load("tdn.proto", function(err, root) {
 							track[prop] = found_track[prop];
 						}
 					}*/
-					if(found_track.affiliation != undefined) {
+					if (found_track.affiliation != undefined) {
 						track.affiliation = found_track.affiliation;
 					}
-					if(found_track.domain != undefined) {
+					if (found_track.domain != undefined) {
 						track.domain = found_track.domain;
 					}
-					if(found_track.type != undefined) {
+					if (found_track.type != undefined) {
 						track.type = found_track.type;
 					}
 					//console.log("");
@@ -170,14 +259,11 @@ protobuf.load("tdn.proto", function(err, root) {
 				}
 				io.emit('recieve_track_update', JSON.stringify(track));
 			});
-		} else if(message.topic == "tdn-alert") {
-			var dec = JSON.parse(message.value);
-			io.emit('alert', dec);
 		}
 	});
 });
 
-
+>>>>>>> a639af3e48a00551a4069eb5616809e532aacf28
 //Initiate socket.io server
 server.listen(3000, function() {
 	log('Socket.io service listening on *:3000');

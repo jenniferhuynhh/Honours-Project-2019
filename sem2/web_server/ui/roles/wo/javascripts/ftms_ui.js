@@ -6,17 +6,13 @@ var FTMS_UI = (function() {
 		track_manager: null,
 		map_module: null,
 		track_table_module: null,
-		weapon_authorisation_module: null,
-		weapon_firing_module: null,
+		authorisation_approval_module: null,
 		alert_module: null,
 		messaging_module: null,
 		header: null,
-		socket: null,
 
 		//Initialises all modules and shows them
 		init: function() {
-			this.socket = io();
-			
 			this.window_manager = WindowManager;
 			this.window_manager.initialise(this);
 			
@@ -32,11 +28,8 @@ var FTMS_UI = (function() {
 			this.track_table_module = TrackTableModule;
 			this.track_table_module.initialise(this);
 
-			this.weapon_authorisation_module = WeaponAuthorisationModule;
-			this.weapon_authorisation_module.initialise(this);
-
-			this.weapon_firing_module = WeaponFiringModule;
-			this.weapon_firing_module.initialise(this);
+			this.authorisation_approval_module = AuthorisationApprovalModule;
+			this.authorisation_approval_module.initialise(this);
 
 			this.alert_module = AlertModule;
 			this.alert_module.initialise(this);

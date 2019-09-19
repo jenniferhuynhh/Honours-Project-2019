@@ -3,9 +3,6 @@ var MessagingModule = (function() {
 	var ftms_ui;
 	var display;
 	var messages;
-	var message_textbox;
-	var send_button;
-	var socket;
 
 	//Public
 	return {
@@ -40,12 +37,11 @@ var MessagingModule = (function() {
 			send_button.setAttribute("value", "Send");
 			send_button_td.appendChild(send_button);
 
-			var form = document.createElement("form");
+			var form = document.createElement("form"); //Containing this in a form lets hitting 'enter' send the message
 			form.style.height = "100%";
 			var table = document.createElement("table");
 			table.classList.add('messaging_table');
 			var row1 = document.createElement("tr");
-			//row1.style.height = "100%";
 			var row2 = document.createElement("tr");
 			row2.classList.add('input_row');
 
@@ -57,45 +53,44 @@ var MessagingModule = (function() {
 			form.appendChild(table);
 			display.appendChild(form);
 
-			ftms_ui.window_manager.appendToWindow('Messaging Module', display);
-
-			//Socket config
-			socket = ftms_ui.socket;
-
 			//Submit new message
-			var self = this;
 			send_button.addEventListener('click', function(event) {
 				event.preventDefault(); //Prevents page reloading
-				socket.emit('chat_message', message_textbox.value);
+				ftms_ui.event_manager.sendMessage(message_textbox.value);
 				message_textbox.value = '';
 			});
 
-			//Show new message
-			socket.on('chat_message', function(username, message) {
-				self.displayMessage('<strong>' + username + '</strong>: ' + message)
-			});
+			//Send username to server
+			var username;
+			switch(getCookie("role")) {
+				case "ts": username = "Track Supervisor";
+						   break;
+				case "wo": username = "Warfare Officer";
+						   break;
+				case "fs": username = "Firing Officer";
+						   break;
+			}
+			ftms_ui.event_manager.userConnect(username, getCookie("role"));
 
-			//Show log/logoff messages
-			socket.on('is_online', function(username) {
-				self.displayMessage(' 🔵<i>' + username + ' joined the chat.</i>'); //😭
-			});
-
-			socket.on('is_offline', function(username) {
-				self.displayMessage('🔴 <i>' + username + ' left the chat.</i>');
-			});
-
-			//Randomly select username
-			var roles = ['Track Supervisor', 'Warfare Officer', 'Firing Officer'];
-			var username = roles[randomInt(0, roles.length)];
-			socket.emit('username', username);
+			ftms_ui.window_manager.appendToWindow('Messaging Module', display);
 		},
-		sendMessage: function() {
-			socket.emit('chat_message', message_textbox.value);
+
+		onConnect: function(username) {
+			this.displayMessage('🔵 <i>' + username + ' joined the chat.</i>'); //😭
 		},
-		displayMessage: function(msg) {
+
+		onDisconnect: function(username) {
+			this.displayMessage('🔴 <i>' + username + ' left the chat.</i>');
+		},
+		
+		onMessage: function(username, message) {
+			this.displayMessage('<strong>' + username + '</strong>: ' + message);
+		},
+
+		displayMessage: function(message) {
 			var new_msg = document.createElement("p");
 			new_msg.classList.add("msg");
-			new_msg.innerHTML = msg;
+			new_msg.innerHTML = message;
 			messages.appendChild(new_msg);
 			messages.scrollTop = messages.scrollHeight; //Scroll to bottom of chat feed on new message
 		}
