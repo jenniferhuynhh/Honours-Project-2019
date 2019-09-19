@@ -22,22 +22,30 @@ app.use(session({
 	saveUninitialized: false
 }));
 
+//Kafka setup, implementation below
 var topics = ['tdn-systrk', 'tdn-alert', 'tdn-ui-changes'];
 var kafkaClient, kafkaConsumer, kafkaProducer;
 try {
+	//Converts topic array into objects required for Kafka setup
 	var topicObjects = [];
 	topics.forEach(function(el){topicObjects.push({topic: el});});
-	// Gets metadata of topics in an attempt to create them
+
+	//CLIENT SETUP
 	//var offsetClient = new kafka.KafkaClient();
 	kafkaClient = new kafka.KafkaClient();
-	kafkaClient.loadMetadataForTopics(topics, function(err, res) {
+	kafkaClient.createTopics(topics, function(err) {
+		if(err) console.log(err);
+	});
+	
+	// Gets metadata of topics in an attempt to create them
+	/*kafkaClient.loadMetadataForTopics(topics, function(err, res) {
 		if(err) {
 			console.log("Error getting metadata of topics");
 			return console.log(err);
 		}
 	});
 
-	/*var offset = new kafka.Offset(kafkaClient);
+	var offset = new kafka.Offset(kafkaClient);
 	offset.fetchLatestOffsets(topics, function(err, offset) {
 		if(err) {
 			console.log('Error Getting Kafka Offsets');
@@ -46,6 +54,7 @@ try {
 		topicObjects = []; topics.forEach(function(el){topicObjects.push({topic: el, offset: offset[el][0]});});
 	});*/
 
+	//CONSUMER SETUP
 	kafkaConsumer = new kafka.Consumer(
 		kafkaClient,
 		topicObjects, {
@@ -56,11 +65,12 @@ try {
 			fromOffset: false
 		}
 	);
-	//kafkaProducer = new kafka.Producer(kafkaClient);
-
 	kafkaConsumer.on('error', function(err) {
 		console.log('error', err);
 	});
+
+	//PRODUCER SETUP
+	//kafkaProducer = new kafka.Producer(kafkaClient);
 } catch(e) {
 	console.log(e);
 }
@@ -165,8 +175,6 @@ protobuf.load("tdn.proto", function(err, root) {
 					if(found_track.type != undefined) {
 						track.type = found_track.type;
 					}
-					//console.log("");
-					//console.log(track);
 				}
 				io.emit('recieve_track_update', JSON.stringify(track));
 			});
