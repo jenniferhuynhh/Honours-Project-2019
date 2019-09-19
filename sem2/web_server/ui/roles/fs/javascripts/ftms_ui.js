@@ -36,7 +36,7 @@ var FTMS_UI = (function() {
 			this.authorisation_approval_module.initialise(this);
 
 			this.settings_module = SettingsModule;
-			this.settings_module.initialise(this);
+			this.settings_module.init(this);
 
 			this.weapon_authorisation_module = WeaponAuthorisationModule;
 			this.weapon_authorisation_module.initialise(this);

@@ -33,7 +33,7 @@ var FTMS_UI = (function() {
 			this.classification_module.initialise(this);
 
 			this.settings_module = SettingsModule;
-			this.settings_module.initialise(this);
+			this.settings_module.init(this);
 
 			this.alert_module = AlertModule;
 			this.alert_module.initialise(this);
