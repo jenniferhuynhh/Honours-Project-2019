@@ -55,7 +55,9 @@ var WindowManager = (function() {
 								height: 30	
 							},{
 								type: 'component',
-								componentName: 'Settings Module'
+								componentName: 'Settings Module',
+								isClosable: false,
+								height: 30
 							}]
 						},{
 							type: 'stack',
