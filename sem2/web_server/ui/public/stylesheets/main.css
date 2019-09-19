@@ -317,8 +317,18 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	font-weight: normal;
 }
 
+.slider_settings {
+	width: 100%;
+	color: white;
+	padding-top: 15px;
+}
+
 .settings_cells {
 	width: 50%;
 	color: white;
+	padding-top: 15px;
+	padding-bottom: 15px;
 }
+
+
 
