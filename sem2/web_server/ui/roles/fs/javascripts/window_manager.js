@@ -47,10 +47,16 @@ var WindowManager = (function() {
 							componentName: 'Track Table Module',
 							isClosable: false
 						},{
-							type: 'component',
-							componentName: 'Authorisation Approval Module',
-							isClosable: false,
-							height: 30	
+							type: 'stack',
+							content: [{
+								type: 'component',
+								componentName: 'Authorisation Approval Module',
+								isClosable: false,
+								height: 30	
+							},{
+								type: 'component',
+								componentName: 'Settings Module'
+							}]
 						},{
 							type: 'stack',
 							content: [{
