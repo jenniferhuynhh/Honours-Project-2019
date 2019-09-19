@@ -7,6 +7,7 @@ var FTMS_UI = (function() {
 		map_module: null,
 		track_table_module: null,
 		classification_module: null,
+		settings_module: null,
 		alert_module: null,
 		messaging_module: null,
 		header: null,
@@ -30,6 +31,9 @@ var FTMS_UI = (function() {
 
 			this.classification_module = ClassificationModule;
 			this.classification_module.initialise(this);
+
+			this.settings_module = SettingsModule;
+			this.settings_module.initialise(this);
 
 			this.alert_module = AlertModule;
 			this.alert_module.initialise(this);

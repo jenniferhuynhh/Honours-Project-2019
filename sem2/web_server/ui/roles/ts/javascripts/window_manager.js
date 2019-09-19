@@ -47,10 +47,18 @@ var WindowManager = (function() {
 							componentName: 'Track Table Module',
 							isClosable: false
 						},{
-							type: 'component',
-							componentName: 'Track Classification Module',
-							isClosable: false,
-							height: 40
+							type: 'stack',
+							content: [{
+								type: 'component',
+								componentName: 'Track Classification Module',
+								isClosable: false,
+								height: 40	
+							},{
+								type: 'component',
+								componentName: 'Settings Module',
+								isClosable: false,
+								height: 40
+							}]
 						}]
 					}]
 				}]
