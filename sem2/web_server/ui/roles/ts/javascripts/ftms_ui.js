@@ -10,12 +10,9 @@ var FTMS_UI = (function() {
 		alert_module: null,
 		messaging_module: null,
 		header: null,
-		socket: null,
 
 		//Initialises all modules and shows them
 		init: function() {
-			this.socket = io();
-			
 			this.window_manager = WindowManager;
 			this.window_manager.initialise(this);
 			
@@ -35,7 +32,7 @@ var FTMS_UI = (function() {
 			this.classification_module.initialise(this);
 
 			this.alert_module = AlertModule;
-			this.alert_module.initialise(this);
+			this.alert_module.init(this);
 
 			this.messaging_module = MessagingModule;
 			this.messaging_module.initialise(this);
