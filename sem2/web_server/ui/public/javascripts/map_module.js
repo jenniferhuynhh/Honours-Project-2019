@@ -1,9 +1,11 @@
 var MapModule = (function() {
 	//Private
 	var ftms_ui; //FTMS UI system this module is linked to
-	var icon_size = 15; //Size of milsymbol symbols
+
 	var display;
 	var viewer;
+	var icon_size = 15; //Size of milsymbol symbols
+	var current_highlighted = null;
 
 	//Public
 	return {
@@ -15,11 +17,25 @@ var MapModule = (function() {
 			display = document.createElement("div");
 			display.style.height = "100%";
 
-			//Create the Cesium Viewer
+
+			//Handle creation of new track
+			ftms_ui.track_manager.addEventListener("create", (track) => {
+				//var icon = new Icon(track);
+				//icons.set(track.id, icon);
+				track.addEventListener("update", () => {
+					this.paintTrack(track);
+				});
+				this.paintTrack(track);
+			});
+
+			ftms_ui.track_manager.addEventListener("selected", (track) => {
+				//var icon = new Icon(track);
+				//icons.set(track.id, icon);
+				this.paintTrack(track);
+			});
+
 			"use strict";
-			Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNTNlZjU4NS05ZDZlLTRiMTUtOGVmYi1lYTIwNjk2ODcyN2IiLCJpZCI6MTA2ODQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTcxNTk1ODl9.pefjm_v8G065frNjyPdGYd9ggHaMdKBfukjjMbgTg6M';
-			//Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJiNGM3NmUyMS0yNWY5LTQ5MmMtYjQ0ZS1hYTliMjY2MzFhYzYiLCJpZCI6OTcwNCwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU1NDc3NTg2N30.U4oXqg5SHWnf22tUsRCb2aHrOp1aMF0TK3YmWC39Prc';
-			
+			//Create the Cesium Viewer
 			// Offline mode 
 			viewer = new Cesium.Viewer(display, {
 				imageryProvider : Cesium.createTileMapServiceImageryProvider({
@@ -33,6 +49,7 @@ var MapModule = (function() {
 			});
 
 			// Online mode - Includes Imagery and Terrain sections
+			// Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNTNlZjU4NS05ZDZlLTRiMTUtOGVmYi1lYTIwNjk2ODcyN2IiLCJpZCI6MTA2ODQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTcxNTk1ODl9.pefjm_v8G065frNjyPdGYd9ggHaMdKBfukjjMbgTg6M';
 			// viewer = new Cesium.Viewer(display, {
 			// 	animation: false,
 			// 	selectionIndicator: false,
@@ -106,18 +123,21 @@ var MapModule = (function() {
 				if(Cesium.defined(pickedObject)) {
 					ftms_ui.track_manager.setSelectedTrack(ftms_ui.track_manager.getTrack(viewer.selectedEntity.id));
 				} else {
-					var previously_selected_track = ftms_ui.track_manager.getSelectedTrack();
-					if(!previously_selected_track) return;
+					current_highlighted = ftms_ui.track_manager.getSelectedTrack();
+					if(!current_highlighted) return;
 					ftms_ui.track_manager.setSelectedTrack(null);
-					self.paintTrack(previously_selected_track);
 				}
 			}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 			
-			ftms_ui.track_manager.setListener(this);
 			ftms_ui.window_manager.appendToWindow('Map Module', display);
 		},
+
+
+
+
 		//Places/updates a track on viewer
 		paintTrack: function(track) {
+			if(!track) track = current_highlighted;
 			var ent = viewer.entities.getById(track.id);
 
 			//Decide which military symbol icon to use (uses milsymbol library)
@@ -151,7 +171,7 @@ var MapModule = (function() {
 			var icon = new ms.Symbol(icon_id, {size: icon_size, colorMode: color_mode}).asCanvas();
 
 			//Create or update entity
-			if(ent == undefined) {
+			if(!ent) {
 				viewer.entities.add({
 					id: track.id,
 					name: `ID: ${track.id}`,
@@ -168,11 +188,13 @@ var MapModule = (function() {
 				ent.description = `Affiliation: ${track.affiliation} <br> Latitude: ${track.latitude} <br> Longitude: ${track.longitude} <br> Altitude: ${track.altitude}`;
 			}
 		},
+
 		//Erases track from viewer
 		eraseTrack: function(id) {
 			var ent = viewer.entities.getById(id);
 			viewer.entities.remove(ent);
-		},
+		}/*,
+
 		//Updates the current state of all tracks
 		update: function() {
 			//Grab new track data
@@ -183,9 +205,23 @@ var MapModule = (function() {
 			tracks.forEach(function(value, key, map) {
 				self.paintTrack(value);
 			});
-		},
-		getViewer: function() {
-			return viewer;
-		}
+		}*/
 	}
 }());
+
+class Icon {
+	constructor(track) {
+		this.track = track;
+
+		//Create display
+		this.display.appendChild(document.createTextNode(this.track.id));
+		this.display.addEventListener("click", () => this.track.selected());
+
+		this.track.addEventListener("delete", () => this.display.remove());
+	}
+
+	selected() {
+		this.display.classList.toggle("highlighted");
+		this.display.classList.toggle("icon");
+	}
+}

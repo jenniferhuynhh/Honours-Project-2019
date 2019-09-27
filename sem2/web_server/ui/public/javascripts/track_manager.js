@@ -1,8 +1,12 @@
 var TrackManager = (function() {
 	//Private
 	var ftms_ui; //FTMS UI system this module is linked to
-	var tracks; //Map of tracks, mapped to their unique ID
-	var listeners = [];
+	var listeners = { //Events that listeners can listen for
+			create: [],
+			selected: []
+		};
+
+	var tracks = new Map(); //Map of tracks, mapped to their unique ID
 	var selected_track;
 
 	//Public
@@ -10,12 +14,10 @@ var TrackManager = (function() {
 		init: function(ftms) {
 			//Link FTMS UI system
 			ftms_ui = ftms;
-
-			tracks = new Map();
 		},
 
 		//Handles recieving a new track from the EventManager
-		recieveTrackUpdate: function(incoming_track) {
+		recieveTrackUpdate: function(incoming_track_data) {
 			var track = this.getTrack(incoming_track.trackId);
 			if(track) { //If track exists, update properties
 				var updateData = {
@@ -36,19 +38,34 @@ var TrackManager = (function() {
 				}
 				this.updateTrack(track, updateData);
 			} else { //If existing track not found, create new track
-				track = new Track(incoming_track.trackId, incoming_track.latitude, incoming_track.longitude, incoming_track.altitude, incoming_track.speed, incoming_track.course, "unknown", "sea");
-				this.setTrack(track);
+				this.createTrack(incoming_track_data);
 			}
 		},
 
-		//Sets track (CREATE)
-		setTrack: function(track) {
-			if(this.getTrack(track.id)) { //If track with given ID already exists, stop
-				log("Error: Track with ID '" + track.id + "' already exists!");
+		//CRUD operations
+		//Creates track, adds listeners, then calls this module's create event listeners (CREATE)
+		createTrack: function(data) {
+			if(this.getTrack(data.id)) { //If track with given ID already exists, stop
+				log("Error: Track with ID '" + data.id + "' already exists!");
 				return;
 			}
+
+			var track = new Track(data);
+
+			//Handle track being selected
+			track.addEventListener("selected", () => {
+				if(selected_track == track) selected_track = null;
+				else selected_track = track;
+				this.callListeners("selected", selected_track);
+			});
+
+			//Handle track being deleted
+			track.addEventListener("delete", () => {
+				if(selected_track == track) selected_track = null;
+			});
+
 			tracks.set(track.id, track);
-			this.callListeners(track);
+			this.callListeners("create", track);
 		},
 
 		//Returns track with matching ID (READ)
@@ -56,32 +73,21 @@ var TrackManager = (function() {
 			return tracks.get(Number(id));
 		},
 
-		//Updates track (UPDATE)
-		updateTrack: function(track, properties) {
-			//Update track locally
-			for(var prop in properties) {
-				if(Object.prototype.hasOwnProperty.call(track, prop)) {
-					track[prop] = properties[prop];
-				}
-			}
-			this.callListeners(track);
+		//Updates track locally (UPDATE)
+		updateTrack: function(track, data) {
+			track.updateData(data);
 		},
 
 		//Removes a track from the track array by ID (DELETE)
 		deleteTrack: function(id) {
-			tracks.delete(Number(id));
-			//this.callListeners(id);
-		},
-
-		//Gets all tracks
-		getTracks: function() {
-			return tracks;
+			track.delete();
+			tracks.delete(track.id);
 		},
 
 		//Sets selected track
 		setSelectedTrack: function(track) {
 			selected_track = track;
-			this.callListeners(track);
+			this.callListeners("selected", selected_track);
 		},
 
 		//Returns selected track
@@ -89,28 +95,80 @@ var TrackManager = (function() {
 			return selected_track;
 		},
 
-		//Registers a listener
-		setListener: function(listener) {
-			listeners.push(listener);
+		addEventListener: function(event, func) {
+			listeners[event].push(func);
 		},
 
-		//Calls update() function of all listeners
-		callListeners: function(track) {
-			for(var i = 0; i < listeners.length; i++) {
-				listeners[i].update(track);
+		callListeners: function(event, track) {
+			for(var i = 0; i < listeners[event].length; i++) {
+				listeners[event][i](track);
 			}
 		},
 
 		//Adds a track for testing purposes
 		test: function() {
-			//var test_listener = {
-			//	update: function() {log("listener called")}
-			//};
-			//this.setListener(test_listener);
+			var t1 = {
+				id: 123,
+				latitude: 26.576489,
+				longitude: 56.423728,
+				altitude: 0,
+				speed: 20,
+				course: 270,
+				affiliation: "friendly",
+				domain: "sea",
+				type: "naval ship"
+			};
 
-			var t1 = new Track(123, 26.576489, 56.423728, 0, 20, 270, "friendly", "sea");
-			this.setTrack(t1);
-			this.updateTrack(t1, {affiliation: "hostile"});
+			this.createTrack(t1);
+			this.updateTrack(this.getTrack(t1.id), {affiliation: "hostile"});
 		}
 	}
 }());
+
+//Track object definition
+class Track {
+	constructor(data) {
+		this.id = Number(data.id); //unique ID
+		this.latitude = data.latitude; //-34.912955 (Adelaide)
+		this.longitude = data.longitude; //138.365660 (Adelaide)
+		this.altitude = data.altitude;
+		this.speed = data.speed;
+		this.course = data.course; //course in degrees
+		this.affiliation = data.affiliation; //affiliation of track (friendly, hostile, etc.)
+		this.domain = data.domain; //domain of track (air, sea, land, subsurface)
+		this.type = data.type; //type of track
+
+		this.listeners = { //Events that listeners can listen for
+			update: [],
+			selected: [],
+			delete: []
+		};
+	}
+
+	updateData(data) {
+		for(var match in data) {
+			if(Object.prototype.hasOwnProperty.call(this, match)) {
+				this[match] = data[match];
+			}
+		}
+		this.callListeners("update");
+	}
+
+	delete() {
+		this.callListeners("delete");
+	}
+
+	selected() {
+		this.callListeners("selected");
+	}
+
+	addEventListener(event, func) {
+		this.listeners[event].push(func);
+	}
+
+	callListeners(event) {
+		for(var i = 0; i < this.listeners[event].length; i++) {
+			this.listeners[event][i]();
+		}
+	}
+}

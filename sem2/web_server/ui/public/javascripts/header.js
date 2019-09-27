@@ -41,7 +41,6 @@ var Header = (function() {
 			header_cells["logout"].appendChild(logout_link);
 			display.appendChild(header_row);
 
-			ftms_ui.track_manager.setListener(this);
 			document.getElementById("header").appendChild(display);
 
 			this.update();

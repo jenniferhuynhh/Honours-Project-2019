@@ -78,7 +78,6 @@ var ClassificationModule = (function() {
 			display.appendChild(div2);
 			display.appendChild(div3);
 
-			ftms_ui.track_manager.setListener(this);
 			ftms_ui.window_manager.appendToWindow('Track Classification Module', display);
 		},
 
