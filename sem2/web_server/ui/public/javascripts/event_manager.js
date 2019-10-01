@@ -52,9 +52,9 @@ var EventManager = (function() {
 		
 		//SEND MESSAGES TO SERVER
 		//TRACK MANAGER
-		sendTrackUpdate: function(track, updatedData) {
-			track.trackId = track.id;
-			socket.emit('send_track_update', track, updatedData);
+		sendTrackUpdate: function(track, update_data) {
+			update_data.trackId = track.trackId;
+			socket.emit('send_track_update', track, update_data);
 		},
 
 		//MESSAGING

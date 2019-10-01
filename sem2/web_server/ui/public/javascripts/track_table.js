@@ -30,22 +30,22 @@ var TrackTableModule = (function() {
 			display.appendChild(track_table);
 
 			//Create row when new track is created
-			ftms_ui.track_manager.addEventListener("create", (track) => {
+			ftms_ui.track_manager.addEventListener("create", track => {
 				var row = new Row(track);
-				rows.set(track.id, row);
+				rows.set(track.trackId, row);
 				track_table.appendChild(row.display);
 			});
 
 			//Handle a track being selected
-			ftms_ui.track_manager.addEventListener("selected", (track) => {
+			ftms_ui.track_manager.addEventListener("selected", track => {
 				//Unselect current selected track, select new one
 				if(current_highlighted) current_highlighted.selected(false);
-				current_highlighted = rows.get(track.id);
+				current_highlighted = rows.get(track.trackId);
 				current_highlighted.selected(true);
 			});
 
 			//Handle a track being unselected
-			ftms_ui.track_manager.addEventListener("unselected", (track) => {
+			ftms_ui.track_manager.addEventListener("unselected", track => {
 				current_highlighted.selected(false);
 				current_highlighted = null;
 			});
@@ -69,7 +69,7 @@ class Row {
 			cell.appendChild(document.createTextNode(elements[i]));
 			this.display.appendChild(cell);
 		}
-		
+
 		this.display.addEventListener("click", () => this.track.selected());
 
 		//When track is updated, update elements
@@ -101,7 +101,7 @@ class Row {
 	//HELPER
 	trackElements(track) {
 		var elements = [ //Track's elements to be displayed
-			track.id,
+			track.trackId,
 			track.affiliation,
 			track.latitude.toFixed(8),
 			track.longitude.toFixed(8),

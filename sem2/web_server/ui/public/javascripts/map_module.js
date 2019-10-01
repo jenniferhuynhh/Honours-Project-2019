@@ -117,8 +117,8 @@ var MapModule = (function() {
 			ftms_ui.track_manager.addEventListener("create", track => {
 				//Create icon entity for the track
 				var ent = viewer.entities.add({
-					id: track.id,
-					name: "ID: " + track.id,
+					id: track.trackId,
+					name: "ID: " + track.trackId,
 					description: "Affiliation: " + track.affiliation + "<br>Longitude: " + track.longitude + "<br>Latitude: " + track.latitude + "<br>Altitude: " + track.altitude,
 					position: Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, track.altitude),
 					billboard: {
@@ -139,11 +139,11 @@ var MapModule = (function() {
 				var old_highlighted = current_highlighted;
 				current_highlighted = track;
 				if(old_highlighted) { //If track was previously selected, unhighlight it
-					var old_ent = viewer.entities.getById(old_highlighted.id);
+					var old_ent = viewer.entities.getById(old_highlighted.trackId);
 					old_ent.billboard.image = this.makeIcon(old_highlighted);
 				}
 				//Highlight newly selected track
-				var ent = viewer.entities.getById(current_highlighted.id);
+				var ent = viewer.entities.getById(current_highlighted.trackId);
 				ent.billboard.image = this.makeIcon(current_highlighted);
 				viewer.selectedEntity = ent;
 			});
@@ -153,7 +153,7 @@ var MapModule = (function() {
 				var old_highlighted = current_highlighted;
 				current_highlighted = null;
 				//Unhighlight previously selected track
-				var old_ent = viewer.entities.getById(old_highlighted.id);
+				var old_ent = viewer.entities.getById(old_highlighted.trackId);
 				old_ent.billboard.image = this.makeIcon(old_highlighted);
 				viewer.selectedEntity = null;
 			});

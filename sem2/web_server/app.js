@@ -82,10 +82,10 @@ function implementations() {
 	//Consumer implementation
 	kafkaConsumer.on('message', async function(message) {
 		if(message.topic == "tdn-systrk") {	//Handles incoming tracks
-			var track = proto.track.decode(message.value);
-			track = proto.track.toObject(track, {enums: String, longs: String});
+			var track_data = proto.track.decode(message.value);
+			track_data = proto.track.toObject(track_data, {enums: String, longs: String});
 
-			Track.findOne({trackId: track.trackId}, function(err, found_track) {
+			Track.findOne({trackId: track_data.trackId}, function(err, found_track) {
 				if(err) return console.log(err);
 
 				if(found_track) { //If changes to track found, overlay those changes before sending to clients
@@ -93,20 +93,21 @@ function implementations() {
 					/*for(var prop in found_track) {
 						if(Object.prototype.hasOwnProperty.call(found_track, prop)) {
 							//console.log(prop);
-							track[prop] = found_track[prop];
+							track_data[prop] = found_track[prop];
 						}
 					}*/
 					if(found_track.affiliation != undefined) {
-						track.affiliation = found_track.affiliation;
+						track_data.affiliation = found_track.affiliation;
 					}
 					if(found_track.domain != undefined) {
-						track.domain = found_track.domain;
+						track_data.domain = found_track.domain;
 					}
 					if(found_track.type != undefined) {
-						track.type = found_track.type;
+						track_data.type = found_track.type;
 					}
 				}
-				io.emit('recieve_track_update', track);
+
+				io.emit('recieve_track_update', track_data);
 			});
 		} else if(message.topic == "tdn-alert") { //Handles incoming alerts
 			//var alert = proto.alert.decode(message.value);
@@ -154,7 +155,7 @@ function implementations() {
 		});*/
 		//Send updated track information (without Andy's backend, using sysTracksUpdates collection)
 		socket.on('send_track_update', function(track, update_data) {
-			update_data.trackId = track.trackId;
+			//update_data.trackId = track.trackId;
 			/*Track.findOne({trackId: track.trackId}, function(err, found_track) {
 				if(err) return console.log(err);
 

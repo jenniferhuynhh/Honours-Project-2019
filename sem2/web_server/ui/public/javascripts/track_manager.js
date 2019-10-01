@@ -29,13 +29,13 @@ var TrackManager = (function() {
 					course: incoming_track_data.course
 				};
 
-				if(incoming_track_data.type != undefined) {
+				if(incoming_track_data.type) {
 					update_data.type = incoming_track_data.type;
 				}
-				if(incoming_track_data.affiliation != undefined) {
+				if(incoming_track_data.affiliation) {
 					update_data.affiliation = incoming_track_data.affiliation;
 				}
-				if(incoming_track_data.domain != undefined) {
+				if(incoming_track_data.domain) {
 					update_data.domain = incoming_track_data.domain;
 				}
 				this.updateTrack(track, update_data);
@@ -47,8 +47,8 @@ var TrackManager = (function() {
 		//CRUD operations
 		//Creates track, adds listeners, then calls this module's create event listeners (CREATE)
 		createTrack: function(track_data) {
-			if(this.getTrack(track_data.id)) { //If track with given ID already exists, stop
-				log("Error: Track with ID '" + track_data.id + "' already exists!");
+			if(this.getTrack(track_data.trackId)) { //If track with given ID already exists, stop
+				log("Error: Track with ID '" + track_data.trackId + "' already exists!");
 				return;
 			}
 
@@ -70,13 +70,13 @@ var TrackManager = (function() {
 				if(selected_track == track) selected_track = null;
 			});
 
-			tracks.set(track.id, track);
+			tracks.set(track.trackId, track);
 			this.callListeners("create", track);
 		},
 
 		//Returns track with matching ID (READ)
-		getTrack: function(id) {
-			return tracks.get(Number(id));
+		getTrack: function(trackId) {
+			return tracks.get(Number(trackId));
 		},
 
 		//Updates track locally (UPDATE)
@@ -85,9 +85,9 @@ var TrackManager = (function() {
 		},
 
 		//Removes a track from the track array by ID (DELETE)
-		deleteTrack: function(id) {
+		deleteTrack: function(trackId) {
 			track.delete();
-			tracks.delete(track.id);
+			tracks.delete(track.trackId);
 		},
 
 		//Sets selected track
@@ -114,7 +114,7 @@ var TrackManager = (function() {
 		//Adds a track for testing purposes
 		test: function() {
 			var t1 = {
-				id: 123,
+				trackId: 123,
 				latitude: 26.576489,
 				longitude: 56.423728,
 				altitude: 0,
@@ -127,7 +127,7 @@ var TrackManager = (function() {
 			this.createTrack(t1);
 
 			var t2 = {
-				id: 124,
+				trackId: 124,
 				latitude: 27.576489,
 				longitude: 57.423728,
 				altitude: 0,
@@ -138,7 +138,7 @@ var TrackManager = (function() {
 				type: "naval ship"
 			};
 			this.createTrack(t2);
-			//this.updateTrack(this.getTrack(t1.id), {affiliation: "hostile"});
+			//this.updateTrack(this.getTrack(t1.trackId), {affiliation: "hostile"});
 		}
 	}
 }());
@@ -146,15 +146,15 @@ var TrackManager = (function() {
 //Track object definition
 class Track {
 	constructor(track_data) {
-		this.id = Number(track_data.id); //unique ID
+		this.trackId = Number(track_data.trackId); //unique ID
 		this.latitude = track_data.latitude; //-34.912955 (Adelaide)
 		this.longitude = track_data.longitude; //138.365660 (Adelaide)
 		this.altitude = track_data.altitude;
 		this.speed = track_data.speed;
 		this.course = track_data.course; //course in degrees
-		this.affiliation = track_data.affiliation; //affiliation of track (friendly, hostile, etc.)
-		this.domain = track_data.domain; //domain of track (air, sea, land, subsurface)
-		this.type = track_data.type; //type of track
+		this.affiliation = track_data.affiliation || "unknown" ; //affiliation of track (friendly, hostile, etc.)
+		this.domain = track_data.domain || "sea"; //domain of track (air, sea, land, subsurface)
+		this.type = track_data.type || "naval ship"; //type of track
 
 		this.listeners = { //Events that listeners can listen for
 			update: [],
