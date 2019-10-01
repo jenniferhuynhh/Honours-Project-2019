@@ -29,7 +29,7 @@ var TrackTableModule = (function() {
 			track_table.appendChild(header);
 			display.appendChild(track_table);
 
-			//Handle creation of new track
+			//Create row when new track is created
 			ftms_ui.track_manager.addEventListener("create", (track) => {
 				var row = new Row(track);
 				rows.set(track.id, row);
@@ -38,14 +38,16 @@ var TrackTableModule = (function() {
 
 			//Handle a track being selected
 			ftms_ui.track_manager.addEventListener("selected", (track) => {
-				if(!track) { //If track is null, means selected track was unselected
-					current_highlighted.selected(false);
-					current_highlighted = null;
-				} else { //Unselect current selected track, select new one
-					if(current_highlighted) current_highlighted.selected(false);
-					current_highlighted = rows.get(track.id);
-					current_highlighted.selected(true);
-				}
+				//Unselect current selected track, select new one
+				if(current_highlighted) current_highlighted.selected(false);
+				current_highlighted = rows.get(track.id);
+				current_highlighted.selected(true);
+			});
+
+			//Handle a track being unselected
+			ftms_ui.track_manager.addEventListener("unselected", (track) => {
+				current_highlighted.selected(false);
+				current_highlighted = null;
 			});
 
 			ftms_ui.window_manager.appendToWindow('Track Table Module', display);
@@ -60,18 +62,25 @@ class Row {
 		//Create display
 		this.display = document.createElement("tr");
 		this.display.classList.add("class", this.track.affiliation + "_data");
+
 		var elements = this.trackElements(this.track);
 		for(var i = 0; i < elements.length; i++) {
 			var cell = document.createElement("td");
 			cell.appendChild(document.createTextNode(elements[i]));
 			this.display.appendChild(cell);
 		}
+		
 		this.display.addEventListener("click", () => this.track.selected());
 
 		//When track is updated, update elements
 		this.track.addEventListener("update", () => {
 			//Update row styling
-			this.display.classList = "";
+			for(var i = 0; i < this.display.classList.length; i++) { //Remove current affiliation class, but keep highlighting if present
+				if(this.display.classList[i].includes("_data")) {
+					this.display.classList.remove(this.display.classList[i--]);
+					break;
+				}
+			}
 			this.display.classList.add("class", this.track.affiliation + "_data");
 
 			//Update row info

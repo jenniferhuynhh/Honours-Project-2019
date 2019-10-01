@@ -104,17 +104,19 @@ var ClassificationModule = (function() {
 				return;
 			}
 
-			var updateData = {};
+			var update_data = {};
 			if(property == 'affiliation') {
-				updateData.affiliation = value;
+				update_data.affiliation = value;
 			} else if(property == 'domain') {
-				updateData.domain = value;
+				update_data.domain = value;
 			} else if(property == 'type') {
-				updateData.type = value; 
+				update_data.type = value; 
 			}
-			ftms_ui.track_manager.updateTrack(track, updateData);
+			
+			//Update locally
+			track.updateData(update_data);
 			//Send track update to track server
-			ftms_ui.event_manager.sendTrackUpdate(track, updateData);
+			ftms_ui.event_manager.sendTrackUpdate(track, update_data);
 		},
 		
 		//Updates the dropdown menu and buttons to reflect track properties

@@ -17,23 +17,6 @@ var MapModule = (function() {
 			display = document.createElement("div");
 			display.style.height = "100%";
 
-
-			//Handle creation of new track
-			ftms_ui.track_manager.addEventListener("create", (track) => {
-				//var icon = new Icon(track);
-				//icons.set(track.id, icon);
-				track.addEventListener("update", () => {
-					this.paintTrack(track);
-				});
-				this.paintTrack(track);
-			});
-
-			ftms_ui.track_manager.addEventListener("selected", (track) => {
-				//var icon = new Icon(track);
-				//icons.set(track.id, icon);
-				this.paintTrack(track);
-			});
-
 			"use strict";
 			//Create the Cesium Viewer
 			// Offline mode 
@@ -58,6 +41,9 @@ var MapModule = (function() {
 			// });
 
 			viewer.scene.mode = Cesium.SceneMode.SCENE2D;
+
+			//Remove entity-focusing upon double click
+			viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
 
 			//////////////////////////////////////////////////////////////////////////
 			// Loading Imagery
@@ -115,32 +101,67 @@ var MapModule = (function() {
 			// Custom mouse interaction for highlighting and selecting
 			//////////////////////////////////////////////////////////////////////////
 
-			//Handle on-click entity selecting
-			var self = this;
+			//Handle on-click track icon selecting
 			var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
-			handler.setInputAction(function(click) {
+			handler.setInputAction(click => {
 				var pickedObject = viewer.scene.pick(click.position);
-				if(Cesium.defined(pickedObject)) {
-					ftms_ui.track_manager.setSelectedTrack(ftms_ui.track_manager.getTrack(viewer.selectedEntity.id));
-				} else {
-					current_highlighted = ftms_ui.track_manager.getSelectedTrack();
-					if(!current_highlighted) return;
-					ftms_ui.track_manager.setSelectedTrack(null);
+				if(Cesium.defined(pickedObject)) { //If clicked on a track icon
+					var clicked_track = ftms_ui.track_manager.getTrack(viewer.selectedEntity.id);
+					clicked_track.selected(); //Select/unselect that icon's track
+				} else { //If clicked on empty space on the map
+					if(current_highlighted) current_highlighted.selected(); //Unselect current selected track
 				}
 			}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
-			
+
+			//Create new icon entity when new track is created
+			ftms_ui.track_manager.addEventListener("create", track => {
+				//Create icon entity for the track
+				var ent = viewer.entities.add({
+					id: track.id,
+					name: "ID: " + track.id,
+					description: "Affiliation: " + track.affiliation + "<br>Longitude: " + track.longitude + "<br>Latitude: " + track.latitude + "<br>Altitude: " + track.altitude,
+					position: Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, track.altitude),
+					billboard: {
+						image: this.makeIcon(track)
+					}
+				});
+
+				//When track is updated, update the icon's properties
+				track.addEventListener("update", () => {
+					ent.description = "Affiliation: " + track.affiliation + "<br>Longitude: " + track.longitude + "<br>Latitude: " + track.latitude + "<br>Altitude: " + track.altitude;
+					ent.position = Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, track.altitude);
+					ent.billboard.image = this.makeIcon(track);
+				});
+			});
+
+			//When new track is selected, update icon's and viewer's appearances
+			ftms_ui.track_manager.addEventListener("selected", track => {
+				var old_highlighted = current_highlighted;
+				current_highlighted = track;
+				if(old_highlighted) { //If track was previously selected, unhighlight it
+					var old_ent = viewer.entities.getById(old_highlighted.id);
+					old_ent.billboard.image = this.makeIcon(old_highlighted);
+				}
+				//Highlight newly selected track
+				var ent = viewer.entities.getById(current_highlighted.id);
+				ent.billboard.image = this.makeIcon(current_highlighted);
+				viewer.selectedEntity = ent;
+			});
+
+			//When track is unselected, update icon's and viewer's appearances
+			ftms_ui.track_manager.addEventListener("unselected", () => {
+				var old_highlighted = current_highlighted;
+				current_highlighted = null;
+				//Unhighlight previously selected track
+				var old_ent = viewer.entities.getById(old_highlighted.id);
+				old_ent.billboard.image = this.makeIcon(old_highlighted);
+				viewer.selectedEntity = null;
+			});
+
 			ftms_ui.window_manager.appendToWindow('Map Module', display);
 		},
 
-
-
-
-		//Places/updates a track on viewer
-		paintTrack: function(track) {
-			if(!track) track = current_highlighted;
-			var ent = viewer.entities.getById(track.id);
-
-			//Decide which military symbol icon to use (uses milsymbol library)
+		makeIcon(track) {
 			var icon_id = 102000;
 			switch(track.affiliation) {
 				case "friendly": 	icon_id += 300;
@@ -163,65 +184,16 @@ var MapModule = (function() {
 									break;
 			}
 
-			//Create milsymbol
-			var color_mode = 'Light';
-			if (ftms_ui.track_manager.getSelectedTrack() == track) {
-				color_mode = 'Dark';
-			}
-			var icon = new ms.Symbol(icon_id, {size: icon_size, colorMode: color_mode}).asCanvas();
+			var color_mode = "Light";
+			if(current_highlighted == track) color_mode = "Dark";
 
-			//Create or update entity
-			if(!ent) {
-				viewer.entities.add({
-					id: track.id,
-					name: `ID: ${track.id}`,
-					show: true,
-					description: `Affiliation: ${track.affiliation} <br> Longitude: ${track.longitude} <br> Latitude: ${track.latitude} <br> Altitude: ${track.altitude}`,
-					position: Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, track.altitude),
-					billboard: {
-						image: icon
-					}
-				});
-			} else {
-				ent.billboard.image = icon;
-				ent.position = Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, track.altitude);
-				ent.description = `Affiliation: ${track.affiliation} <br> Latitude: ${track.latitude} <br> Longitude: ${track.longitude} <br> Altitude: ${track.altitude}`;
-			}
+			return new ms.Symbol(icon_id, {size: icon_size, colorMode: color_mode}).asCanvas();
 		},
 
 		//Erases track from viewer
 		eraseTrack: function(id) {
 			var ent = viewer.entities.getById(id);
 			viewer.entities.remove(ent);
-		}/*,
-
-		//Updates the current state of all tracks
-		update: function() {
-			//Grab new track data
-			var tracks = ftms_ui.track_manager.getTracks();
-			
-			//Paint tracks
-			var self = this;
-			tracks.forEach(function(value, key, map) {
-				self.paintTrack(value);
-			});
-		}*/
+		}
 	}
 }());
-
-class Icon {
-	constructor(track) {
-		this.track = track;
-
-		//Create display
-		this.display.appendChild(document.createTextNode(this.track.id));
-		this.display.addEventListener("click", () => this.track.selected());
-
-		this.track.addEventListener("delete", () => this.display.remove());
-	}
-
-	selected() {
-		this.display.classList.toggle("highlighted");
-		this.display.classList.toggle("icon");
-	}
-}
