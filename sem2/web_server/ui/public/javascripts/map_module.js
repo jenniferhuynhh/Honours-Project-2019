@@ -187,6 +187,10 @@ var MapModule = (function() {
 		},
 		getViewer: function() {
 			return viewer;
+		},
+		setIconSize: function(num) {
+			icon_size = num;
+			this.update();
 		}
 	}
 }());

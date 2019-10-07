@@ -3,6 +3,7 @@ var MessagingModule = (function() {
 	var ftms_ui;
 	var display;
 	var messages;
+	var message_sound;
 
 	//Public
 	return {
@@ -13,6 +14,8 @@ var MessagingModule = (function() {
 			//Create div for elements to sit in
 			display = document.createElement("div");
 			display.classList.add('messaging_module');
+
+			message_sound = new Audio('../resources/messages.mp3');
 
 			//Create messaging module elements
 			var messages_td = document.createElement("td");
