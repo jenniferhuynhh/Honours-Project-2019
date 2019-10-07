@@ -129,11 +129,11 @@ var TrackTableModule = (function() {
 			});
 
 			//Delete missing track's data
-			for(var i = 1; i < track_table.rows.length; i++) {
-				if(!tracks.has(Number(track_table.rows[i].cells[0].innerHTML))) {
-					track_table.removeChild(track_table.rows[i--]);
-				}
-			}
+			// for(var i = 1; i < track_table.rows.length; i++) {
+			// 	if(!tracks.has(track_table.rows[i].cells[0].innerHTML)) {
+			// 		track_table.removeChild(track_table.rows[i--]);
+			// 	}
+			// }
 		}
 	}
 }());

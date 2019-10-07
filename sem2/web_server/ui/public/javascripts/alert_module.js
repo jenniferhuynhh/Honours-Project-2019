@@ -1,44 +1,66 @@
 var AlertModule = (function() {
-	//Private
+	// Private
 	var ftms_ui;
 	var display;
-	var alerts;
+	var showAcknowledgedDiv;
+	var showAcknowledgedChk;
 
-	//Public
+	function showAcknowledged(){
+		var children = display.childNodes;
+
+		for (var i = children.length - 1; i >= 0; i--) {
+			if (children[i] != showAcknowledgedDiv){
+				if (!children[i].classList.contains('dull')){
+					children[i].classList.toggle('hidden');
+				}
+			}				
+		}
+	}
+
+	// Public
 	return {
-		initialise: function(ftms) {
-			//Link FTMS UI system
+		init: function(ftms) {
+			// Link FTMS UI system
 			ftms_ui = ftms;
 
-			//Create div for alerts to sit in
+			// Create div for alerts to sit in
 			display = document.createElement('div');
-			display.setAttribute('class', 'alert_module');
+			display.classList.add('alert_module');
 
-			//Possible alerts to be shown (for simulation)
-			alerts = ['Incoming missle!', 'Hostile track moving.', 'Unknown track.', 'Friendly track.', 'Hostile track.'];
+			// Create div to put "Show Acknowledged" text and checkbox
+			showAcknowledgedDiv = document.createElement('div');
+			showAcknowledgedDiv.style.height = "1.5rem";
+			showAcknowledgedDiv.style.width = "100%";
+			showAcknowledgedDiv.style.color = "white";
 
-			//Append display to window
+			showAcknowledgedChk = document.createElement('input');
+			showAcknowledgedChk.setAttribute("type", "checkbox");
+			showAcknowledgedChk.addEventListener("click", showAcknowledged);
+
+			showAcknowledgedDiv.appendChild(showAcknowledgedChk);
+			showAcknowledgedDiv.appendChild(document.createTextNode("Show Acknowledged Alerts Only"));
+			display.appendChild(showAcknowledgedDiv);
+
+			// Append display to window
 			ftms_ui.window_manager.appendToWindow('Alert Module', display);
-
-			this.tick();
 		},
 
-		//Recursive function that simulates alerts
-		tick: function() {
+		addAlert: function(alertJson){
+			let alert = document.createElement("button");
 
-			//10% chance for a new alert to appear
-			if(Math.random() < 0.20) {
-				this.outputRandomAlert();
-			}
+			// Alert class makes it not look like a button, severity changes colour
+			alert.setAttribute('class', `alert ${alertJson.severity}`);
 
-			var self = this;
-			setTimeout(function() {
-				self.tick();
-			}, 1000);
-		},
+			alert.innerHTML = alertJson.text;
 
-		outputRandomAlert: function() {
-			display.innerHTML = alerts[randomInt(0, alerts.length)] + '<br>' + display.innerHTML;
+			alert.addEventListener('click', function(){
+				alert.classList.add('dull');
+				if (showAcknowledgedChk.checked){
+					alert.remove();
+				}
+			});
+
+			showAcknowledgedDiv.insertAdjacentElement("afterend", alert);
 		}
 	}
 }());

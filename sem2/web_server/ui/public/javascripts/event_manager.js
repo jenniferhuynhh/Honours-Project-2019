@@ -15,8 +15,12 @@ var EventManager = (function() {
 			//RECEIVE MESSAGES FROM SERVER
 			//TRACK MANAGER
 			socket.on('recieve_track_update', function(track) {
-				var parsed_track = JSON.parse(track);
-				ftms_ui.track_manager.recieveTrackUpdate(parsed_track);
+				ftms_ui.track_manager.recieveTrackUpdate(track);
+			});
+
+			//ALERTS
+			socket.on('alert', function(message){
+				ftms_ui.alert_module.addAlert(message);
 			});
 
 			//MESSAGING
