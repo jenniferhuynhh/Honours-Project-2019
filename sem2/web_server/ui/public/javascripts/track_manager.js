@@ -90,6 +90,11 @@ var TrackManager = (function() {
 			tracks.delete(track.trackId);
 		},
 
+		//Returns iterable map of all tracks (READ ALL)
+		getTracks: function() {
+			return tracks;
+		},
+
 		//Sets selected track
 		setSelectedTrack: function(track) {
 			selected_track = track;
@@ -138,6 +143,8 @@ var TrackManager = (function() {
 				type: "naval ship"
 			};
 			this.createTrack(t2);
+
+			//setTimeout(function() {ftms_ui.map_module.setIconSize(40)}, 2000);
 			//this.updateTrack(this.getTrack(t1.trackId), {affiliation: "hostile"});
 		}
 	}
@@ -187,6 +194,15 @@ class Track {
 	callListeners(event) {
 		for(var i = 0; i < this.listeners[event].length; i++) {
 			this.listeners[event][i]();
+		}
+	}
+
+	removeEventListener(event, func) {
+		for (var i = 0; i < this.listeners[event].length; i++) {
+			if(this.listeners[event][i] == func) {
+				this.listeners[event].splice(i, 1);
+				break;
+			}
 		}
 	}
 }

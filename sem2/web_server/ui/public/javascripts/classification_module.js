@@ -7,6 +7,8 @@ var ClassificationModule = (function() {
 	var track_types;
 	var track_domains, track_affiliations;
 
+	var selected_track;
+
 	//Public
 	return {
 		//Declares track types/domains/affilitations and generates display elements
@@ -78,12 +80,14 @@ var ClassificationModule = (function() {
 			display.appendChild(affiliation_div);
 
 			ftms_ui.track_manager.addEventListener("selected", track => {
-				//track.addEventListener("update", () => this.update(track));
+				track.addEventListener("update", this.update(track));
+				selected_track = track;
 				this.update(track);
 			});
 
 			ftms_ui.track_manager.addEventListener("unselected", () => {
-				//track.addEventListener("update", () => this.update(track));
+				selected_track.removeEventListener("update", this.update(selected_track));
+				selected_track = null;
 				this.clearFields();
 			});
 
@@ -122,6 +126,8 @@ var ClassificationModule = (function() {
 			
 			//Update locally
 			track.updateData(update_data);
+			this.update(track);
+			
 			//Send track update to track server
 			ftms_ui.event_manager.sendTrackUpdate(track, update_data);
 		},
@@ -129,7 +135,7 @@ var ClassificationModule = (function() {
 		//Updates the dropdown menu and buttons to reflect track properties
 		update: function(track) {
 			//Update dropdown menu
-			var selected_array = track_types[track.domain];
+			var selected_array = track_types[track.domain.toLowerCase()];
 
 			//Clear existing options
 			while(types_menu.options.length > 0) types_menu.remove(0);
@@ -170,7 +176,7 @@ var ClassificationModule = (function() {
 
 		//Clears the dropdown menu and deselects domain and affiliation buttons
 		clearFields: function() {
-			types_menu.innerHTML = "";
+			while(types_menu.options.length > 0) types_menu.remove(0);
 			for(var i = 0; i < domain_buttons.length; i++) {
 				domain_buttons[i].setAttribute('class', 'unhighlighted_classification_buttons');
 			}

@@ -190,10 +190,25 @@ var MapModule = (function() {
 			return new ms.Symbol(icon_id, {size: icon_size, colorMode: color_mode}).asCanvas();
 		},
 
+		//Updates the appearance of all tracks - DOES NOT YET UPDATE ENTITY'S DESCRIPTION
+		update: function() {
+			var tracks = ftms_ui.track_manager.getTracks();
+
+			tracks.forEach((val, key) => {
+				var ent = viewer.entities.getById(key);
+				ent.billboard.image = this.makeIcon(val);
+			});
+		},
+
 		//Erases track from viewer
 		eraseTrack: function(id) {
 			var ent = viewer.entities.getById(id);
 			viewer.entities.remove(ent);
+		},
+
+		setIconSize: function(num) {
+			icon_size = num;
+			this.update();
 		}
 	}
 }());
