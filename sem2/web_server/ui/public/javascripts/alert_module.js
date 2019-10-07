@@ -4,6 +4,7 @@ var AlertModule = (function() {
 	var display;
 	var showAcknowledgedDiv;
 	var showAcknowledgedChk;
+	var alert_sound;
 
 	function showAcknowledged(){
 		var children = display.childNodes;
@@ -26,6 +27,9 @@ var AlertModule = (function() {
 			// Create div for alerts to sit in
 			display = document.createElement('div');
 			display.classList.add('alert_module');
+
+			// Adding audio
+			alert_sound = new Audio('public/resources/alerts.mp3');
 
 			// Create div to put "Show Acknowledged" text and checkbox
 			showAcknowledgedDiv = document.createElement('div');
@@ -59,6 +63,8 @@ var AlertModule = (function() {
 					alert.remove();
 				}
 			});
+
+			if(ftms_ui.settings.audio_on) alert_sound.play();
 
 			showAcknowledgedDiv.insertAdjacentElement("afterend", alert);
 		}

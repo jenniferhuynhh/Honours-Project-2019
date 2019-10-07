@@ -359,7 +359,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 .settings {
 	width: 100%;
 	height: 100%;
-	background-color: #333333;
+	/*background-color: #333333;*/
 	font-weight: normal;
 }
 

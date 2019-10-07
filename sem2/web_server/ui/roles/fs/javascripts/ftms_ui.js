@@ -8,7 +8,7 @@ var FTMS_UI = (function() {
 		track_table_module: null,
 		classification_module: null,
 		authorisation_approval_module: null,
-		settings_module: null,
+		settings: null,
 		weapon_authorisation_module: null,
 		weapon_firing_module: null,
 		alert_module: null,
@@ -16,9 +16,9 @@ var FTMS_UI = (function() {
 		header: null,
 
 		//Initialises all modules and shows them
-		init: function() {
+		init: function(layout) {
 			this.window_manager = WindowManager;
-			this.window_manager.initialise(this);
+			this.window_manager.initialise(this, layout);
 			
 			this.event_manager = EventManager;
 			this.event_manager.init(this);
@@ -35,8 +35,8 @@ var FTMS_UI = (function() {
 			this.authorisation_approval_module = AuthorisationApprovalModule;
 			this.authorisation_approval_module.initialise(this);
 
-			this.settings_module = SettingsModule;
-			this.settings_module.init(this);
+			this.settings = SettingsModule;
+			this.settings.init(this);
 
 			this.weapon_authorisation_module = WeaponAuthorisationModule;
 			this.weapon_authorisation_module.initialise(this);
