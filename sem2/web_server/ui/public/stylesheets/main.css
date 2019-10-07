@@ -317,17 +317,61 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	font-weight: normal;
 }
 
-.slider_settings {
-	width: 100%;
-	color: white;
-	padding-top: 15px;
-}
-
 .settings_cells {
 	width: 50%;
 	color: white;
 	padding-top: 15px;
 	padding-bottom: 15px;
+}
+
+/*.slider_settings {
+	width: 100%;
+	color: white;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}*/
+
+.setting_rows {
+	height: 50px;
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+
+.left_padding {
+	padding-left: 35px;
+}
+
+.right_padding {
+	padding-right: 10px;
+}
+
+.layout_buttons {
+	height: 30px;
+	width: 50%;
+	background-color: white;
+	border: 3px solid #d3d3d3;
+	border-radius: 5px;
+}
+
+.layout_buttons:hover {
+	background-color: #d3d3d3;
+}
+
+.layout_dropdown {
+	height: 30px;
+	width: 77%;
+	padding-left: 10px;
+	background-color: #d3d3d3;
+	border-radius: 5px;
+}
+
+.save_textbox {
+	padding-left: 10px;
+	height: 24px;
+	width: 70%;
+	background-color: #d3d3d3;
+	border-radius: 5px;
 }
 
 
