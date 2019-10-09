@@ -117,14 +117,9 @@ var TrackManager = (function() {
 			this.updateTrack(t1, {affiliation: "hostile"});
 			ftms_ui.map_module.paintTrack(t1);
 
-			var alert = JSON.parse('{"_id":{"$oid":"5d952b363f446c644762f433"},"timestamp":{"$numberLong":"1570057014412"},"id":{"$numberInt":"1"},"severity":"LOW","status":"NEW","text":"System Track created","associatedObjectId":"4194311"}');
-			var alert2 = JSON.parse('{"_id":{"$oid":"5d952b363f446c644762f433"},"timestamp":{"$numberLong":"1570057014412"},"id":{"$numberInt":"1"},"severity":"MEDIUM","status":"NEW","text":"System Track created","associatedObjectId":"4194311"}');
-			var alert3 = JSON.parse('{"_id":{"$oid":"5d952b363f446c644762f433"},"timestamp":{"$numberLong":"1570057014412"},"id":{"$numberInt":"1"},"severity":"HIGH","status":"NEW","text":"System Track created","associatedObjectId":"4194311"}');
-			var alert4 = JSON.parse('{"_id":{"$oid":"5d952b363f446c644762f433"},"timestamp":{"$numberLong":"1570057014412"},"id":{"$numberInt":"1"},"severity":"CRITICAL","status":"NEW","text":"System Track created","associatedObjectId":"4194311"}');
-			ftms_ui.alert_module.addAlert(alert);
-			ftms_ui.alert_module.addAlert(alert2);
-			ftms_ui.alert_module.addAlert(alert3);
-			ftms_ui.alert_module.addAlert(alert4);
+			//track testing
+			//var alert = JSON.parse('{"_id":{"$oid":"5d952b363f446c644762f433"},"timestamp":{"$numberLong":"1570057014412"},"id":{"$numberInt":"1"},"severity":"LOW","status":"NEW","text":"System Track created","associatedObjectId":"4194311"}');
+			//ftms_ui.alert_module.addAlert(alert);
 
 			//Display data of new track positions
 			ftms_ui.track_table_module.update();
