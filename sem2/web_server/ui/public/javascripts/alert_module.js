@@ -4,6 +4,7 @@ var AlertModule = (function() {
 	var display;
 	var showAcknowledgedDiv;
 	var showAcknowledgedChk;
+	var alert_sound;
 
 	function showAcknowledged(){
 		var children = display.childNodes;
@@ -27,11 +28,13 @@ var AlertModule = (function() {
 			display = document.createElement('div');
 			display.classList.add('alert_module');
 
+			// Adding audio
+			alert_sound = new Audio('public/resources/alerts.mp3');
+
 			// Create div to put "Show Acknowledged" text and checkbox
 			showAcknowledgedDiv = document.createElement('div');
 			showAcknowledgedDiv.style.height = "1.5rem";
 			showAcknowledgedDiv.style.width = "100%";
-			showAcknowledgedDiv.style.color = "white";
 
 			showAcknowledgedChk = document.createElement('input');
 			showAcknowledgedChk.setAttribute("type", "checkbox");
@@ -59,6 +62,8 @@ var AlertModule = (function() {
 					alert.remove();
 				}
 			});
+
+			if(ftms_ui.settings.audio_on) alert_sound.play();
 
 			showAcknowledgedDiv.insertAdjacentElement("afterend", alert);
 		}

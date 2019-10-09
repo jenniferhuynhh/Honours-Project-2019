@@ -124,6 +124,10 @@ var TrackManager = (function() {
 			this.updateTrack(t1, {affiliation: "hostile"});
 			ftms_ui.map_module.paintTrack(t1);
 
+			//track testing
+			//var alert = JSON.parse('{"_id":{"$oid":"5d952b363f446c644762f433"},"timestamp":{"$numberLong":"1570057014412"},"id":{"$numberInt":"1"},"severity":"LOW","status":"NEW","text":"System Track created","associatedObjectId":"4194311"}');
+			//ftms_ui.alert_module.addAlert(alert);
+
 			//Display data of new track positions
 			ftms_ui.track_table_module.update();
 		}
