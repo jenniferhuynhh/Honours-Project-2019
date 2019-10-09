@@ -38,6 +38,7 @@ var TrackManager = (function() {
 				this.updateTrack(track, updateData);
 			} else { //If existing track not found, create new track
 				track = new Track(incoming_track.trackId, incoming_track.latitude, incoming_track.longitude, incoming_track.altitude, incoming_track.speed, incoming_track.course, "unknown", "sea");
+				if(incoming_track.manual) track.manual = incoming_track.manual;
 				this.setTrack(track);
 			}
 		},
@@ -90,6 +91,11 @@ var TrackManager = (function() {
 		//Returns selected track
 		getSelectedTrack: function() {
 			return selected_track;
+		},
+
+		//Gets the next manual track ID from the server and calls the callback when ready
+		getManualTrackId: function(callback) {
+			ftms_ui.event_manager.getManualTrackId(callback);
 		},
 
 		//Registers a listener

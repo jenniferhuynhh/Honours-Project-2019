@@ -18,6 +18,10 @@ var EventManager = (function() {
 				ftms_ui.track_manager.recieveTrackUpdate(track);
 			});
 
+			socket.on('receive_manual_track_id', function(id) {
+				ftms_ui.track_manager.recieveManualTrackID(id);
+			});
+
 			//ALERTS
 			socket.on('alert', function(message){
 				ftms_ui.alert_module.addAlert(message);
@@ -55,6 +59,10 @@ var EventManager = (function() {
 		sendTrackUpdate: function(track, updatedData) {
 			track.trackId = track.id;
 			socket.emit('send_track_update', track, updatedData);
+		},
+
+		getManualTrackId: function(callback) {
+			socket.emit('get_manual_track_id', callback);
 		},
 
 		//MESSAGING

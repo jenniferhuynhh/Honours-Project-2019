@@ -103,51 +103,53 @@ var MapModule = (function() {
 			var manual_track_div = document.createElement("div");
 			var manual_track_button = document.createElement("button");
 			manual_track_button.innerHTML = "Manual";
-			manual_track_button.classList.add( "manual-track-button", "custom-cesium-button", "custom-cesium-toolbar-button");
+			manual_track_button.classList.add("manual-track-button", "custom-cesium-button", "custom-cesium-toolbar-button");
 			manual_track_button.addEventListener("click", function() { //Toggles manual mode on/off
-				if(mode != "manual") {
-					mode = "manual";
-				} else if(mode == "manual") {
-					mode = "normal";
-				}
+				if(mode != "manual") mode = "manual";
+				else if(mode == "manual") mode = "normal";
 				this.classList.toggle("active");
 			});
 			manual_track_div.appendChild(manual_track_button);
 			display.appendChild(manual_track_div);
 
-			viewer.canvas.addEventListener('click', function(e) {
+			//Handle on-click entity selecting
+			var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+			handler.setInputAction(click => {
+				//If in manual track mode
 				if(mode == "manual") {
 					mode = "normal";
 					manual_track_button.classList.toggle("active");
 
-					var correctedX = e.clientX - display.getBoundingClientRect().left; //Corrects mouse position to account for position of viewer on screen
-					var correctedY = e.clientY - display.getBoundingClientRect().top;
+					var previously_selected_track = ftms_ui.track_manager.getSelectedTrack();
+					if(previously_selected_track) viewer.selectedEntity = viewer.entities.getById(previously_selected_track.id); //prevent current selected track's infobox disappearing
+
 					var ellipsoid = viewer.scene.globe.ellipsoid;
-					var cartesian = viewer.camera.pickEllipsoid(new Cesium.Cartesian2(correctedX, correctedY), ellipsoid);
+					var cartesian = viewer.camera.pickEllipsoid(new Cesium.Cartesian2(click.position.x, click.position.y), ellipsoid);
 					if(cartesian) {
 						var cartographic = ellipsoid.cartesianToCartographic(cartesian);
 						var longitude = Cesium.Math.toDegrees(cartographic.longitude);
 						var latitude = Cesium.Math.toDegrees(cartographic.latitude);
 
-						var new_track = new Track(ftms_ui.track_manager.manual_track_counter++, latitude, longitude, 0, 0, 0, "unknown", "sea");
-						ftms_ui.track_manager.setTrack(new_track);
-						ftms_ui.event_manager.sendTrackUpdate(new_track, {}); //send to other clients
+						//Asks server for next manual track ID to be used; makes new manual track upon reply
+						ftms_ui.track_manager.getManualTrackId(function(id) {
+							var new_track = new Track(id, latitude, longitude, 0, 0, 0, "unknown", "sea");
+							new_track.manual = true;
+							ftms_ui.track_manager.setTrack(new_track);
+							ftms_ui.event_manager.sendTrackUpdate(new_track, {}); //send to other clients
+						});
 					}
+					return;
 				}
-			});
 
-			//Handle on-click entity selecting
-			var self = this;
-			var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
-			handler.setInputAction(function(click) {
+				//If in normal mode
 				var pickedObject = viewer.scene.pick(click.position);
-				if(Cesium.defined(pickedObject)) {
+				if(Cesium.defined(pickedObject)) { //If clicked on entity
 					ftms_ui.track_manager.setSelectedTrack(ftms_ui.track_manager.getTrack(viewer.selectedEntity.id));
-				} else {
+				} else { //If clicked on empty space
 					var previously_selected_track = ftms_ui.track_manager.getSelectedTrack();
 					if(!previously_selected_track) return;
 					ftms_ui.track_manager.setSelectedTrack(null);
-					self.paintTrack(previously_selected_track);
+					this.paintTrack(previously_selected_track);
 				}
 			}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 			
@@ -173,16 +175,18 @@ var MapModule = (function() {
 			}
 			switch(track.domain) {
 				case "air": 		icon_id += 100000000000000;
+									if(track.manual) icon_id += 1400000000;
 									break;
 				case "land": 		icon_id += 1000000000000000;
+									if(track.manual) icon_id += 500002400000000;
 									break;
 				case "sea": 		icon_id += 1500000000000000;
+									if(track.manual) icon_id += 1500001700000000;
 									break;
 				case "subsurface": 	icon_id += 3500000000000000;
+									if(track.manual) icon_id += 1600000000;
 									break;
 			}
-			//icon_id = 10030500001300000000;
-			//          100305    130000
 
 			//Create milsymbol
 			var color_mode = 'Light';
