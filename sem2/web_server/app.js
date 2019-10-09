@@ -80,7 +80,7 @@ try {
 //Called after component's (Kafka, protobuf) setups are complete. Contains implementations of these components.
 function implementations() {
 	//Consumer implementation
-	kafkaConsumer.on('message', async function(message) {
+	kafkaConsumer.on('message', function(message) {
 		if(message.topic == "tdn-systrk") {	//Handles incoming tracks
 			var track_data = proto.track.decode(message.value);
 			track_data = proto.track.toObject(track_data, {enums: String, longs: String});

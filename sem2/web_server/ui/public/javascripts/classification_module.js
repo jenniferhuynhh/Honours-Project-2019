@@ -80,13 +80,14 @@ var ClassificationModule = (function() {
 			display.appendChild(affiliation_div);
 
 			ftms_ui.track_manager.addEventListener("selected", track => {
-				track.addEventListener("update", this.update(track));
+				if(selected_track) selected_track.removeEventListener("update", this.update);
 				selected_track = track;
-				this.update(track);
+				selected_track.addEventListener("update", this.update);
+				this.update();
 			});
 
 			ftms_ui.track_manager.addEventListener("unselected", () => {
-				selected_track.removeEventListener("update", this.update(selected_track));
+				selected_track.removeEventListener("update", this.update);
 				selected_track = null;
 				this.clearFields();
 			});
@@ -108,34 +109,26 @@ var ClassificationModule = (function() {
 
 		//Updates a tracks data when needed (dropdown change/button press)
 		updateTrack: function(property, value) {
-			var track = ftms_ui.track_manager.getSelectedTrack();
 			//If nothing is selected
-			if(!track) {
+			if(!selected_track) {
 				this.clearFields(); 
 				return;
 			}
 
 			var update_data = {};
-			if(property == 'affiliation') {
-				update_data.affiliation = value;
-			} else if(property == 'domain') {
-				update_data.domain = value;
-			} else if(property == 'type') {
-				update_data.type = value; 
-			}
-			
+			update_data[property] = value;
+
 			//Update locally
-			track.updateData(update_data);
-			this.update(track);
-			
+			selected_track.updateData(update_data);
+
 			//Send track update to track server
-			ftms_ui.event_manager.sendTrackUpdate(track, update_data);
+			ftms_ui.event_manager.sendTrackUpdate(selected_track, update_data);
 		},
 		
 		//Updates the dropdown menu and buttons to reflect track properties
-		update: function(track) {
+		update: function() {
 			//Update dropdown menu
-			var selected_array = track_types[track.domain.toLowerCase()];
+			var selected_array = track_types[selected_track.domain.toLowerCase()];
 
 			//Clear existing options
 			while(types_menu.options.length > 0) types_menu.remove(0);
@@ -148,7 +141,7 @@ var ClassificationModule = (function() {
 			for(var i = 0; i < selected_array.length; i++) {
 				var option = document.createElement('option');
 				option.innerHTML = selected_array[i];
-				if(track.type == option.innerHTML.toLowerCase()) {
+				if(selected_track.type == option.innerHTML.toLowerCase()) {
 					option.selected = true;
 				}
 				types_menu.appendChild(option);
@@ -156,7 +149,7 @@ var ClassificationModule = (function() {
 
 			//Update domain buttons
 			for(var i = 0; i < domain_buttons.length; i++) {
-				if(domain_buttons[i].value.toLowerCase() == track.domain) {
+				if(domain_buttons[i].value.toLowerCase() == selected_track.domain) {
 					domain_buttons[i].setAttribute('class', 'highlighted_classification__buttons');
 				}
 				else{
@@ -166,7 +159,7 @@ var ClassificationModule = (function() {
 
 			//Update affiliation buttons
 			for(var i = 0; i < affiliation_buttons.length; i++) {
-				if(affiliation_buttons[i].value.toLowerCase() == track.affiliation) {
+				if(affiliation_buttons[i].value.toLowerCase() == selected_track.affiliation) {
 					affiliation_buttons[i].setAttribute('class', 'highlighted_classification__buttons');
 				} else {
 					affiliation_buttons[i].setAttribute('class', 'unhighlighted_classification_buttons');
