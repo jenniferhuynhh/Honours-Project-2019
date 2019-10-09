@@ -33,12 +33,13 @@ try {
 	//CLIENT SETUP
 	kafkaClient = new kafka.KafkaClient();
 	kafkaClient.createTopics(topics, function(err, res) {
-		if(err) console.log('Error creating topics', err);
+		if(err) return console.log('Error creating topics', err);
 
 		//CONSUMER SETUP
 		var offset = new kafka.Offset(kafkaClient);
 		offset.fetchLatestOffsets(topics, function(err, offset) {
-			if(err) console.log('Error fetching offsets', err);
+
+			if(err) return console.log('Error fetching offsets', err);
 
 			//Converts topic array into array of objects required for Kafka setup
 			var topicObjects = [];
