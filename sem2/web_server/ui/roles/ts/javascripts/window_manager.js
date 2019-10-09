@@ -52,7 +52,6 @@ var WindowManager = (function() {
 								isClosable: false
 							},{
 								type: 'stack',
-								activeItemIndex: 1,
 								content: [{
 									type: 'component',
 									componentName: 'Track Classification Module',
