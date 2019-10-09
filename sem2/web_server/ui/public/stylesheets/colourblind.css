@@ -43,42 +43,42 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 }
 
 .hostile_data {
-	background-color: #FF9797;
+	background-color: #ddddbb;
 }
 
 .hostile_data:hover {
-	background-color: #ff471a;
+	background-color: #aaaa55;
 }
 
 .highlighted_hostile_data {
 	/*background-color: #c80000;*/
-	background-color: #A40303;
+	background-color: #666633;
 }
 
 .neutral_data {
-	background-color: #aaffaa;
+	background-color: #d9d9d9;
 }
 
 .neutral_data:hover {
-	background-color: #00E200;
+	background-color: #b3b3b3;
 }
 
 .highlighted_neutral_data {
 	/*background-color: #00a000;*/
-	background-color: #00A000;
+	background-color: #8c8c8c;
 }
 
 .unknown_data {
-	background-color: #ffff80;
+	background-color: #ffeb99;
 }
 
 .unknown_data:hover{
-	background-color: #ffff33;
+	background-color: #ffd11a;
 }
 
 .highlighted_unknown_data {
 	/*background-color: #e1dc00;*/
-	background-color: #b3b300;
+	background-color: #cca300;
 }
 
 /*** Classification module buttons ***/
@@ -144,35 +144,35 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 }
 
 .alert.CRITICAL {
-	color: #ff0000;
+	color: #0066ff;
 }
 
 .alert.CRITICAL.dull {
-	color: #800000;
+	color: #0052cc;
 }
 
 .alert.HIGH {
-	color: #e65c00;
+	color: #cc9900;
 }
 
 .alert.HIGH.dull {
-	color: #806000;
+	color: #997300;
 }
 
 .alert.MEDIUM {
-	color: #b3b300;
+	color: #996633;
 }
 
 .alert.MEDIUM.dull {
-	color: #808000;
+	color: #734d26;
 }
 
 .alert.LOW {
-	color: #00b300;
+	color: #999966;
 }
 
 .alert.LOW.dull {
-	color: #008000;
+	color: #7a7a52;
 }
 
 .hidden {
@@ -273,16 +273,16 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	width: 80px;
 	height: 80px;
 	border-radius: 50%;
-	border-color: #b20101;
+	border-color: #001133;
 	font-size: 20px;
 }
 
 .unhighlighted_fire_button {
-	background-color: #ff3d3d;
+	background-color: #003399;
 }
 
 .highlighted_fire_button {
-	background-color: #a01414;
+	background-color: #002266;
 }
 
 .disabled_button {
@@ -325,7 +325,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 }
 
 .tick_cell {
-	background-color: #00802b;
+	background-color: #b38600;
 	width: 15%;
 	color: #212121;
 	font-size: 30px;
@@ -333,11 +333,11 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 }
 
 .tick_cell:hover {
-	background-color: #009933;
+	background-color: #e6ac00;
 }
 
 .cross_cell {
-	background-color: #a01414;
+	background-color: mediumblue;
 	width: 15%;
 	color: #212121;
 	font-size: 30px;
@@ -345,7 +345,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 }
 
 .cross_cell:hover {
-	background-color: #cc1919;
+	background-color: #0044cc;
 }
 
 .status_cell {
@@ -376,7 +376,6 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	color: white;
 	padding-top: 15px;
 	padding-bottom: 15px;
-	vertical-align: middle;
 }
 
 .setting_rows {
@@ -420,6 +419,4 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	background-color: #d3d3d3;
 	border-radius: 5px;
 }
-
-
 
