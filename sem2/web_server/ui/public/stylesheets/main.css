@@ -129,6 +129,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	width: 100%;
 	height: 100%;
 	overflow: auto;
+	color: white;
 }
 
 .alert {
@@ -151,7 +152,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 }
 
 .alert.HIGH {
-	color: #ffbf00;
+	color: #e65c00;
 }
 
 .alert.HIGH.dull {
@@ -159,7 +160,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 }
 
 .alert.MEDIUM {
-	color: #ffff00;
+	color: #b3b300;
 }
 
 .alert.MEDIUM.dull {
@@ -167,7 +168,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 }
 
 .alert.LOW {
-	color: #00ff00;
+	color: #00b300;
 }
 
 .alert.LOW.dull {
@@ -356,6 +357,13 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 }
 
 /*** Settings Module ***/
+.settings_module{
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	text-align: center;
+}
+
 .settings {
 	width: 100%;
 	height: 100%;
@@ -369,14 +377,6 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	padding-top: 15px;
 	padding-bottom: 15px;
 }
-
-/*.slider_settings {
-	width: 100%;
-	color: white;
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
-}*/
 
 .setting_rows {
 	height: 50px;

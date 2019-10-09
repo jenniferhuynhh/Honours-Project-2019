@@ -35,7 +35,6 @@ var AlertModule = (function() {
 			showAcknowledgedDiv = document.createElement('div');
 			showAcknowledgedDiv.style.height = "1.5rem";
 			showAcknowledgedDiv.style.width = "100%";
-			showAcknowledgedDiv.style.color = "white";
 
 			showAcknowledgedChk = document.createElement('input');
 			showAcknowledgedChk.setAttribute("type", "checkbox");
