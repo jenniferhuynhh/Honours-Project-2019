@@ -48,6 +48,11 @@ var EventManager = (function() {
 			socket.on('receive_request_status', function(data) {
 				ftms_ui.authorisation_approval_module.receiveRequestStatus(data);
 			});
+
+			//TRACK REPLAY
+			socket.on('receive_replay_tracks', function(tracks) {
+				ftms_ui.replay_module.plotTracks(tracks);
+			});
 		},
 		
 		//SEND MESSAGES TO SERVER
@@ -73,6 +78,11 @@ var EventManager = (function() {
 
 		sendRequestStatus: function(data) {
 			socket.emit('send_request_status', data);
+		},
+
+		//TRACK REPLAY
+		sendTrackReplayRequest: function(prevTime, newTime, ){
+			socket.emit('get_replay_tracks', prevTime, newTime);
 		}
 	}
 }());
