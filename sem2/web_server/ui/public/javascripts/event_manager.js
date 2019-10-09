@@ -48,6 +48,11 @@ var EventManager = (function() {
 			socket.on('receive_request_status', function(data) {
 				ftms_ui.authorisation_approval_module.receiveRequestStatus(data);
 			});
+
+			//SETTINGS
+			socket.on('receive_layouts', function(data) {
+				ftms_ui.settings.receiveLayouts(data);
+			});
 		},
 		
 		//SEND MESSAGES TO SERVER
@@ -73,6 +78,14 @@ var EventManager = (function() {
 
 		sendRequestStatus: function(data) {
 			socket.emit('send_request_status', data);
+		},
+
+		saveLayout: function(layout) {
+			socket.emit('save_layout', layout);
+		},
+
+		loadLayouts: function() {
+			socket.emit('load_layouts');
 		}
 	}
 }());

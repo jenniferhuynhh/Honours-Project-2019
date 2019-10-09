@@ -7,14 +7,15 @@ var FTMS_UI = (function() {
 		map_module: null,
 		track_table_module: null,
 		authorisation_approval_module: null,
+		settings: null,
 		alert_module: null,
 		messaging_module: null,
 		header: null,
 
 		//Initialises all modules and shows them
-		init: function() {
+		init: function(layout) {
 			this.window_manager = WindowManager;
-			this.window_manager.initialise(this);
+			this.window_manager.initialise(this, layout);
 			
 			this.event_manager = EventManager;
 			this.event_manager.init(this);
@@ -30,6 +31,9 @@ var FTMS_UI = (function() {
 
 			this.authorisation_approval_module = AuthorisationApprovalModule;
 			this.authorisation_approval_module.initialise(this);
+
+			this.settings = SettingsModule;
+			this.settings.init(this);
 
 			this.alert_module = AlertModule;
 			this.alert_module.init(this);
