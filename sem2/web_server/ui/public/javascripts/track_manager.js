@@ -7,6 +7,7 @@ var TrackManager = (function() {
 
 	//Public
 	return {
+		manual_track_counter: 0,
 		init: function(ftms) {
 			//Link FTMS UI system
 			ftms_ui = ftms;

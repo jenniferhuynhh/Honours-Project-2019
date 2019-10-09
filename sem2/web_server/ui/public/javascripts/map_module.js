@@ -4,6 +4,7 @@ var MapModule = (function() {
 	var icon_size = 15; //Size of milsymbol symbols
 	var display;
 	var viewer;
+	var mode = "normal";
 
 	//Public
 	return {
@@ -94,9 +95,46 @@ var MapModule = (function() {
 				viewer.scene.camera.flyTo(homeCameraView);
 			});
 
-			//////////////////////////////////////////////////////////////////////////
-			// Custom mouse interaction for highlighting and selecting
-			//////////////////////////////////////////////////////////////////////////
+			/////////////////////////////////////////////////////////////////////////////////
+			// Custom mouse interaction for highlighting, selecting and manual track placing
+			/////////////////////////////////////////////////////////////////////////////////
+
+			//Manual track handling
+			var manual_track_div = document.createElement("div");
+			var manual_track_button = document.createElement("button");
+			manual_track_button.innerHTML = "Manual";
+			manual_track_button.classList.add( "manual-track-button", "custom-cesium-button", "custom-cesium-toolbar-button");
+			manual_track_button.addEventListener("click", function() { //Toggles manual mode on/off
+				if(mode != "manual") {
+					mode = "manual";
+				} else if(mode == "manual") {
+					mode = "normal";
+				}
+				this.classList.toggle("active");
+			});
+			manual_track_div.appendChild(manual_track_button);
+			display.appendChild(manual_track_div);
+
+			viewer.canvas.addEventListener('click', function(e) {
+				if(mode == "manual") {
+					mode = "normal";
+					manual_track_button.classList.toggle("active");
+
+					var correctedX = e.clientX - display.getBoundingClientRect().left; //Corrects mouse position to account for position of viewer on screen
+					var correctedY = e.clientY - display.getBoundingClientRect().top;
+					var ellipsoid = viewer.scene.globe.ellipsoid;
+					var cartesian = viewer.camera.pickEllipsoid(new Cesium.Cartesian2(correctedX, correctedY), ellipsoid);
+					if(cartesian) {
+						var cartographic = ellipsoid.cartesianToCartographic(cartesian);
+						var longitude = Cesium.Math.toDegrees(cartographic.longitude);
+						var latitude = Cesium.Math.toDegrees(cartographic.latitude);
+
+						var new_track = new Track(ftms_ui.track_manager.manual_track_counter++, latitude, longitude, 0, 0, 0, "unknown", "sea");
+						ftms_ui.track_manager.setTrack(new_track);
+						ftms_ui.event_manager.sendTrackUpdate(new_track, {}); //send to other clients
+					}
+				}
+			});
 
 			//Handle on-click entity selecting
 			var self = this;
@@ -122,31 +160,33 @@ var MapModule = (function() {
 			var ent = viewer.entities.getById(track.id);
 
 			//Decide which military symbol icon to use (uses milsymbol library)
-			var icon_id = 102000;
+			var icon_id = 10200000000000000000;
 			switch(track.affiliation) {
-				case "friendly": 	icon_id += 300;
+				case "friendly": 	icon_id += 30000000000000000;
 									break;
-				case "hostile": 	icon_id += 600;
+				case "hostile": 	icon_id += 60000000000000000;
 									break;
-				case "neutral": 	icon_id += 400;
+				case "neutral": 	icon_id += 40000000000000000;
 									break;
-				case "unknown": 	icon_id += 100;
+				case "unknown": 	icon_id += 10000000000000000;
 									break;
 			}
 			switch(track.domain) {
-				case "air": 		icon_id += 1;
+				case "air": 		icon_id += 100000000000000;
 									break;
-				case "land": 		icon_id += 10;
+				case "land": 		icon_id += 1000000000000000;
 									break;
-				case "sea": 		icon_id += 15;
+				case "sea": 		icon_id += 1500000000000000;
 									break;
-				case "subsurface": 	icon_id += 35;
+				case "subsurface": 	icon_id += 3500000000000000;
 									break;
 			}
+			//icon_id = 10030500001300000000;
+			//          100305    130000
 
 			//Create milsymbol
 			var color_mode = 'Light';
-			if (ftms_ui.track_manager.getSelectedTrack() == track) {
+			if(ftms_ui.track_manager.getSelectedTrack() == track) {
 				color_mode = 'Dark';
 			}
 			var icon = new ms.Symbol(icon_id, {size: icon_size, colorMode: color_mode}).asCanvas();
