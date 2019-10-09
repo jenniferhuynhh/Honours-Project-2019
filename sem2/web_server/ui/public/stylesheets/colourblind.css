@@ -81,6 +81,11 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	background-color: #cca300;
 }
 
+.delete_cell {
+	font-size:13px;
+	width: 20px;
+}
+
 /*** Classification module buttons ***/
 .classification_buttons_container {
 	height: 130px;
