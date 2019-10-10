@@ -80,7 +80,7 @@ var TrackTableModule = (function() {
 			//Handle track selecting
 			var self = this;
 			row.addEventListener("click", function() {
-				var row_track = ftms_ui.track_manager.getTrack(this.cells[0].innerHTML);
+				var row_track = ftms_ui.track_manager.getTrack(this.cells[0].innerHTML.replace("*",""));
 				if(ftms_ui.track_manager.getSelectedTrack() == row_track) { //Unselect
 					ftms_ui.track_manager.setSelectedTrack(null);
 					ftms_ui.map_module.getViewer().selectedEntity = undefined;
