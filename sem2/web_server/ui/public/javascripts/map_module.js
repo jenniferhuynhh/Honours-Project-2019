@@ -105,8 +105,8 @@ var MapModule = (function() {
 			manual_track_button.innerHTML = "Manual";
 			manual_track_button.classList.add("manual-track-button", "custom-cesium-button", "custom-cesium-toolbar-button");
 			manual_track_button.addEventListener("click", function() { //Toggles manual mode on/off
-				if(mode != "manual") mode = "manual";
-				else if(mode == "manual") mode = "normal";
+				if(mode == "manual") mode = "normal";
+				else mode = "manual";
 				this.classList.toggle("active");
 			});
 			manual_track_div.appendChild(manual_track_button);
@@ -115,11 +115,7 @@ var MapModule = (function() {
 			//Handle on-click entity selecting
 			var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
 			handler.setInputAction(click => {
-				//If in manual track mode
 				if(mode == "manual") {
-					mode = "normal";
-					manual_track_button.classList.toggle("active");
-
 					var previously_selected_track = ftms_ui.track_manager.getSelectedTrack();
 					if(previously_selected_track) viewer.selectedEntity = viewer.entities.getById(previously_selected_track.id); //prevent current selected track's infobox disappearing
 
@@ -138,18 +134,16 @@ var MapModule = (function() {
 							ftms_ui.event_manager.sendTrackUpdate(new_track, {}); //send to other clients
 						});
 					}
-					return;
-				}
-
-				//If in normal mode
-				var pickedObject = viewer.scene.pick(click.position);
-				if(Cesium.defined(pickedObject)) { //If clicked on entity
-					ftms_ui.track_manager.setSelectedTrack(ftms_ui.track_manager.getTrack(viewer.selectedEntity.id));
-				} else { //If clicked on empty space
-					var previously_selected_track = ftms_ui.track_manager.getSelectedTrack();
-					if(!previously_selected_track) return;
-					ftms_ui.track_manager.setSelectedTrack(null);
-					this.paintTrack(previously_selected_track);
+				} else if(mode == "normal") {
+					var pickedObject = viewer.scene.pick(click.position);
+					if(Cesium.defined(pickedObject)) { //If clicked on entity
+						ftms_ui.track_manager.setSelectedTrack(ftms_ui.track_manager.getTrack(viewer.selectedEntity.id));
+					} else { //If clicked on empty space
+						var previously_selected_track = ftms_ui.track_manager.getSelectedTrack();
+						if(!previously_selected_track) return;
+						ftms_ui.track_manager.setSelectedTrack(null);
+						this.paintTrack(previously_selected_track);
+					}
 				}
 			}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 			
