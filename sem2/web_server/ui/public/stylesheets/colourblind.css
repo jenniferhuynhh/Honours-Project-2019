@@ -361,6 +361,50 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	font-size: 14px;
 }
 
+/*** Map Module ***/
+.custom-cesium-button {
+	display: inline-block;
+	position: relative;
+	background: #303336;
+	border: 1px solid #444;
+	color: #edffff;
+	fill: #edffff;
+	border-radius: 4px;
+	padding: 5px 12px;
+	margin: 2px 3px;
+	cursor: pointer;
+	overflow: hidden;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.custom-cesium-toolbar-button {
+	box-sizing: border-box;
+	width: 32px;
+	height: 32px;
+	border-radius: 14%;
+	padding: 0;
+	vertical-align: middle;
+	z-index: 0;
+}
+
+.custom-cesium-button.active, .custom-cesium-button:active  {
+	color: #000;
+	fill: #000;
+	background: #adf;
+	border-color: #fff;
+	box-shadow: 0 0 8px #fff;
+}
+
+.manual-track-button {
+	position: absolute;
+	top: 5px;
+	left: 5px;
+	width: 70px;
+}
+
 /*** Settings Module ***/
 .settings_module{
 	width: 100%;
