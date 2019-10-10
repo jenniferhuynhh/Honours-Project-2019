@@ -103,6 +103,14 @@ var TrackManager = (function() {
 			}
 		},
 
+		removeAll: function() {
+			tracks.forEach(function(track){
+				ftms_ui.map_module.eraseTrack(track.id);
+			});
+			tracks = new Map();
+			ftms_ui.track_table_module.update();
+		},
+
 		//Adds a track for testing purposes
 		test: function() {
 			var test_listener = {

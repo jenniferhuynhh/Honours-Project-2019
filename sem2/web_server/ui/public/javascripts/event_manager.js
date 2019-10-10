@@ -10,12 +10,13 @@ var EventManager = (function() {
 			ftms_ui = ftms;
 
 			//Socket.io library being used for server communications
-			socket = io();
+			socket = io('http://localhost:3000');
 
 			//RECEIVE MESSAGES FROM SERVER
 			//TRACK MANAGER
 			socket.on('recieve_track_update', function(track) {
-				ftms_ui.track_manager.recieveTrackUpdate(track);
+				if (!ftms_ui.replay_module.isReplayMode())
+					ftms_ui.track_manager.recieveTrackUpdate(track);
 			});
 
 			//ALERTS
@@ -50,9 +51,10 @@ var EventManager = (function() {
 			});
 
 			//TRACK REPLAY
-			socket.on('receive_replay_tracks', function(tracks) {
-				ftms_ui.replay_module.plotTracks(tracks);
-			});
+			// socket.on('receive_replay_tracks', function(tracks) {
+			// 	if (ftms_ui.replay_module.isReplayMode())
+			// 		ftms_ui.replay_module.plotTracks(tracks);
+			// });
 		},
 		
 		//SEND MESSAGES TO SERVER
@@ -81,8 +83,16 @@ var EventManager = (function() {
 		},
 
 		//TRACK REPLAY
-		sendTrackReplayRequest: function(prevTime, newTime, ){
-			socket.emit('get_replay_tracks', prevTime, newTime);
+		sendTrackReplayRequest: function(prevTime, newTime, plotTracks){
+			console.log(plotTracks);
+			// (tracks) =>{
+			// 	plotTracks(tracks);
+			// }
+			socket.emit('get_replay_tracks', prevTime, newTime, plotTracks);
+		},
+
+		sendReplayBoundRequest: function(setBounds){
+			socket.emit('get_replay_bounds', setBounds)
 		}
 	}
 }());

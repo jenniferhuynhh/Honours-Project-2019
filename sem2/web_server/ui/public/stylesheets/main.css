@@ -356,6 +356,10 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 }
 
 /*** Replay Module ***/
+.cesium-viewer-bottom {
+	display: none;
+}
+
 #switchDiv {
 	display: flex;
 	justify-content: center;

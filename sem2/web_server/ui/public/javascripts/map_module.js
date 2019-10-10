@@ -25,20 +25,18 @@ var MapModule = (function() {
 				imageryProvider : Cesium.createTileMapServiceImageryProvider({
 					url : Cesium.buildModuleUrl('Assets/Textures/NaturalEarthII')
 				}),
-				animation: false,
 				selectionIndicator: false,
-				timeline: false,
 				baseLayerPicker : false,
 				geocoder : false
 			});
 
 			// Online mode - Includes Imagery and Terrain sections
 			// viewer = new Cesium.Viewer(display, {
-			// 	animation: false,
 			// 	selectionIndicator: false,
-			// 	timeline: false,
 			// 	baseLayerPicker: false
 			// });
+
+			this.hideReplayControls();
 
 			viewer.scene.mode = Cesium.SceneMode.SCENE2D;
 
@@ -187,6 +185,14 @@ var MapModule = (function() {
 		},
 		getViewer: function() {
 			return viewer;
+		},
+		hideReplayControls: function() {
+			viewer.animation.container.style.display = "none";
+			viewer.timeline.container.style.display = "none";
+		},
+		showReplayControls: function() {
+			viewer.animation.container.style.display = "block";
+			viewer.timeline.container.style.display = "block";
 		}
 	}
 }());
