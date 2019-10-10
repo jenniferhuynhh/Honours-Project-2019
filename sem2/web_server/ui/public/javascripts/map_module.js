@@ -71,7 +71,7 @@ var MapModule = (function() {
 			viewer.scene.globe.enableLighting = true;
 
 			// Create an initial camera view
-			var initialPosition = new Cesium.Cartesian3.fromDegrees(56.78, 26.5731, 34000);
+			var initialPosition = new Cesium.Cartesian3.fromDegrees(56.78, 26.5731, 1000000);
 			var initialOrientation = new Cesium.HeadingPitchRoll.fromDegrees(0, 0, 0);
 			var homeCameraView = {
 				destination : initialPosition,
