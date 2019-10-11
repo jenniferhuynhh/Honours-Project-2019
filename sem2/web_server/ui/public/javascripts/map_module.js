@@ -4,6 +4,7 @@ var MapModule = (function() {
 	var icon_size = 15; //Size of milsymbol symbols
 	var display;
 	var viewer;
+	var mode = "normal";
 
 	//Public
 	return {
@@ -70,7 +71,7 @@ var MapModule = (function() {
 			viewer.scene.globe.enableLighting = true;
 
 			// Create an initial camera view
-			var initialPosition = new Cesium.Cartesian3.fromDegrees(56.78, 26.5731, 34000);
+			var initialPosition = new Cesium.Cartesian3.fromDegrees(56.78, 26.5731, 1000000);
 			var initialOrientation = new Cesium.HeadingPitchRoll.fromDegrees(0, 0, 0);
 			var homeCameraView = {
 				destination : initialPosition,
@@ -94,22 +95,55 @@ var MapModule = (function() {
 				viewer.scene.camera.flyTo(homeCameraView);
 			});
 
-			//////////////////////////////////////////////////////////////////////////
-			// Custom mouse interaction for highlighting and selecting
-			//////////////////////////////////////////////////////////////////////////
+			/////////////////////////////////////////////////////////////////////////////////
+			// Custom mouse interaction for highlighting, selecting and manual track placing
+			/////////////////////////////////////////////////////////////////////////////////
+
+			//Manual track handling
+			var manual_track_div = document.createElement("div");
+			var manual_track_button = document.createElement("button");
+			manual_track_button.innerHTML = "Manual";
+			manual_track_button.classList.add("manual-track-button", "custom-cesium-button", "custom-cesium-toolbar-button");
+			manual_track_button.addEventListener("click", function() { //Toggles manual mode on/off
+				if(mode == "manual") mode = "normal";
+				else mode = "manual";
+				this.classList.toggle("active");
+			});
+			manual_track_div.appendChild(manual_track_button);
+			display.appendChild(manual_track_div);
 
 			//Handle on-click entity selecting
-			var self = this;
 			var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
-			handler.setInputAction(function(click) {
-				var pickedObject = viewer.scene.pick(click.position);
-				if(Cesium.defined(pickedObject)) {
-					ftms_ui.track_manager.setSelectedTrack(ftms_ui.track_manager.getTrack(viewer.selectedEntity.id));
-				} else {
+			handler.setInputAction(click => {
+				if(mode == "manual") {
 					var previously_selected_track = ftms_ui.track_manager.getSelectedTrack();
-					if(!previously_selected_track) return;
-					ftms_ui.track_manager.setSelectedTrack(null);
-					self.paintTrack(previously_selected_track);
+					if(previously_selected_track) viewer.selectedEntity = viewer.entities.getById(previously_selected_track.id); //prevent current selected track's infobox disappearing
+
+					var ellipsoid = viewer.scene.globe.ellipsoid;
+					var cartesian = viewer.camera.pickEllipsoid(new Cesium.Cartesian2(click.position.x, click.position.y), ellipsoid);
+					if(cartesian) {
+						var cartographic = ellipsoid.cartesianToCartographic(cartesian);
+						var longitude = Cesium.Math.toDegrees(cartographic.longitude);
+						var latitude = Cesium.Math.toDegrees(cartographic.latitude);
+
+						//Asks server for next manual track ID to be used; makes new manual track upon reply
+						ftms_ui.track_manager.getManualTrackId(function(id) {
+							var new_track = new Track(id, latitude, longitude, 0, 0, 0, "unknown", "sea");
+							new_track.manual = true;
+							ftms_ui.track_manager.setTrack(new_track);
+							ftms_ui.event_manager.sendTrackUpdate(new_track, {}); //send to other clients
+						});
+					}
+				} else if(mode == "normal") {
+					var pickedObject = viewer.scene.pick(click.position);
+					if(Cesium.defined(pickedObject)) { //If clicked on entity
+						ftms_ui.track_manager.setSelectedTrack(ftms_ui.track_manager.getTrack(viewer.selectedEntity.id));
+					} else { //If clicked on empty space
+						var previously_selected_track = ftms_ui.track_manager.getSelectedTrack();
+						if(!previously_selected_track) return;
+						ftms_ui.track_manager.setSelectedTrack(null);
+						this.paintTrack(previously_selected_track);
+					}
 				}
 			}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 			
@@ -122,31 +156,35 @@ var MapModule = (function() {
 			var ent = viewer.entities.getById(track.id);
 
 			//Decide which military symbol icon to use (uses milsymbol library)
-			var icon_id = 102000;
+			var icon_id = 10200000000000000000;
 			switch(track.affiliation) {
-				case "friendly": 	icon_id += 300;
+				case "friendly": 	icon_id += 30000000000000000;
 									break;
-				case "hostile": 	icon_id += 600;
+				case "hostile": 	icon_id += 60000000000000000;
 									break;
-				case "neutral": 	icon_id += 400;
+				case "neutral": 	icon_id += 40000000000000000;
 									break;
-				case "unknown": 	icon_id += 100;
+				case "unknown": 	icon_id += 10000000000000000;
 									break;
 			}
 			switch(track.domain) {
-				case "air": 		icon_id += 1;
+				case "air": 		icon_id += 100000000000000;
+									if(track.manual) icon_id += 1400000000;
 									break;
-				case "land": 		icon_id += 10;
+				case "land": 		icon_id += 1000000000000000;
+									if(track.manual) icon_id += 500002400000000;
 									break;
-				case "sea": 		icon_id += 15;
+				case "sea": 		icon_id += 1500000000000000;
+									if(track.manual) icon_id += 1500001700000000;
 									break;
-				case "subsurface": 	icon_id += 35;
+				case "subsurface": 	icon_id += 3500000000000000;
+									if(track.manual) icon_id += 1600000000;
 									break;
 			}
 
 			//Create milsymbol
 			var color_mode = 'Light';
-			if (ftms_ui.track_manager.getSelectedTrack() == track) {
+			if(ftms_ui.track_manager.getSelectedTrack() == track) {
 				color_mode = 'Dark';
 			}
 			var icon = new ms.Symbol(icon_id, {size: icon_size, colorMode: color_mode}).asCanvas();

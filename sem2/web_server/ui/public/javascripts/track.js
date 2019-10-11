@@ -8,4 +8,5 @@ function Track(track_id, lat, long, alt, speed, course, affiliation, domain) {
 	this.type = "naval ship"; //type of track
 	this.affiliation = affiliation; //affiliation of track (friendly, hostile, etc.)
 	this.domain = domain; //domain of track (air, sea, land, subsurface)
+	this.manual = false;
 }

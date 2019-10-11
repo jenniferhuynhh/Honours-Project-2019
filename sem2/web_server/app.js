@@ -122,6 +122,7 @@ function implementations() {
 	});
 
 	var requestCount = 0;
+	var manual_track_count = 0;
 	//Socket.io implementations
 	io.on('connection', function(socket) {
 		var address = socket.handshake.address.split(":").pop(); //Gets client's public IP address
@@ -148,6 +149,11 @@ function implementations() {
 			io.emit('chat_message', socket.username, message);
 		});
 
+		//TRACK MANAGER
+		socket.on('get_manual_track_id', function(callback) {
+			callback(manual_track_count++);
+		});
+
 		//CLASSIFICATION MODULE
 		//Send updated track information (with Andy's backend ready)
 		/*socket.on('send_track_update', function(track, updatedData) {
@@ -162,7 +168,7 @@ function implementations() {
 		socket.on('send_track_update', function(track, updatedData) {
 			updatedData.trackId = track.trackId;
 			Track.updateOne({trackId: track.trackId}, updatedData, function(error, writeOpResult) {
-				if(!writeOpResult.nModified) {
+				if(!writeOpResult.nModified && !writeOpResult.n) {
 					Track.create(updatedData, function(err, user) {
 						if(err) return console.log(err);
 					});
