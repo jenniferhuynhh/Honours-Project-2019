@@ -179,6 +179,17 @@ function implementations() {
 		socket.on('send_request_status', function(data){
 			io.emit('receive_request_status', data);
 		});
+
+		//REPLAY MODULE
+		socket.on('get_replay_tracks', function(prevTime, newTime, plotTracks){
+			// Get tracks from kafka 'Offset' API
+			plotTracks('Test ACK');
+		});
+
+		socket.on('get_replay_bounds', function(setBounds){
+			// Get start/end from kafka streem
+			setBounds('start','end');
+		});
 	});
 }
 
