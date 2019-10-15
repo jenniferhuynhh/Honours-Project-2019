@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var Track = require('./models/track.js');
+var UserLayouts = require('./models/layouts.js');
 var session = require('express-session');
 var kafka = require('kafka-node');
 var protobuf = require("protobufjs");
@@ -16,15 +17,20 @@ var app = express();
 mongoose.connect('mongodb://localhost:27017/tmsdb', {useNewUrlParser: true});
 
 //Use sessions for tracking logins
-app.use(session({
+var sessionMiddleware = session({
 	secret: 'gr9jq1Fvih7l4jBp29TnySC6XOw=',
 	resave: true,
 	saveUninitialized: false
-}));
+});
 
 //Socket.io setup
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
+io.use(function(socket, next){
+	sessionMiddleware(socket.request, socket.request.res, next);
+});
+
+app.use(sessionMiddleware);
 
 //Kafka and protobuf setups
 var topics = ['tdn-systrk', 'tdn-alert', 'tdn-ui-changes'];
@@ -117,6 +123,7 @@ function implementations() {
 	});
 
 	var requestCount = 0;
+	var manual_track_count = 0;
 	//Socket.io implementations
 	io.on('connection', function(socket) {
 		var address = socket.handshake.address.split(":").pop(); //Gets client's public IP address
@@ -143,6 +150,11 @@ function implementations() {
 			io.emit('chat_message', socket.username, message);
 		});
 
+		//TRACK MANAGER
+		socket.on('get_manual_track_id', function(callback) {
+			callback(manual_track_count++);
+		});
+
 		//CLASSIFICATION MODULE
 		//Send updated track information (with Andy's backend ready)
 		/*socket.on('send_track_update', function(track, updatedData) {
@@ -157,7 +169,7 @@ function implementations() {
 		socket.on('send_track_update', function(track, updatedData) {
 			updatedData.trackId = track.trackId;
 			Track.updateOne({trackId: track.trackId}, updatedData, function(error, writeOpResult) {
-				if(!writeOpResult.nModified) {
+				if(!writeOpResult.nModified && !writeOpResult.n) {
 					Track.create(updatedData, function(err, user) {
 						if(err) return console.log(err);
 					});
@@ -189,6 +201,25 @@ function implementations() {
 		socket.on('get_replay_bounds', function(setBounds){
 			// Get start/end from kafka streem
 			setBounds('start','end');
+		});
+
+		//SETTINGS
+		socket.on('save_layout', function(layout_data){
+			var session = socket.request.session;
+			UserLayouts.updateOne({userId: session.userId, name: layout_data.layout_name}, {layout: layout_data.layout_config}, function(error, writeOpResult) {
+				if(!writeOpResult.nModified && !writeOpResult.n) {
+					UserLayouts.create({userId: session.userId, name: layout_data.layout_name, layout: layout_data.layout_config}, function(err, layout) {
+						if(err) return console.log(err);
+					});
+				}
+			});
+		});
+
+		socket.on('load_layouts', function(){
+			var session = socket.request.session;
+			UserLayouts.find({userId: session.userId}, function(error, layouts) {
+				io.emit('receive_layouts', layouts);
+			});
 		});
 	});
 }

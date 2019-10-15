@@ -19,6 +19,10 @@ var EventManager = (function() {
 					ftms_ui.track_manager.recieveTrackUpdate(track);
 			});
 
+			socket.on('receive_manual_track_id', function(id) {
+				ftms_ui.track_manager.recieveManualTrackID(id);
+			});
+
 			//ALERTS
 			socket.on('alert', function(message){
 				ftms_ui.alert_module.addAlert(message);
@@ -50,11 +54,10 @@ var EventManager = (function() {
 				ftms_ui.authorisation_approval_module.receiveRequestStatus(data);
 			});
 
-			//TRACK REPLAY
-			// socket.on('receive_replay_tracks', function(tracks) {
-			// 	if (ftms_ui.replay_module.isReplayMode())
-			// 		ftms_ui.replay_module.plotTracks(tracks);
-			// });
+			//SETTINGS
+			socket.on('receive_layouts', function(data) {
+				ftms_ui.settings.receiveLayouts(data);
+			});
 		},
 		
 		//SEND MESSAGES TO SERVER
@@ -62,6 +65,10 @@ var EventManager = (function() {
 		sendTrackUpdate: function(track, updatedData) {
 			track.trackId = track.id;
 			socket.emit('send_track_update', track, updatedData);
+		},
+
+		getManualTrackId: function(callback) {
+			socket.emit('get_manual_track_id', callback);
 		},
 
 		//MESSAGING
@@ -84,7 +91,7 @@ var EventManager = (function() {
 
 		//TRACK REPLAY
 		sendTrackReplayRequest: function(prevTime, newTime, plotTracks){
-			console.log(plotTracks);
+			console.log(typeof plotTracks);
 			// (tracks) =>{
 			// 	plotTracks(tracks);
 			// }
@@ -92,7 +99,15 @@ var EventManager = (function() {
 		},
 
 		sendReplayBoundRequest: function(setBounds){
-			socket.emit('get_replay_bounds', setBounds)
+			socket.emit('get_replay_bounds', setBounds);
+		},
+
+		saveLayout: function(layout) {
+			socket.emit('save_layout', layout);
+		},
+
+		loadLayouts: function() {
+			socket.emit('load_layouts');
 		}
 	}
 }());

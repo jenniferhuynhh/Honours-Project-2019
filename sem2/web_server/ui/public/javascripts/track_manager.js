@@ -7,6 +7,7 @@ var TrackManager = (function() {
 
 	//Public
 	return {
+		manual_track_counter: 0,
 		init: function(ftms) {
 			//Link FTMS UI system
 			ftms_ui = ftms;
@@ -37,6 +38,7 @@ var TrackManager = (function() {
 				this.updateTrack(track, updateData);
 			} else { //If existing track not found, create new track
 				track = new Track(incoming_track.trackId, incoming_track.latitude, incoming_track.longitude, incoming_track.altitude, incoming_track.speed, incoming_track.course, "unknown", "sea");
+				if(incoming_track.manual) track.manual = incoming_track.manual;
 				this.setTrack(track);
 			}
 		},
@@ -91,6 +93,11 @@ var TrackManager = (function() {
 			return selected_track;
 		},
 
+		//Gets the next manual track ID from the server and calls the callback when ready
+		getManualTrackId: function(callback) {
+			ftms_ui.event_manager.getManualTrackId(callback);
+		},
+
 		//Registers a listener
 		setListener: function(listener) {
 			listeners.push(listener);
@@ -124,6 +131,10 @@ var TrackManager = (function() {
 			//this.setTrack(t2);
 			this.updateTrack(t1, {affiliation: "hostile"});
 			ftms_ui.map_module.paintTrack(t1);
+
+			//track testing
+			//var alert = JSON.parse('{"_id":{"$oid":"5d952b363f446c644762f433"},"timestamp":{"$numberLong":"1570057014412"},"id":{"$numberInt":"1"},"severity":"LOW","status":"NEW","text":"System Track created","associatedObjectId":"4194311"}');
+			//ftms_ui.alert_module.addAlert(alert);
 
 			//Display data of new track positions
 			ftms_ui.track_table_module.update();
