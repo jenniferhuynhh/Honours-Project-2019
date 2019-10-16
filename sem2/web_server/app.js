@@ -114,7 +114,9 @@ function implementations() {
 						track.type = found_track.type;
 					}
 				}
+				
 				ReplayTrack.create(track);
+
 				io.emit('recieve_track_update', track);
 			});
 		} else if(message.topic == "tdn-alert") { //Handles incoming alerts

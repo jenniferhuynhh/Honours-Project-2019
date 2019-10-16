@@ -52,18 +52,17 @@ var ReplayModule = (function() {
 		var rewindBtn = cViewer.animation.viewModel.playReverseViewModel;
 		if (playBtn.toggled || rewindBtn.toggled){
 			var currMilliseconds = Cesium.JulianDate.toDate(cViewer.clock.currentTime).getTime();
+			var t = currMilliseconds;
+
+			if (previousTime > currMilliseconds){
+				currMilliseconds = previousTime;
+				previousTime = t;
+			}
+
 			ftms_ui.event_manager.sendTrackReplayRequest(previousTime, currMilliseconds, plotTracks);
-			previousTime = currMilliseconds;
+			previousTime = t;
 		}
-
-// 		var currTime = req.query.time;
-
-// 		// Swap the times in the event of a rewind
-// 		if (prevTime > currTime){
-// 			currTime = prevTime;
-// 			prevTime = req.query.time;
-// 		}
-// prevTime = req.query.time;
+		// Swap the times in the event of a rewind
 	};
 
 	// Called when the user clicks on the Cesium timeline widget
