@@ -54,9 +54,21 @@ message SystemTrack {
     NORMAL = 1;
   }
   optional TrackState state = 14;
-  optional int64 domain = 15;
-  optional int64 affiliation = 16;
-  optional int64 trackType = 17;
+  enum TrackDomain {
+    LAND = 0;
+    SEA = 1;
+    SUBSURFACE = 2;
+    AIR = 3;
+  }
+  optional TrackDomain domain = 15;
+  enum TrackAffiliation {
+    FRIENDLY = 0;
+    HOSTILE = 1;
+    NEUTRAL = 2;
+    UNKNOWNTRACK = 3;
+  }
+  optional TrackAffiliation affiliation = 16;
+  optional string trackType = 17;
 }
 
 

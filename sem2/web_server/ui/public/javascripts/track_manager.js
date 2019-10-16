@@ -30,13 +30,13 @@ var TrackManager = (function() {
 				};
 
 				if(incoming_track_data.type) {
-					update_data.type = incoming_track_data.type;
+					update_data.type = incoming_track_data.type.toLowerCase();
 				}
 				if(incoming_track_data.affiliation) {
-					update_data.affiliation = incoming_track_data.affiliation;
+					update_data.affiliation = incoming_track_data.affiliation.toLowerCase();
 				}
 				if(incoming_track_data.domain) {
-					update_data.domain = incoming_track_data.domain;
+					update_data.domain = incoming_track_data.domain.toLowerCase();
 				}
 				this.updateTrack(track, update_data);
 			} else { //If existing track not found, create new track
@@ -118,6 +118,7 @@ var TrackManager = (function() {
 
 		//Adds a track for testing purposes
 		test: function() {
+			return;
 			var t1 = {
 				trackId: 123,
 				latitude: 26.576489,
@@ -159,9 +160,21 @@ class Track {
 		this.altitude = track_data.altitude;
 		this.speed = track_data.speed;
 		this.course = track_data.course; //course in degrees
-		this.affiliation = track_data.affiliation || "unknown" ; //affiliation of track (friendly, hostile, etc.)
-		this.domain = track_data.domain || "sea"; //domain of track (air, sea, land, subsurface)
-		this.type = track_data.type || "naval ship"; //type of track
+		if(track_data.affiliation) { //affiliation of track (friendly, hostile, etc.)
+			this.affiliation = track_data.affiliation.toLowerCase()
+		} else {
+			this.affiliation = "unknown";
+		}
+		if(track_data.domain) { //domain of track (air, sea, land, subsurface)
+			this.domain = track_data.domain.toLowerCase()
+		} else {
+			this.domain = "sea";
+		}
+		if(track_data.type) { //type of track
+			this.type = track_data.type.toLowerCase()
+		} else {
+			this.type = "naval ship";
+		}
 
 		this.listeners = { //Events that listeners can listen for
 			update: [],

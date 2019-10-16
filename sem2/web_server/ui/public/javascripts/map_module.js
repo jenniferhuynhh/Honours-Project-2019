@@ -73,7 +73,7 @@ var MapModule = (function() {
 			viewer.scene.globe.enableLighting = true;
 
 			// Create an initial camera view
-			var initialPosition = new Cesium.Cartesian3.fromDegrees(56.78, 26.5731, 34000);
+			var initialPosition = new Cesium.Cartesian3.fromDegrees(139.430433, -27.563744, 6400000);
 			var initialOrientation = new Cesium.HeadingPitchRoll.fromDegrees(0, 0, 0);
 			var homeCameraView = {
 				destination : initialPosition,
@@ -196,7 +196,7 @@ var MapModule = (function() {
 			viewer.entities.remove(ent);
 		},
 
-		//Updates the appearance of all tracks - DOES NOT YET UPDATE ENTITY'S DESCRIPTION
+		//Updates the appearance of all tracks - DOES NOT YET UPDATE SELECTED ENTITY'S DESCRIPTION
 		updateIcons: function() {
 			var tracks = ftms_ui.track_manager.getTracks();
 

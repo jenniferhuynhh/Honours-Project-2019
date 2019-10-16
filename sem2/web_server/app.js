@@ -97,13 +97,13 @@ function implementations() {
 						}
 					}*/
 					if(found_track.affiliation != undefined) {
-						track_data.affiliation = found_track.affiliation;
+						track_data.affiliation = found_track.affiliation.toLowerCase();
 					}
 					if(found_track.domain != undefined) {
-						track_data.domain = found_track.domain;
+						track_data.domain = found_track.domain.toLowerCase();
 					}
 					if(found_track.type != undefined) {
-						track_data.type = found_track.type;
+						track_data.type = found_track.type.toLowerCase();
 					}
 				}
 
