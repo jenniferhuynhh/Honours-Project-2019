@@ -12,6 +12,7 @@ var ReplayModule = (function() {
 	// Called whenever the replay mode switch is changed
 	function switchChange(e){
 		ftms_ui.track_manager.removeAll();
+		ftms_ui.alert_module.removeAll();
 
 		if (replaySwitch.checked){
 			ftms_ui.map_module.showReplayControls();
@@ -54,15 +55,15 @@ var ReplayModule = (function() {
 			var currMilliseconds = Cesium.JulianDate.toDate(cViewer.clock.currentTime).getTime();
 			var t = currMilliseconds;
 
+			// Swap the times in the event of a rewind
 			if (previousTime > currMilliseconds){
 				currMilliseconds = previousTime;
 				previousTime = t;
 			}
 
-			ftms_ui.event_manager.sendTrackReplayRequest(previousTime, currMilliseconds, plotTracks);
+			ftms_ui.event_manager.sendTrackReplayRequest(previousTime, currMilliseconds, displayReplayData);
 			previousTime = t;
 		}
-		// Swap the times in the event of a rewind
 	};
 
 	// Called when the user clicks on the Cesium timeline widget
@@ -71,7 +72,7 @@ var ReplayModule = (function() {
 
 		ftms_ui.track_manager.removeAll();
 		
-		ftms_ui.event_manager.sendTrackReplayRequest(currMilliseconds-500, currMilliseconds, plotTracks);
+		ftms_ui.event_manager.sendTrackReplayRequest(currMilliseconds-500, currMilliseconds, displayReplayData);
 		previousTime = currMilliseconds;
 	};
 
@@ -102,10 +103,14 @@ var ReplayModule = (function() {
 		},dateTimeChange);
 	};
 
-	function plotTracks(tracks){
+	function displayReplayData(data){
 		// Send tracks to track manager
-		for (var i = 0; i < tracks.length; i++)
-			ftms_ui.track_manager.recieveTrackUpdate(tracks[i]);
+		for (var i = 0; i < data.tracks.length; i++)
+			ftms_ui.track_manager.recieveTrackUpdate(data.tracks[i]);
+
+		// Send alerts to alert module
+		for (var i = 0; i < data.alerts.length; i++)
+			ftms_ui.alert_module.addAlert(data.alerts[i]);
 	};
 
 	// Public

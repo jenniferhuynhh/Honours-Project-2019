@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var Track = require('./models/track.js');
 var ReplayTrack = require('./models/replayTrack.js');
+var ReplayAlert = require('./models/replayAlert.js');
 var UserLayouts = require('./models/layouts.js');
 var session = require('express-session');
 var kafka = require('kafka-node');
@@ -114,7 +115,7 @@ function implementations() {
 						track.type = found_track.type;
 					}
 				}
-				
+
 				ReplayTrack.create(track);
 
 				io.emit('recieve_track_update', track);
@@ -122,6 +123,7 @@ function implementations() {
 		} else if(message.topic == "tdn-alert") { //Handles incoming alerts
 			//var alert = proto.alert.decode(message.value);
 			var alert = JSON.parse(message.value);
+			ReplayAlert.create(alert);
 			io.emit('alert', alert);
 		}
 	});
@@ -197,13 +199,18 @@ function implementations() {
 		});
 
 		//REPLAY MODULE
-		socket.on('get_replay_data', function(prevTime, newTime, plotTracks){
+		socket.on('get_replay_data', function(prevTime, newTime, displayReplayData){
 			// Get tracks from kafka 'Offset' API
-			ReplayTrack.find({timestamp:{$gt: prevTime, $lte: newTime}}, function(err, docs){
+			ReplayTrack.find({timestamp:{$gt: prevTime, $lte: newTime}}, function(err, tracks){
 				if (err)
 					return console.error(err);
-				
-				plotTracks(docs);
+
+				ReplayAlert.find({timestamp:{$gt: prevTime, $lte: newTime}}, function(err, alerts){
+					if (err)
+						return console.error(err);
+
+					displayReplayData({tracks:tracks, alerts:alerts});
+				}
 			});
 		});
 

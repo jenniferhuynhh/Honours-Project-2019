@@ -25,7 +25,8 @@ var EventManager = (function() {
 
 			//ALERTS
 			socket.on('alert', function(message){
-				ftms_ui.alert_module.addAlert(message);
+				if (!ftms_ui.replay_module.isReplayMode())
+					ftms_ui.alert_module.addAlert(message);
 			});
 
 			//MESSAGING
@@ -92,8 +93,8 @@ var EventManager = (function() {
 		},
 
 		//TRACK REPLAY
-		sendTrackReplayRequest: function(prevTime, newTime, plotTracks){
-			socket.emit('get_replay_data', prevTime, newTime, plotTracks);
+		sendTrackReplayRequest: function(prevTime, newTime, displayReplayData){
+			socket.emit('get_replay_data', prevTime, newTime, displayReplayData);
 		},
 
 		sendReplayBoundRequest: function(setBounds){

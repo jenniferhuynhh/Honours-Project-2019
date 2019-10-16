@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 
 var ReplayTrackSchema = new mongoose.Schema({
-	//name: String,
 	timestamp: Number,
 	trackId: {
 		type: Number,
