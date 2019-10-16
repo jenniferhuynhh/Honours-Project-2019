@@ -6,6 +6,7 @@ var MapModule = (function() {
 	var viewer;
 	var icon_size = 15; //Size of milsymbol symbols
 	var current_highlighted = null;
+	var offline_mode = true;
 
 	//Public
 	return {
@@ -19,30 +20,26 @@ var MapModule = (function() {
 
 			"use strict";
 			//Create the Cesium Viewer
-			// Offline mode 
-			viewer = new Cesium.Viewer(display, {
-				imageryProvider : Cesium.createTileMapServiceImageryProvider({
-					url : Cesium.buildModuleUrl('Assets/Textures/NaturalEarthII')
-				}),
+			var viewer_options = {
 				animation: false,
 				selectionIndicator: false,
 				timeline: false,
 				baseLayerPicker : false,
 				geocoder : false
-			});
+			}
 
-			// Online mode - Includes Imagery and Terrain sections
-			// Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNTNlZjU4NS05ZDZlLTRiMTUtOGVmYi1lYTIwNjk2ODcyN2IiLCJpZCI6MTA2ODQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTcxNTk1ODl9.pefjm_v8G065frNjyPdGYd9ggHaMdKBfukjjMbgTg6M';
-			// viewer = new Cesium.Viewer(display, {
-			// 	animation: false,
-			// 	selectionIndicator: false,
-			// 	timeline: false,
-			// 	baseLayerPicker: false
-			// });
+			if(offline_mode) { //Use offline map tiles included with Cesium
+				viewer_options.imageryProvider = Cesium.createTileMapServiceImageryProvider({
+					url: Cesium.buildModuleUrl('Assets/Textures/NaturalEarthII')
+				});
+			} else {
+				Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNTNlZjU4NS05ZDZlLTRiMTUtOGVmYi1lYTIwNjk2ODcyN2IiLCJpZCI6MTA2ODQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTcxNTk1ODl9.pefjm_v8G065frNjyPdGYd9ggHaMdKBfukjjMbgTg6M';
+			}
 
+			viewer = new Cesium.Viewer(display, viewer_options);
 			viewer.scene.mode = Cesium.SceneMode.SCENE2D;
 
-			//Remove entity-focusing upon double click
+			//Remove entity focus-locking upon double click
 			viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
 
 			//////////////////////////////////////////////////////////////////////////
