@@ -2,7 +2,6 @@ var mongoose = require('mongoose');
 
 var ReplayAlertSchema = new mongoose.Schema({
 	timestamp: Number,
-	id: type: Number,
 	severity: String,
 	text: String
 });

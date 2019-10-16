@@ -123,7 +123,7 @@ function implementations() {
 		} else if(message.topic == "tdn-alert") { //Handles incoming alerts
 			//var alert = proto.alert.decode(message.value);
 			var alert = JSON.parse(message.value);
-			ReplayAlert.create(alert);
+			ReplayAlert.create({timestamp:alert.timestamp['$numberLong'], severity:alert.severity, text:alert.text});
 			io.emit('alert', alert);
 		}
 	});
@@ -210,7 +210,7 @@ function implementations() {
 						return console.error(err);
 
 					displayReplayData({tracks:tracks, alerts:alerts});
-				}
+				});
 			});
 		});
 

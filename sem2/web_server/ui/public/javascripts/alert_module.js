@@ -73,7 +73,7 @@ var AlertModule = (function() {
 
 			for (var i = children.length - 1; i >= 0; i--) {
 				if (children[i] != showAcknowledgedDiv){
-					display.removeChild(children[i]);
+					children[i].remove();
 				}				
 			}
 		}
