@@ -6,6 +6,8 @@ var ReplayModule = (function() {
 	var drp;
 	var cViewer;
 	var previousTime;
+	var startTS;
+	var endTS;
 
 	// Called whenever the replay mode switch is changed
 	function switchChange(e){
@@ -15,6 +17,7 @@ var ReplayModule = (function() {
 			ftms_ui.map_module.showReplayControls();
 			cViewer.clock.onTick.addEventListener(clockTick);
 			cViewer.timeline.addEventListener('click', timelineChanged);
+			updateTimeline();
 		}else{
 			ftms_ui.map_module.hideReplayControls();
 			cViewer.clock.onTick.removeEventListener(clockTick);
@@ -23,17 +26,25 @@ var ReplayModule = (function() {
 	};
 
 	// Called whenever the date picker is updated
-	function dateTimeChange(start, end, label){
-		var startInJulian = Cesium.JulianDate.fromDate(start.toDate());
-		var endInJulian = Cesium.JulianDate.fromDate(end.toDate());
+	function dateTimeChange(start, end, label=null){
+		startTS = start.valueOf();
+		endTS = end.valueOf();
 		
+		updateTimeline();
+	};
+
+	function updateTimeline(){
+		var startInJulian = Cesium.JulianDate.fromDate(new Date(startTS));
+		var endInJulian = Cesium.JulianDate.fromDate(new Date(endTS));
+
 		// Update Cesium Clock
+		cViewer.clock.currentTime = startInJulian;
 		cViewer.clock.startTime = startInJulian;
 		cViewer.clock.stopTime = endInJulian;
 
 		// Update Cesium Timeline
 		cViewer.timeline.zoomTo(startInJulian, endInJulian);
-	};
+	}
 
 	// Called by the clock every time it ticks in order to get replay tracks
 	function clockTick(){
@@ -41,9 +52,18 @@ var ReplayModule = (function() {
 		var rewindBtn = cViewer.animation.viewModel.playReverseViewModel;
 		if (playBtn.toggled || rewindBtn.toggled){
 			var currMilliseconds = Cesium.JulianDate.toDate(cViewer.clock.currentTime).getTime();
-			ftms_ui.event_manager.sendTrackReplayRequest(previousTime, currMilliseconds, this.plotTracks);
+			ftms_ui.event_manager.sendTrackReplayRequest(previousTime, currMilliseconds, plotTracks);
 			previousTime = currMilliseconds;
 		}
+
+// 		var currTime = req.query.time;
+
+// 		// Swap the times in the event of a rewind
+// 		if (prevTime > currTime){
+// 			currTime = prevTime;
+// 			prevTime = req.query.time;
+// 		}
+// prevTime = req.query.time;
 	};
 
 	// Called when the user clicks on the Cesium timeline widget
@@ -52,19 +72,31 @@ var ReplayModule = (function() {
 
 		ftms_ui.track_manager.removeAll();
 		
-		ftms_ui.event_manager.sendTrackReplayRequest(currMilliseconds-500, currMilliseconds, this.plotTracks);
+		ftms_ui.event_manager.sendTrackReplayRequest(currMilliseconds-500, currMilliseconds, plotTracks);
 		previousTime = currMilliseconds;
 	};
 
 	function setBounds(start, end){
+		previousTime = start-100;
+		startTS = start;
+		endTS = end;
+
 		drp = jQuery('#replayDateTimeInput').daterangepicker({
 			showDropdowns: true,
 			timePicker: true,
 			timePicker24Hour: true,
 			timePickerSeconds: true,
-			startDate: moment().startOf('hour'),
-			endDate: moment().startOf('hour').add(32, 'hour'),
+			startDate: moment(start),
+			endDate: moment(end),
 			opens: 'left',
+			drops: 'up',
+			autoUpdateInput: true,
+			customRangeLabel: false,
+			alwaysShowCalendars: true,
+			linkedCalendars: false,
+			ranges: {
+				'All Data' : [moment(start), moment(end)]
+			},
 			locale: {
 				format: 'kk:mm:ss DD/MM/YY'
 			}
@@ -72,9 +104,9 @@ var ReplayModule = (function() {
 	};
 
 	function plotTracks(tracks){
-		console.log(tracks);
 		// Send tracks to track manager
-		// ftms_ui.track_manager.receiveTrackUpdate(track);
+		for (var i = 0; i < tracks.length; i++)
+			ftms_ui.track_manager.recieveTrackUpdate(tracks[i]);
 	};
 
 	// Public

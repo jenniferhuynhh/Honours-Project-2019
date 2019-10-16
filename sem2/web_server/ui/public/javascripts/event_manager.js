@@ -63,8 +63,10 @@ var EventManager = (function() {
 		//SEND MESSAGES TO SERVER
 		//TRACK MANAGER
 		sendTrackUpdate: function(track, updatedData) {
-			track.trackId = track.id;
-			socket.emit('send_track_update', track, updatedData);
+			if (!ftms_ui.replay_module.isReplayMode()){
+				track.trackId = track.id;
+				socket.emit('send_track_update', track, updatedData);
+			}
 		},
 
 		getManualTrackId: function(callback) {
@@ -91,17 +93,14 @@ var EventManager = (function() {
 
 		//TRACK REPLAY
 		sendTrackReplayRequest: function(prevTime, newTime, plotTracks){
-			console.log(typeof plotTracks);
-			// (tracks) =>{
-			// 	plotTracks(tracks);
-			// }
-			socket.emit('get_replay_tracks', prevTime, newTime, plotTracks);
+			socket.emit('get_replay_data', prevTime, newTime, plotTracks);
 		},
 
 		sendReplayBoundRequest: function(setBounds){
 			socket.emit('get_replay_bounds', setBounds);
 		},
 
+		//SETTINGS
 		saveLayout: function(layout) {
 			socket.emit('save_layout', layout);
 		},

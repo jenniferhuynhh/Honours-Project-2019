@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var Track = require('./models/track.js');
+var ReplayTrack = require('./models/replayTrack.js');
 var UserLayouts = require('./models/layouts.js');
 var session = require('express-session');
 var kafka = require('kafka-node');
@@ -91,6 +92,8 @@ function implementations() {
 		if(message.topic == "tdn-systrk") {	//Handles incoming tracks
 			var track = proto.track.decode(message.value);
 			track = proto.track.toObject(track, {enums: String, longs: String});
+
+			ReplayTrack.create(track);
 
 			Track.findOne({trackId: track.trackId}, function(err, found_track) {
 				if(err) return console.log(err);
@@ -193,14 +196,27 @@ function implementations() {
 		});
 
 		//REPLAY MODULE
-		socket.on('get_replay_tracks', function(prevTime, newTime, plotTracks){
+		socket.on('get_replay_data', function(prevTime, newTime, plotTracks){
 			// Get tracks from kafka 'Offset' API
-			plotTracks('Test ACK');
+			ReplayTrack.find({timestamp:{$gt: prevTime, $lte: newTime}}, function(err, docs){
+				if (err)
+					return console.error(err);
+				
+				plotTracks(docs);
+			});
 		});
 
 		socket.on('get_replay_bounds', function(setBounds){
-			// Get start/end from kafka streem
-			setBounds('start','end');
+			// Get start/end from Mongo Replay Tracks
+			ReplayTrack.aggregate().
+			group({ _id: null, maxTS: { $max: '$timestamp' }, minTS: { $min: '$timestamp' } }).
+			project('_id maxTS minTS').
+			exec(function (err, r) {
+				if (err)
+					return console.error(err);
+					
+				setBounds(r[0].minTS, r[0].maxTS);
+			});
 		});
 
 		//SETTINGS
