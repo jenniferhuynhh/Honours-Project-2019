@@ -6,7 +6,7 @@ var MapModule = (function() {
 	var viewer;
 	var icon_size = 15; //Size of milsymbol symbols
 	var current_highlighted = null;
-	var offline_mode = true;
+	var offline_mode = false;
 	var mode = "normal";
 
 	//Public
@@ -180,6 +180,11 @@ var MapModule = (function() {
 					ent.position = Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, track.altitude);
 					ent.billboard.image = this.makeIcon(track);
 				});
+
+				//When track is about to be deleted, remove its icon from viewer
+				track.addEventListener("delete", () => {
+					this.eraseTrack(track);
+				})
 			});
 
 			//When new track is selected, update icon's and viewer's appearances
@@ -244,12 +249,12 @@ var MapModule = (function() {
 		},
 
 		//Erases track from viewer
-		eraseTrack: function(id) {
-			var ent = viewer.entities.getById(id);
+		eraseTrack: function(track) {
+			var ent = viewer.entities.getById(track.trackId);
 			viewer.entities.remove(ent);
 		},
 
-		//Updates the appearance of all tracks - DOES NOT YET UPDATE SELECTED ENTITY'S DESCRIPTION
+		//Updates the appearance of all tracks
 		updateIcons: function() {
 			var tracks = ftms_ui.track_manager.getTracks();
 
