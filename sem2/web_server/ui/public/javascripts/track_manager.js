@@ -90,6 +90,11 @@ var TrackManager = (function() {
 			return tracks;
 		},
 
+		//Returns selected track
+		getSelectedTrack: function(trackId) {
+			return selected_track;
+		},
+
 		//Gets the next manual track ID from the server and calls the callback when ready
 		getManualTrackId: function(callback) {
 			ftms_ui.event_manager.getManualTrackId(callback);

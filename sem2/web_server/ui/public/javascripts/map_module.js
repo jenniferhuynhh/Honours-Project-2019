@@ -6,7 +6,7 @@ var MapModule = (function() {
 	var viewer;
 	var icon_size = 15; //Size of milsymbol symbols
 	var current_highlighted = null;
-	var offline_mode = false;
+	var offline_mode = true;
 	var mode = "normal";
 
 	//Public
