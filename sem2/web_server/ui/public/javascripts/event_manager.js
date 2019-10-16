@@ -18,6 +18,10 @@ var EventManager = (function() {
 				ftms_ui.track_manager.recieveTrackUpdate(track);
 			});
 
+			socket.on('receive_manual_track_id', function(id) {
+				ftms_ui.track_manager.recieveManualTrackID(id);
+			});
+
 			//ALERTS
 			socket.on('alert', function(message){
 				ftms_ui.alert_module.addAlert(message);
@@ -48,6 +52,11 @@ var EventManager = (function() {
 			socket.on('receive_request_status', function(data) {
 				ftms_ui.authorisation_approval_module.receiveRequestStatus(data);
 			});
+
+			//SETTINGS
+			socket.on('receive_layouts', function(data) {
+				ftms_ui.settings.receiveLayouts(data);
+			});
 		},
 		
 		//SEND MESSAGES TO SERVER
@@ -55,6 +64,10 @@ var EventManager = (function() {
 		sendTrackUpdate: function(track, update_data) {
 			update_data.trackId = track.trackId;
 			socket.emit('send_track_update', track, update_data);
+		},
+
+		getManualTrackId: function(callback) {
+			socket.emit('get_manual_track_id', callback);
 		},
 
 		//MESSAGING
@@ -73,6 +86,14 @@ var EventManager = (function() {
 
 		sendRequestStatus: function(data) {
 			socket.emit('send_request_status', data);
+		},
+
+		saveLayout: function(layout) {
+			socket.emit('save_layout', layout);
+		},
+
+		loadLayouts: function() {
+			socket.emit('load_layouts');
 		}
 	}
 }());

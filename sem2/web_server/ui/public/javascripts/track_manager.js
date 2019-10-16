@@ -12,6 +12,7 @@ var TrackManager = (function() {
 
 	//Public
 	return {
+		manual_track_counter: 0,
 		init: function(ftms) {
 			//Link FTMS UI system
 			ftms_ui = ftms;
@@ -40,6 +41,7 @@ var TrackManager = (function() {
 				}
 				this.updateTrack(track, update_data);
 			} else { //If existing track not found, create new track
+				if(incoming_track_data.manual) track.manual = incoming_track_data.manual;
 				this.createTrack(incoming_track_data);
 			}
 		},
@@ -85,7 +87,7 @@ var TrackManager = (function() {
 		},
 
 		//Removes a track from the track array by ID (DELETE)
-		deleteTrack: function(trackId) {
+		deleteTrack: function(track) {
 			track.delete();
 			tracks.delete(track.trackId);
 		},
@@ -93,6 +95,11 @@ var TrackManager = (function() {
 		//Returns iterable map of all tracks (READ ALL)
 		getTracks: function() {
 			return tracks;
+		},
+
+		//Gets the next manual track ID from the server and calls the callback when ready
+		getManualTrackId: function(callback) {
+			ftms_ui.event_manager.getManualTrackId(callback);
 		},
 
 		//Sets selected track
@@ -152,14 +159,18 @@ var TrackManager = (function() {
 }());
 
 //Track object definition
-class Track {
+class Track extends EventListener {
 	constructor(track_data) {
+		super(["update", "selected", "delete"]); //events this object can fire
+		
 		this.trackId = Number(track_data.trackId); //unique ID
 		this.latitude = track_data.latitude; //-34.912955 (Adelaide)
 		this.longitude = track_data.longitude; //138.365660 (Adelaide)
 		this.altitude = track_data.altitude;
 		this.speed = track_data.speed;
 		this.course = track_data.course; //course in degrees
+		this.manual = track_data.manual;
+
 		if(track_data.affiliation) { //affiliation of track (friendly, hostile, etc.)
 			this.affiliation = track_data.affiliation.toLowerCase()
 		} else {
@@ -175,12 +186,6 @@ class Track {
 		} else {
 			this.type = "naval ship";
 		}
-
-		this.listeners = { //Events that listeners can listen for
-			update: [],
-			selected: [],
-			delete: []
-		};
 	}
 
 	updateData(track_data) {
@@ -198,24 +203,5 @@ class Track {
 
 	selected() {
 		this.callListeners("selected");
-	}
-
-	addEventListener(event, func) {
-		this.listeners[event].push(func);
-	}
-
-	callListeners(event) {
-		for(var i = 0; i < this.listeners[event].length; i++) {
-			this.listeners[event][i]();
-		}
-	}
-
-	removeEventListener(event, func) {
-		for (var i = 0; i < this.listeners[event].length; i++) {
-			if(this.listeners[event][i] == func) {
-				this.listeners[event].splice(i, 1);
-				break;
-			}
-		}
 	}
 }

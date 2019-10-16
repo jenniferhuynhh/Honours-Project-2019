@@ -5,6 +5,7 @@ var TrackTableModule = (function() {
 	var display;
 	var rows = new Map();
 	var current_highlighted = null;
+	var deleting_row;
 
 	//Public
 	return {
@@ -19,13 +20,14 @@ var TrackTableModule = (function() {
 			track_table.classList.add("track_table");
 
 			//Print headers
-			var header_elements = ["ID", "Affiliation", "Latitude", "Longitude", "Speed", "Course"];
+			var header_elements = ["ID", "Affiliation", "Latitude", "Longitude", "Speed", "Course", ""];
 			var header = document.createElement("tr");
 			for(var i = 0; i < header_elements.length; i++) {
 				var th = document.createElement("th");
 				th.appendChild(document.createTextNode(header_elements[i]));
 				header.appendChild(th);
 			}
+			header.cells[6].classList.add("delete_cell");
 			track_table.appendChild(header);
 			display.appendChild(track_table);
 
@@ -58,21 +60,34 @@ var TrackTableModule = (function() {
 class Row {
 	constructor(track) {
 		this.track = track;
+		this.delete_state = 0;
 
 		//Create display
 		this.display = document.createElement("tr");
 		this.display.classList.add("class", this.track.affiliation + "_data");
 
-		var elements = this.trackElements(this.track);
-		for(var i = 0; i < elements.length; i++) {
+		var props = this.trackProperties(this.track);
+		for(var i = 0; i < props.length; i++) {
 			var cell = document.createElement("td");
-			cell.appendChild(document.createTextNode(elements[i]));
+			cell.appendChild(document.createTextNode(props[i]));
+			if(i + 1 != props.length) cell.addEventListener("click", () => this.track.selected()); //Add track-selection to all cells except delete cell
 			this.display.appendChild(cell);
 		}
 
-		this.display.addEventListener("click", () => this.track.selected());
+		if(track.manual) {
+			var delete_cell = this.display.cells[this.display.cells.length-1];
+			delete_cell.classList.add("delete_cell");
+			delete_cell.addEventListener("click", () => {
+				this.progressDeleteState();
+				setTimeout(() => { //Reset delete button if not clicked within x milliseconds
+					if(this.delete_state == 1) {
+						this.resetDeleteState();
+					}
+				}, 1500)
+			});
+		}
 
-		//When track is updated, update elements
+		//When track is updated, update cells
 		this.track.addEventListener("update", () => {
 			//Update row styling
 			for(var i = 0; i < this.display.classList.length; i++) { //Remove current affiliation class, but keep highlighting if present
@@ -84,9 +99,9 @@ class Row {
 			this.display.classList.add("class", this.track.affiliation + "_data");
 
 			//Update row info
-			var elements = this.trackElements(this.track);
-			for(var i = 0; i < elements.length; i++) {
-				this.display.cells[i].childNodes[0].nodeValue = elements[i];
+			var props = this.trackProperties(this.track);
+			for(var i = 0; i < props.length; i++) {
+				this.display.cells[i].childNodes[0].nodeValue = props[i];
 			}
 		});
 
@@ -98,16 +113,36 @@ class Row {
 		this.display.classList.toggle("highlighted");
 	}
 
+	progressDeleteState() {
+		if(this.delete_state == 0) {
+			this.delete_state++;
+			this.display.cells[this.display.cells.length-1].childNodes[0].nodeValue = "[✓]";
+		} else if(this.delete_state == 1) {
+			this.track.delete();
+		}
+	}
+
+	resetDeleteState() {
+		this.delete_state = 0;
+		this.display.cells[this.display.cells.length-1].childNodes[0].nodeValue = "[✗]";
+	}
+
 	//HELPER
-	trackElements(track) {
-		var elements = [ //Track's elements to be displayed
+	trackProperties(track) {
+		var props = [ //Track's props to be displayed
 			track.trackId,
 			track.affiliation,
 			track.latitude.toFixed(8),
 			track.longitude.toFixed(8),
 			track.speed.toFixed(3) + " knots",
-			track.course.toFixed(3) + "°"
+			track.course.toFixed(3) + "°",
+			""
 		];
-		return elements;
+
+		if(track.manual) {
+			props[0] = "*" + props[0];
+			props[props.length-1] = this.delete_state == 1 ? "[✓]" : "[✗]";
+		}
+		return props;
 	}
 }
