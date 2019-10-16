@@ -93,8 +93,6 @@ function implementations() {
 			var track = proto.track.decode(message.value);
 			track = proto.track.toObject(track, {enums: String, longs: String});
 
-			ReplayTrack.create(track);
-
 			Track.findOne({trackId: track.trackId}, function(err, found_track) {
 				if(err) return console.log(err);
 
@@ -116,6 +114,7 @@ function implementations() {
 						track.type = found_track.type;
 					}
 				}
+				ReplayTrack.create(track);
 				io.emit('recieve_track_update', track);
 			});
 		} else if(message.topic == "tdn-alert") { //Handles incoming alerts
