@@ -6,7 +6,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	outline: 0;
 }
 
-/*** Track data table ***/
+/*** Track table ***/
 .track_table_display {
 	width: 100%;
 	height: 100%;
@@ -37,8 +37,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	background-color: #1ab2ff;
 }
 
-.highlighted_friendly_data {
-	/*background-color: #006b8c;*/
+.friendly_data.highlighted {
 	background-color: #0098C6;
 }
 
@@ -50,8 +49,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	background-color: #ff471a;
 }
 
-.highlighted_hostile_data {
-	/*background-color: #c80000;*/
+.hostile_data.highlighted {
 	background-color: #A40303;
 }
 
@@ -63,8 +61,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	background-color: #00E200;
 }
 
-.highlighted_neutral_data {
-	/*background-color: #00a000;*/
+.neutral_data.highlighted {
 	background-color: #00A000;
 }
 
@@ -72,12 +69,11 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	background-color: #ffff80;
 }
 
-.unknown_data:hover{
+.unknown_data:hover {
 	background-color: #ffff33;
 }
 
-.highlighted_unknown_data {
-	/*background-color: #e1dc00;*/
+.unknown_data.highlighted {
 	background-color: #b3b300;
 }
 

@@ -1,9 +1,12 @@
 var MapModule = (function() {
 	//Private
 	var ftms_ui; //FTMS UI system this module is linked to
-	var icon_size = 15; //Size of milsymbol symbols
+
 	var display;
 	var viewer;
+	var icon_size = 15; //Size of milsymbol symbols
+	var current_highlighted = null;
+	var offline_mode = true;
 	var mode = "normal";
 
 	//Public
@@ -16,32 +19,29 @@ var MapModule = (function() {
 			display = document.createElement("div");
 			display.style.height = "100%";
 
-			//Create the Cesium Viewer
 			"use strict";
-			Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNTNlZjU4NS05ZDZlLTRiMTUtOGVmYi1lYTIwNjk2ODcyN2IiLCJpZCI6MTA2ODQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTcxNTk1ODl9.pefjm_v8G065frNjyPdGYd9ggHaMdKBfukjjMbgTg6M';
-			//Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJiNGM3NmUyMS0yNWY5LTQ5MmMtYjQ0ZS1hYTliMjY2MzFhYzYiLCJpZCI6OTcwNCwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU1NDc3NTg2N30.U4oXqg5SHWnf22tUsRCb2aHrOp1aMF0TK3YmWC39Prc';
-			
-			// Offline mode 
-			viewer = new Cesium.Viewer(display, {
-				imageryProvider : Cesium.createTileMapServiceImageryProvider({
-					url : Cesium.buildModuleUrl('Assets/Textures/NaturalEarthII')
-				}),
+			//Create the Cesium Viewer
+			var viewer_options = {
 				animation: false,
 				selectionIndicator: false,
 				timeline: false,
 				baseLayerPicker : false,
 				geocoder : false
-			});
+			}
 
-			// Online mode - Includes Imagery and Terrain sections
-			// viewer = new Cesium.Viewer(display, {
-			// 	animation: false,
-			// 	selectionIndicator: false,
-			// 	timeline: false,
-			// 	baseLayerPicker: false
-			// });
+			if(offline_mode) { //Use offline map tiles included with Cesium
+				viewer_options.imageryProvider = Cesium.createTileMapServiceImageryProvider({
+					url: Cesium.buildModuleUrl('Assets/Textures/NaturalEarthII')
+				});
+			} else {
+				Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNTNlZjU4NS05ZDZlLTRiMTUtOGVmYi1lYTIwNjk2ODcyN2IiLCJpZCI6MTA2ODQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTcxNTk1ODl9.pefjm_v8G065frNjyPdGYd9ggHaMdKBfukjjMbgTg6M';
+			}
 
+			viewer = new Cesium.Viewer(display, viewer_options);
 			viewer.scene.mode = Cesium.SceneMode.SCENE2D;
+
+			//Remove entity focus-locking upon double click
+			viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
 
 			//////////////////////////////////////////////////////////////////////////
 			// Loading Imagery
@@ -71,7 +71,7 @@ var MapModule = (function() {
 			viewer.scene.globe.enableLighting = true;
 
 			// Create an initial camera view
-			var initialPosition = new Cesium.Cartesian3.fromDegrees(56.78, 26.5731, 1000000);
+			var initialPosition = new Cesium.Cartesian3.fromDegrees(139.430433, -27.563744, 6400000);
 			var initialOrientation = new Cesium.HeadingPitchRoll.fromDegrees(0, 0, 0);
 			var homeCameraView = {
 				destination : initialPosition,
@@ -112,49 +112,109 @@ var MapModule = (function() {
 			manual_track_div.appendChild(manual_track_button);
 			display.appendChild(manual_track_div);
 
-			//Handle on-click entity selecting
+			//Handle on-click track icon selecting
 			var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
 			handler.setInputAction(click => {
 				if(mode == "manual") {
-					var previously_selected_track = ftms_ui.track_manager.getSelectedTrack();
-					if(previously_selected_track) viewer.selectedEntity = viewer.entities.getById(previously_selected_track.id); //prevent current selected track's infobox disappearing
+					if(current_highlighted) viewer.selectedEntity = viewer.entities.getById(current_highlighted.id); //prevent current selected track's infobox disappearing
 
 					var ellipsoid = viewer.scene.globe.ellipsoid;
 					var cartesian = viewer.camera.pickEllipsoid(new Cesium.Cartesian2(click.position.x, click.position.y), ellipsoid);
 					if(cartesian) {
 						var cartographic = ellipsoid.cartesianToCartographic(cartesian);
-						var longitude = Cesium.Math.toDegrees(cartographic.longitude);
-						var latitude = Cesium.Math.toDegrees(cartographic.latitude);
+						var lat = Cesium.Math.toDegrees(cartographic.latitude);
+						var long = Cesium.Math.toDegrees(cartographic.longitude);
 
 						//Asks server for next manual track ID to be used; makes new manual track upon reply
 						ftms_ui.track_manager.getManualTrackId(function(id) {
-							var new_track = new Track(id, latitude, longitude, 0, 0, 0, "unknown", "sea");
-							new_track.manual = true;
-							ftms_ui.track_manager.setTrack(new_track);
-							ftms_ui.event_manager.sendTrackUpdate(new_track, {}); //send to other clients
+							var new_track = {
+								trackId: id,
+								latitude: lat,
+								longitude: long,
+								altitude: 0,
+								speed: 0,
+								course: 0,
+								manual: true
+							};
+							ftms_ui.track_manager.createTrack(new_track);
+							ftms_ui.event_manager.sendTrackUpdate(ftms_ui.track_manager.getTrack(new_track.trackId), {}); //send to other clients
 						});
 					}
 				} else if(mode == "normal") {
 					var pickedObject = viewer.scene.pick(click.position);
-					if(Cesium.defined(pickedObject)) { //If clicked on entity
-						ftms_ui.track_manager.setSelectedTrack(ftms_ui.track_manager.getTrack(viewer.selectedEntity.id));
-					} else { //If clicked on empty space
-						var previously_selected_track = ftms_ui.track_manager.getSelectedTrack();
-						if(!previously_selected_track) return;
-						ftms_ui.track_manager.setSelectedTrack(null);
-						this.paintTrack(previously_selected_track);
+					if(Cesium.defined(pickedObject)) { //If clicked on a track icon
+						var clicked_track = ftms_ui.track_manager.getTrack(viewer.selectedEntity.id);
+						clicked_track.selected(); //Select/unselect that icon's track
+					} else { //If clicked on empty space on the map
+						if(current_highlighted) current_highlighted.selected(); //Unselect current selected track
 					}
 				}
 			}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
-			
+
+			/*var pickedObject = viewer.scene.pick(click.position);
+			if(Cesium.defined(pickedObject)) { //If clicked on entity
+				ftms_ui.track_manager.setSelectedTrack(ftms_ui.track_manager.getTrack(viewer.selectedEntity.id));
+			} else { //If clicked on empty space
+				var previously_selected_track = ftms_ui.track_manager.getSelectedTrack();
+				if(!previously_selected_track) return;
+				ftms_ui.track_manager.setSelectedTrack(null);
+				this.paintTrack(previously_selected_track);
+			}*/
+
+			//Create new icon entity when new track is created
+			ftms_ui.track_manager.addEventListener("create", track => {
+				//Create icon entity for the track
+				var ent = viewer.entities.add({
+					id: track.trackId,
+					name: "ID: " + track.trackId,
+					description: "Affiliation: " + track.affiliation + "<br>Longitude: " + track.longitude + "<br>Latitude: " + track.latitude + "<br>Altitude: " + track.altitude,
+					position: Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, track.altitude),
+					billboard: {
+						image: this.makeIcon(track)
+					}
+				});
+
+				//When track is updated, update the icon's properties
+				track.addEventListener("update", () => {
+					ent.description = "Affiliation: " + track.affiliation + "<br>Longitude: " + track.longitude + "<br>Latitude: " + track.latitude + "<br>Altitude: " + track.altitude;
+					ent.position = Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, track.altitude);
+					ent.billboard.image = this.makeIcon(track);
+				});
+
+				//When track is about to be deleted, remove its icon from viewer
+				track.addEventListener("delete", () => {
+					this.eraseTrack(track);
+				})
+			});
+
+			//When new track is selected, update icon's and viewer's appearances
+			ftms_ui.track_manager.addEventListener("selected", track => {
+				var old_highlighted = current_highlighted;
+				current_highlighted = track;
+				if(old_highlighted) { //If track was previously selected, unhighlight it
+					var old_ent = viewer.entities.getById(old_highlighted.trackId);
+					old_ent.billboard.image = this.makeIcon(old_highlighted);
+				}
+				//Highlight newly selected track
+				var ent = viewer.entities.getById(current_highlighted.trackId);
+				ent.billboard.image = this.makeIcon(current_highlighted);
+				viewer.selectedEntity = ent;
+			});
+
+			//When track is unselected, update icon's and viewer's appearances
+			ftms_ui.track_manager.addEventListener("unselected", () => {
+				var old_highlighted = current_highlighted;
+				current_highlighted = null;
+				//Unhighlight previously selected track
+				var old_ent = viewer.entities.getById(old_highlighted.trackId);
+				old_ent.billboard.image = this.makeIcon(old_highlighted);
+				viewer.selectedEntity = null;
+			});
+
 			ftms_ui.window_manager.appendToWindow('Map Module', display);
-
-			ftms_ui.track_manager.setListener(this);
 		},
-		//Places/updates a track on viewer
-		paintTrack: function(track) {
-			var ent = viewer.entities.getById(track.id);
 
+		makeIcon: function(track) {
 			//Decide which military symbol icon to use (uses milsymbol library)
 			var icon_id = 10200000000000000000;
 			switch(track.affiliation) {
@@ -182,53 +242,35 @@ var MapModule = (function() {
 									break;
 			}
 
-			//Create milsymbol
-			var color_mode = 'Light';
-			if(ftms_ui.track_manager.getSelectedTrack() == track) {
-				color_mode = 'Dark';
-			}
-			var icon = new ms.Symbol(icon_id, {size: icon_size, colorMode: color_mode}).asCanvas();
+			var color_mode = "Light";
+			if(current_highlighted == track) color_mode = "Dark";
 
-			//Create or update entity
-			if(ent == undefined) {
-				viewer.entities.add({
-					id: track.id,
-					name: `ID: ${track.id}`,
-					show: true,
-					description: `Affiliation: ${track.affiliation} <br> Longitude: ${track.longitude} <br> Latitude: ${track.latitude} <br> Altitude: ${track.altitude}`,
-					position: Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, track.altitude),
-					billboard: {
-						image: icon
-					}
-				});
-			} else {
-				ent.billboard.image = icon;
-				ent.position = Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, track.altitude);
-				ent.description = `Affiliation: ${track.affiliation} <br> Latitude: ${track.latitude} <br> Longitude: ${track.longitude} <br> Altitude: ${track.altitude}`;
-			}
+			return new ms.Symbol(icon_id, {size: icon_size, colorMode: color_mode}).asCanvas();
 		},
+
 		//Erases track from viewer
-		eraseTrack: function(id) {
-			var ent = viewer.entities.getById(id);
+		eraseTrack: function(track) {
+			var ent = viewer.entities.getById(track.trackId);
 			viewer.entities.remove(ent);
 		},
-		//Updates the current state of all tracks
-		update: function() {
-			//Grab new track data
+
+		//Updates the appearance of all tracks
+		updateIcons: function() {
 			var tracks = ftms_ui.track_manager.getTracks();
-			
-			//Paint tracks
-			var self = this;
-			tracks.forEach(function(value, key, map) {
-				self.paintTrack(value);
+
+			tracks.forEach((val, key) => {
+				var ent = viewer.entities.getById(key);
+				ent.billboard.image = this.makeIcon(val);
 			});
 		},
+
 		getViewer: function() {
 			return viewer;
 		},
+
 		setIconSize: function(num) {
 			icon_size = num;
-			this.update();
+			this.updateIcons();
 		}
 	}
 }());

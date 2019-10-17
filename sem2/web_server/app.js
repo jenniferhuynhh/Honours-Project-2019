@@ -73,7 +73,7 @@ try {
 					track: root.lookup("tdn.SystemTrack"),
 					alert: root.lookup("tdn.Alert")
 				};
-
+				
 				//Setups are complete, components are ready; begin implementations
 				implementations();
 			});
@@ -86,12 +86,12 @@ try {
 //Called after component's (Kafka, protobuf) setups are complete. Contains implementations of these components.
 function implementations() {
 	//Consumer implementation
-	kafkaConsumer.on('message', async function(message) {
+	kafkaConsumer.on('message', function(message) {
 		if(message.topic == "tdn-systrk") {	//Handles incoming tracks
-			var track = proto.track.decode(message.value);
-			track = proto.track.toObject(track, {enums: String, longs: String});
+			var track_data = proto.track.decode(message.value);
+			track_data = proto.track.toObject(track_data, {enums: String, longs: String});
 
-			Track.findOne({trackId: track.trackId}, function(err, found_track) {
+			Track.findOne({trackId: track_data.trackId}, function(err, found_track) {
 				if(err) return console.log(err);
 
 				if(found_track) { //If changes to track found, overlay those changes before sending to clients
@@ -99,20 +99,21 @@ function implementations() {
 					/*for(var prop in found_track) {
 						if(Object.prototype.hasOwnProperty.call(found_track, prop)) {
 							//console.log(prop);
-							track[prop] = found_track[prop];
+							track_data[prop] = found_track[prop];
 						}
 					}*/
 					if(found_track.affiliation != undefined) {
-						track.affiliation = found_track.affiliation;
+						track_data.affiliation = found_track.affiliation.toLowerCase();
 					}
 					if(found_track.domain != undefined) {
-						track.domain = found_track.domain;
+						track_data.domain = found_track.domain.toLowerCase();
 					}
 					if(found_track.type != undefined) {
-						track.type = found_track.type;
+						track_data.type = found_track.type.toLowerCase();
 					}
 				}
-				io.emit('recieve_track_update', track);
+
+				io.emit('recieve_track_update', track_data);
 			});
 		} else if(message.topic == "tdn-alert") { //Handles incoming alerts
 			//var alert = proto.alert.decode(message.value);
@@ -156,7 +157,7 @@ function implementations() {
 
 		//CLASSIFICATION MODULE
 		//Send updated track information (with Andy's backend ready)
-		/*socket.on('send_track_update', function(track, updatedData) {
+		/*socket.on('send_track_update', function(track, update_data) {
 			var payload = [{
 				topic: 'tdn-ui-changes',
 				messages: JSON.stringify(track), //probably need protobuf encode
@@ -165,11 +166,29 @@ function implementations() {
 			kafkaProducer.send(payload, function(err, data) {});
 		});*/
 		//Send updated track information (without Andy's backend, using sysTracksUpdates collection)
-		socket.on('send_track_update', function(track, updatedData) {
-			updatedData.trackId = track.trackId;
-			Track.updateOne({trackId: track.trackId}, updatedData, function(error, writeOpResult) {
+		socket.on('send_track_update', function(track, update_data) {
+			//update_data.trackId = track.trackId;
+			/*Track.findOne({trackId: track.trackId}, function(err, found_track) {
+				if(err) return console.log(err);
+
+				if(found_track) {
+					found_track.update(update_data, function(error, writeOpResult) {
+						Track.findOne({trackId: track.trackId}, function(err, found_track) {
+							console.log(found_track);
+						});
+					});
+				} else {
+					Track.create(update_data, function(err, new_track) {
+						if(err) return console.log(err);
+						found_track = new_track;
+					});
+				}
+				//console.log(found_track);
+				io.emit('recieve_track_update', found_track);
+			});*/
+			Track.updateOne({trackId: track.trackId}, update_data, function(error, writeOpResult) {
 				if(!writeOpResult.nModified && !writeOpResult.n) {
-					Track.create(updatedData, function(err, user) {
+					Track.create(update_data, function(err, new_track) {
 						if(err) return console.log(err);
 					});
 				}

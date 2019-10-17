@@ -3,6 +3,8 @@ var Header = (function() {
 	var ftms_ui;
 	var display;
 	var header_cells = {};
+	var ownship_id = 8000; //6291459;
+	var ownship_active = false;
 
 	//Public
 	return {
@@ -21,6 +23,7 @@ var Header = (function() {
 				header_row.appendChild(th);
 				header_cells[header_cells_names[i]] = th; //Make cells accessible later
 			}
+			this.clear();
 
 			//Get user's role
 			var role;
@@ -39,11 +42,9 @@ var Header = (function() {
 			logout_link.setAttribute("href", "logout/");
 			logout_link.innerHTML = "Logout";
 			header_cells["logout"].appendChild(logout_link);
-
 			display.appendChild(header_row);
-			document.getElementById("header").appendChild(display);
 
-			ftms_ui.track_manager.setListener(this);
+			document.getElementById("header").appendChild(display);
 
 			this.update();
 			this.updateLoop();
@@ -54,17 +55,24 @@ var Header = (function() {
 			var t = new Date();
 			header_cells["date"].innerHTML = t.toLocaleDateString('en-AU');
 			header_cells["time"].innerHTML = t.toLocaleTimeString('en-US');
-			var ownship = ftms_ui.track_manager.getTrack(6291459); //will need to change eventually
-			if(ownship) {
-				header_cells["course"].innerHTML = "Course: " + ownship.course.toFixed(3) + "°";
-				header_cells["speed"].innerHTML = "Speed: " + ownship.speed.toFixed(3) + " knots";
-				header_cells["lat"].innerHTML = "Lat: " + ownship.latitude.toFixed(8);
-				header_cells["long"].innerHTML = "Long: " + ownship.longitude.toFixed(8);
-			} else {
-				header_cells["course"].innerHTML = "Course:";
-				header_cells["speed"].innerHTML = "Speed:";
-				header_cells["lat"].innerHTML = "Lat:";
-				header_cells["long"].innerHTML = "Long:";
+
+			//Register header as track listener
+			if(!ownship_active) {
+				var ownship = ftms_ui.track_manager.getTrack(ownship_id);
+				if(ownship) { //If own is currently shown
+					ownship_active = true;
+					ownship.addEventListener("update", function() {
+						header_cells["course"].innerHTML = "Course: " + ownship.course.toFixed(3) + "°";
+						header_cells["speed"].innerHTML = "Speed: " + ownship.speed.toFixed(3) + " knots";
+						header_cells["lat"].innerHTML = "Lat: " + ownship.latitude.toFixed(8);
+						header_cells["long"].innerHTML = "Long: " + ownship.longitude.toFixed(8);
+					});
+
+					ownship.addEventListener("delete", function() {
+						ownship_active = false;
+						this.clear();
+					});
+				}
 			}
 		},
 
@@ -75,6 +83,14 @@ var Header = (function() {
 				self.update()
 				self.updateLoop();
 			}, 1000);
+		},
+
+		//Clears track fields
+		clear: function() {
+			header_cells["course"].innerHTML = "Course:";
+			header_cells["speed"].innerHTML = "Speed:";
+			header_cells["lat"].innerHTML = "Lat:";
+			header_cells["long"].innerHTML = "Long:";
 		}
 	}
 }());
