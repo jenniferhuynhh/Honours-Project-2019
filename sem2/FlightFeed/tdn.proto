@@ -1,0 +1,48 @@
+syntax = "proto2";
+
+package tdn;
+
+option java_package = "au.gov.defence.dst.ftms.tdn";
+option java_outer_classname = "TdnDataSerde";
+
+message SystemTrack {
+  required string name = 1;
+  required int64 timestamp = 2;
+  required int64 track_id = 3;
+  enum CUD {
+    CREATE = 0;
+    UPDATE = 1;
+    DELETE = 2;
+  }
+  required CUD eventType = 4;
+  required int64 sensorId = 5;
+
+  required double latitude = 6;
+  required double longitude = 7;
+  optional double altitude = 8;
+  optional double speed = 9;
+  optional double course = 10;
+  optional int64 trackNumber = 11;
+  optional int64 lastTimeMeasurement = 12;
+  optional string truthId = 13;
+  enum TrackState {
+    UNKNOWN = 0;
+    NORMAL = 1;
+  }
+  optional TrackState state = 14;
+  enum TrackDomain {
+    LAND = 0;
+    SEA = 1;
+    SUBSURFACE = 2;
+    AIR = 3;
+  }
+  optional TrackDomain domain = 15;
+  enum TrackAffiliation {
+    FRIENDLY = 0;
+    HOSTILE = 1;
+    NEUTRAL = 2;
+    UNKNOWNTRACK = 3;
+  }
+  optional TrackAffiliation affiliation = 16;
+  optional string trackType = 17;
+}

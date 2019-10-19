@@ -1,0 +1,17 @@
+{
+  "name": "flightfeed",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "Jared Linklater",
+  "license": "ISC",
+  "dependencies": {
+    "kafka-node": "^4.1.3",
+    "long": "^4.0.0",
+    "protobufjs": "^6.8.8",
+    "request": "^2.88.0"
+  }
+}
