@@ -132,11 +132,11 @@ var SettingsModule = (function() {
 			dropdown = document.createElement("select");
 			dropdown.classList.add("layout_dropdown");
 
-			var button = document.createElement("input");
-			button.classList.add("layout_buttons");
-			button.setAttribute("type", "button");
-			button.setAttribute("value", "Load");
-			button.addEventListener("click", function(){
+			var load_button = document.createElement("input");
+			load_button.classList.add("layout_buttons");
+			load_button.setAttribute("type", "button");
+			load_button.setAttribute("value", "Load");
+			load_button.addEventListener("click", function(){
 				var selected = dropdown.options[dropdown.selectedIndex].text;
 				for(var i = 0; i < layouts.length; i++){
 					if(layouts[i].name == selected){
@@ -147,8 +147,17 @@ var SettingsModule = (function() {
 				}
 			});
 
+			var default_button = document.createElement("input");
+			default_button.classList.add("layout_buttons");
+			default_button.setAttribute("type", "button");
+			default_button.setAttribute("value", "Set As Default");
+			default_button.addEventListener("click", function(){
+
+			});
+
 			col1.appendChild(dropdown);
-			col2.appendChild(button);
+			col2.appendChild(load_button);
+			col2.appendChild(default_button);
 			row.appendChild(col1);
 			row.appendChild(col2);
 
@@ -171,7 +180,7 @@ var SettingsModule = (function() {
 			textbox.setAttribute("placeholder", "Save your layout");
 
 			var button = document.createElement("input");
-			button.classList.add("layout_buttons");
+			button.classList.add("save_button");
 			button.setAttribute("type", "button");
 			button.setAttribute("value", "Save");
 			button.addEventListener("click", function(){

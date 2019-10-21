@@ -5,13 +5,13 @@
 	color: black;
 }
 
-.layout_buttons {
+.layout_buttons, .save_button {
 	color: white;
 	background-color: #808080;
 	border: 2px solid #737373;
 }
 
-.layout_buttons:hover, .unhighlighted_classification_buttons:hover, .unhighlighted_weapons_buttons:hover, .unhighlighted_authorise_button:hover {
+.layout_buttons:hover, .save_button:hover, .unhighlighted_classification_buttons:hover, .unhighlighted_weapons_buttons:hover, .unhighlighted_authorise_button:hover {
 	background-color: #b3b3b3;
 	color: black;
 }
