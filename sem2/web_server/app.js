@@ -4,12 +4,14 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
-var Track = require('./models/track.js');
-var UserLayouts = require('./models/layouts.js');
 var session = require('express-session');
 var kafka = require('kafka-node');
 var protobuf = require("protobufjs");
+//mongoose + models
+var mongoose = require('mongoose');
+var Track = require('./models/track.js');
+var UserLayouts = require('./models/layouts.js');
+var UserSettings = require('./models/settings.js');
 
 var app = express();
 
@@ -215,7 +217,7 @@ function implementations() {
 			var session = socket.request.session;
 			UserLayouts.updateOne({userId: session.userId, name: layout_data.layout_name}, {layout: layout_data.layout_config}, function(error, writeOpResult) {
 				if(!writeOpResult.nModified && !writeOpResult.n) {
-					UserLayouts.create({userId: session.userId, name: layout_data.layout_name, layout: layout_data.layout_config}, function(err, layout) {
+					UserLayouts.create({userId: session.userId, name: layout_data.layout_name, layout: layout_data.layout_config}, function(err) {
 						if(err) return console.log(err);
 					});
 				}
@@ -226,6 +228,30 @@ function implementations() {
 			var session = socket.request.session;
 			UserLayouts.find({userId: session.userId}, function(error, layouts) {
 				io.emit('receive_layouts', layouts);
+			});
+		});
+
+		socket.on('save_settings', function(settings_data){
+			var session = socket.request.session;
+			UserSettings.updateOne({userId: session.userId}, {settings: settings_data}, function(error, writeOpResult) {
+				if(error) return console.log(error);
+				if(!writeOpResult.nModified && !writeOpResult.n) {
+					UserSettings.create({userId: session.userId, settings: settings_data}, function(err) {
+						if(err) return console.log(err);
+					});
+				}
+			});
+		});
+
+		socket.on('load_settings', function(callback){
+			var session = socket.request.session;
+			UserSettings.findOne({userId: session.userId}, function(error, userSettings) {
+				if(userSettings){
+					callback(userSettings.settings);
+				}
+				else{
+					callback(null);
+				}
 			});
 		});
 	});

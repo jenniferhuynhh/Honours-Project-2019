@@ -23,6 +23,9 @@ var FTMS_UI = (function() {
 			this.event_manager = EventManager;
 			this.event_manager.init(this);
 
+			this.settings = SettingsModule;
+			this.settings.init(this);
+
 			this.track_manager = TrackManager;
 			this.track_manager.init(this);
 
@@ -34,9 +37,6 @@ var FTMS_UI = (function() {
 
 			this.authorisation_approval_module = AuthorisationApprovalModule;
 			this.authorisation_approval_module.initialise(this);
-
-			this.settings = SettingsModule;
-			this.settings.init(this);
 
 			this.weapon_authorisation_module = WeaponAuthorisationModule;
 			this.weapon_authorisation_module.initialise(this);

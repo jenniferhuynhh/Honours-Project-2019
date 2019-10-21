@@ -7,7 +7,6 @@ var SettingsModule = (function() {
 
 	//Public
 	return {
-		audio_on: false,
 
 		init: function(ftms) {
 			//link FTMS UI system
@@ -17,14 +16,14 @@ var SettingsModule = (function() {
 			display = document.createElement("div");
 			display.classList.add("settings_module");
 
-			var settings = document.createElement("table");
-			settings.classList.add("settings");
+			var settings_table = document.createElement("table");
+			settings_table.classList.add("settings");
 
-			settings.appendChild(this.generateToggleOptions("Audio", this.audio_on, ()=>{
-				this.audio_on = !this.audio_on;
+			settings_table.appendChild(this.generateToggleOptions("Audio", ftms_ui.settings_manager.getSetting("audio_on"), ()=>{
+				ftms_ui.settings_manager.toggleSetting("audio_on"); 
 			}));
 
-			settings.appendChild(this.generateToggleOptions("Dark Theme", true, function(){
+			settings_table.appendChild(this.generateToggleOptions("Dark Theme", ftms_ui.settings_manager.getSetting("dark_theme"), ()=>{
 				var themes = {
 					dark: "public/javascripts/libraries/GoldenLayout1.5.9/goldenlayout-dark-theme.css",
 					light: "public/javascripts/libraries/GoldenLayout1.5.9/goldenlayout-light-theme.css"
@@ -37,9 +36,10 @@ var SettingsModule = (function() {
 				else if(ref == themes.dark){
 					link.href = themes.light;
 				}
+				ftms_ui.settings_manager.toggleSetting("dark_theme"); 
 			}));
 
-			settings.appendChild(this.generateToggleOptions("Colour Blind Mode", false, function(){
+			settings_table.appendChild(this.generateToggleOptions("Colour Blind Mode", ftms_ui.settings_manager.getSetting("colourblind"), ()=>{
 				var modes = {
 					normal: "public/stylesheets/main.css",
 					colourblind: "public/stylesheets/colourblind.css"
@@ -52,17 +52,19 @@ var SettingsModule = (function() {
 				else if(ref == modes.colourblind){
 					link.href = modes.normal;
 				}
+				ftms_ui.settings_manager.toggleSetting("colourblind"); 
 			}));
 
-			settings.appendChild(this.generateSlider("Icon Sizing", function(){
-				ftms_ui.map_module.setIconSize(this.value);
+			settings_table.appendChild(this.generateSlider("Icon Sizing", function(){
+				ftms_ui.settings_manager.changeSetting("icon_sizing", this.value);
+				ftms_ui.map_module.updateIcons();
 			}));
 			
-			settings.appendChild(this.generateLoadLayout());
+			settings_table.appendChild(this.generateLoadLayout());
 			
-			settings.appendChild(this.generateSaveLayout());
+			settings_table.appendChild(this.generateSaveLayout());
 
-			display.appendChild(settings);
+			display.appendChild(settings_table);
 
 			ftms_ui.event_manager.loadLayouts();
 
@@ -109,7 +111,7 @@ var SettingsModule = (function() {
 			input.type = "range";
 			input.min = "5";
 			input.max = "30";
-			input.value = "15";
+			input.value = ftms_ui.settings_manager.getSetting("icon_sizing");
 			input.classList.add("icon_slider");
 			input.addEventListener("change", func);
 
@@ -142,7 +144,7 @@ var SettingsModule = (function() {
 					if(layouts[i].name == selected){
 						document.getElementById("goldenlayout").innerHTML = "";
 						document.getElementById("header").innerHTML = "";
-						ftms_ui.init(JSON.parse(layouts[i].layout));
+						ftms_ui.init(layouts[i].layout);
 					}
 				}
 			});
@@ -151,8 +153,12 @@ var SettingsModule = (function() {
 			default_button.classList.add("layout_buttons");
 			default_button.setAttribute("type", "button");
 			default_button.setAttribute("value", "Set As Default");
-			default_button.addEventListener("click", function(){
-
+			default_button.addEventListener("click", ()=>{
+				for(var i = 0; i < layouts.length; i++){
+					if(dropdown.options[dropdown.selectedIndex].text == layouts[i].name){
+						ftms_ui.settings_manager.changeSetting("default_layout", layouts[i].layout); 
+					}
+				}
 			});
 
 			col1.appendChild(dropdown);
@@ -201,7 +207,7 @@ var SettingsModule = (function() {
 			return row;
 		},
 
-		receiveLayouts: function(data){
+		receiveLayouts: function(data) {
 			layouts = data;
 			while(dropdown.options.length > 0) dropdown.remove(0);
 			for(var i = 0; i < data.length; i++){

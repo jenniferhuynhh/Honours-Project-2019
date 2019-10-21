@@ -4,7 +4,7 @@ var MapModule = (function() {
 
 	var display;
 	var viewer;
-	var icon_size = 15; //Size of milsymbol symbols
+	//var icon_size = 15; //Size of milsymbol symbols
 	var current_highlighted = null;
 	var offline_mode = true;
 	var mode = "normal";
@@ -245,7 +245,7 @@ var MapModule = (function() {
 			var color_mode = "Light";
 			if(current_highlighted == track) color_mode = "Dark";
 
-			return new ms.Symbol(icon_id, {size: icon_size, colorMode: color_mode}).asCanvas();
+			return new ms.Symbol(icon_id, {size: ftms_ui.settings_manager.getSetting("icon_sizing"), colorMode: color_mode}).asCanvas();
 		},
 
 		//Erases track from viewer
@@ -266,11 +266,6 @@ var MapModule = (function() {
 
 		getViewer: function() {
 			return viewer;
-		},
-
-		setIconSize: function(num) {
-			icon_size = num;
-			this.updateIcons();
 		}
 	}
 }());

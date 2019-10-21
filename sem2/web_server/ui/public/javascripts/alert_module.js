@@ -63,7 +63,7 @@ var AlertModule = (function() {
 				}
 			});
 
-			if(ftms_ui.settings.audio_on) alert_sound.play();
+			if(ftms_ui.settings_manager.getSetting("audio_on")) alert_sound.play();
 
 			showAcknowledgedDiv.insertAdjacentElement("afterend", alert);
 		}

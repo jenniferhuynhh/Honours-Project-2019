@@ -14,8 +14,8 @@ var WindowManager = (function() {
 			ftms_ui = ftms;
 
 			var config;
-			if(layout){
-				config = layout;
+			if(layout != ""){
+				config = JSON.parse(layout);
 			}else{
 				config = {
 					settings: {

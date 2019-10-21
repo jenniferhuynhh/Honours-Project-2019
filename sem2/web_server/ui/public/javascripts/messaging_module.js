@@ -81,17 +81,17 @@ var MessagingModule = (function() {
 
 		onConnect: function(username) {
 			this.displayMessage('🔵 <i>' + username + ' joined the chat.</i>'); //😭
-			if(ftms_ui.settings.audio_on) message_sound.play();
+			if(ftms_ui.settings_manager.getSetting("audio_on")) message_sound.play();
 		},
 
 		onDisconnect: function(username) {
 			this.displayMessage('🔴 <i>' + username + ' left the chat.</i>');
-			if(ftms_ui.settings.audio_on) message_sound.play();
+			if(ftms_ui.settings_manager.getSetting("audio_on")) message_sound.play();
 		},
 		
 		onMessage: function(username, message) {
 			this.displayMessage('<strong>' + username + '</strong>: ' + message);
-			if(ftms_ui.settings.audio_on) message_sound.play();
+			if(ftms_ui.settings_manager.getSetting("audio_on")) message_sound.play();
 		},
 
 		displayMessage: function(message) {

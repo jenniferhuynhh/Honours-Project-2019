@@ -94,6 +94,15 @@ var EventManager = (function() {
 
 		loadLayouts: function() {
 			socket.emit('load_layouts');
+		},
+
+		//SETTINGS
+		saveSettings: function(settings) {
+			socket.emit('save_settings', settings);
+		}, 
+
+		loadSettings: function(callback) {
+			socket.emit('load_settings', callback);
 		}
 	}
 }());
