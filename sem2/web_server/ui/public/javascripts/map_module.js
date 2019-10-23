@@ -8,6 +8,8 @@ var MapModule = (function() {
 	var current_highlighted = null;
 	var offline_mode = true;
 	var mode = "normal";
+	var camera_mode = "normal";
+	var ownship;
 
 	//Public
 	return {
@@ -122,12 +124,18 @@ var MapModule = (function() {
 			ownship_button.innerHTML = "Ownship";
 			ownship_button.classList.add("ownship-button", "custom-cesium-button", "custom-cesium-toolbar-button");
 			ownship_button.addEventListener("click", function() { //Toggles ownship mode on/off
-				if(mode == "ownship") mode = "normal";
-				else mode = "ownship";
+				if(camera_mode == "normal"){
+					camera_mode = "ownship_focus";
+					viewer.trackedEntity = viewer.entities.getById(ftms_ui.settings_manager.getSetting("ownship_id"));
+				}
+				else if(camera_mode == "ownship_focus"){
+					camera_mode = "normal";
+					viewer.trackedEntity = null;
+				}
 				this.classList.toggle("active");
 			})
 			map_buttons_div.appendChild(ownship_button);
-			
+
 			display.appendChild(map_buttons_div);
 
 			//Handle on-click track icon selecting

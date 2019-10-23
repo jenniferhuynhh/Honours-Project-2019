@@ -26,6 +26,9 @@ var UserSettingsSchema = new mongoose.Schema({
 		},
 		default_layout: {
 			type: String
+		},
+		ownship_id: {
+			type: Number
 		}
 	}
 });
