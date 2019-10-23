@@ -2,7 +2,7 @@ body {
 	margin: 0px;
 }
 
-input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***/
+*:focus { /*** Removes Chrome's automatic clickable-element highlighting ***/
 	outline: 0;
 }
 
