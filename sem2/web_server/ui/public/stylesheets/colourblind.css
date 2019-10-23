@@ -37,7 +37,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	background-color: #1ab2ff;
 }
 
-.highlighted_friendly_data {
+.friendly_data.highlighted {
 	/*background-color: #006b8c;*/
 	background-color: #0098C6;
 }
@@ -50,7 +50,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	background-color: #aaaa55;
 }
 
-.highlighted_hostile_data {
+.hostile_data.highlighted {
 	/*background-color: #c80000;*/
 	background-color: #666633;
 }
@@ -63,7 +63,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	background-color: #b3b3b3;
 }
 
-.highlighted_neutral_data {
+.neutral_data.highlighted {
 	/*background-color: #00a000;*/
 	background-color: #8c8c8c;
 }
@@ -76,7 +76,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	background-color: #ffd11a;
 }
 
-.highlighted_unknown_data {
+.unknown_data.highlighted {
 	/*background-color: #e1dc00;*/
 	background-color: #cca300;
 }

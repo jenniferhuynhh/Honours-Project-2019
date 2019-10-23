@@ -15,13 +15,12 @@ var FTMS_UI = (function() {
 
 		//Initialises all modules and shows them
 		init: function(layout) {
-			
 			this.event_manager = EventManager;
 			this.event_manager.init(this);
-
+			
 			this.settings_manager = SettingsManager;
 			this.settings_manager.init(this, ()=>{
-				
+					
 				this.window_manager = WindowManager;
 				this.window_manager.initialise(this, layout);
 

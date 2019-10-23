@@ -19,51 +19,12 @@ var SettingsModule = (function() {
 			var settings_table = document.createElement("table");
 			settings_table.classList.add("settings");
 
-			settings_table.appendChild(this.generateToggleOptions("Audio", ftms_ui.settings_manager.getSetting("audio_on"), ()=>{
-				ftms_ui.settings_manager.toggleSetting("audio_on"); 
-			}));
-
-			settings_table.appendChild(this.generateToggleOptions("Dark Theme", ftms_ui.settings_manager.getSetting("dark_theme"), ()=>{
-				var themes = {
-					dark: "public/javascripts/libraries/GoldenLayout1.5.9/goldenlayout-dark-theme.css",
-					light: "public/javascripts/libraries/GoldenLayout1.5.9/goldenlayout-light-theme.css"
-				}
-				var link = document.getElementById("gl-theme");
-				var ref = link.href.replace(/http(s?):\/\/(.+?)\//g, "");
-				if(ref == themes.light){
-					link.href = themes.dark;
-				}
-				else if(ref == themes.dark){
-					link.href = themes.light;
-				}
-				ftms_ui.settings_manager.toggleSetting("dark_theme"); 
-			}));
-
-			settings_table.appendChild(this.generateToggleOptions("Colour Blind Mode", ftms_ui.settings_manager.getSetting("colourblind"), ()=>{
-				var modes = {
-					normal: "public/stylesheets/main.css",
-					colourblind: "public/stylesheets/colourblind.css"
-				}
-				var link = document.getElementById("normal-mode");
-				var ref = link.href.replace(/http(s?):\/\/(.+?)\//g, "");
-				if(ref == modes.normal){
-					link.href = modes.colourblind;
-				}
-				else if(ref == modes.colourblind){
-					link.href = modes.normal;
-				}
-				ftms_ui.settings_manager.toggleSetting("colourblind"); 
-			}));
-
-			settings_table.appendChild(this.generateSlider("Icon Sizing", function(){
-				ftms_ui.settings_manager.changeSetting("icon_sizing", this.value);
-				ftms_ui.map_module.updateIcons();
-			}));
-			
+			settings_table.appendChild(this.generateToggleOptions("Audio", "audio_on"));
+			settings_table.appendChild(this.generateToggleOptions("Dark Theme", "dark_theme"));
+			settings_table.appendChild(this.generateToggleOptions("Colour Blind Mode", "colourblind"));
+			settings_table.appendChild(this.generateIconSizeSlider("Icon Sizing", "icon_sizing"));
 			settings_table.appendChild(this.generateLoadLayout());
-			
 			settings_table.appendChild(this.generateSaveLayout());
-
 			display.appendChild(settings_table);
 
 			ftms_ui.event_manager.loadLayouts();
@@ -72,12 +33,11 @@ var SettingsModule = (function() {
 			ftms_ui.window_manager.appendToWindow('Settings Module', display);
 		},
 
-		generateToggleOptions: function(name, state, func){
+		generateToggleOptions: function(name, setting){
 			var row = document.createElement("tr");
 			var col1 = document.createElement("td");
 			var col2 = document.createElement("td");
 
-			//col1.setAttribute("class", "settings_cells");
 			col1.classList.add("settings_cells");
 			col1.appendChild(document.createTextNode(name));
 
@@ -86,8 +46,8 @@ var SettingsModule = (function() {
 			var span = document.createElement("span");
 			label.classList.add("switch");
 			input.type = "checkbox";
-			input.addEventListener("change", func);
-			input.checked = state;
+			input.addEventListener("change", () => ftms_ui.settings_manager.toggleSetting(setting));
+			input.checked = ftms_ui.settings_manager.getSetting(setting);
 			span.classList.add("slider", "round");
 
 			label.appendChild(input);
@@ -99,7 +59,7 @@ var SettingsModule = (function() {
 			return row;
 		},
 
-		generateSlider: function(name, func){
+		generateIconSizeSlider: function(name, setting){
 			var row = document.createElement("tr");
 			var col1 = document.createElement("td");
 			var col2 = document.createElement("td");
@@ -113,7 +73,7 @@ var SettingsModule = (function() {
 			input.max = "30";
 			input.value = ftms_ui.settings_manager.getSetting("icon_sizing");
 			input.classList.add("icon_slider");
-			input.addEventListener("change", func);
+			input.addEventListener("change", () => ftms_ui.settings_manager.changeSetting(setting, input.value));
 
 			col2.appendChild(input);
 			row.appendChild(col1);
@@ -138,7 +98,7 @@ var SettingsModule = (function() {
 			load_button.classList.add("layout_buttons");
 			load_button.setAttribute("type", "button");
 			load_button.setAttribute("value", "Load");
-			load_button.addEventListener("click", function(){
+			load_button.addEventListener("click", function(){ //Load a selected layout
 				var selected = dropdown.options[dropdown.selectedIndex].text;
 				for(var i = 0; i < layouts.length; i++){
 					if(layouts[i].name == selected){
@@ -154,7 +114,7 @@ var SettingsModule = (function() {
 			default_button.setAttribute("type", "button");
 			default_button.setAttribute("value", "Set As Default");
 			default_button.addEventListener("click", ()=>{
-				for(var i = 0; i < layouts.length; i++){
+				for(var i = 0; i < layouts.length; i++){ //Save default layout as a setting
 					if(dropdown.options[dropdown.selectedIndex].text == layouts[i].name){
 						ftms_ui.settings_manager.changeSetting("default_layout", layouts[i].layout); 
 					}
