@@ -4,7 +4,7 @@ var MapModule = (function() {
 
 	var display;
 	var viewer;
-	var icon_size = 15; //Size of milsymbol symbols
+	var icon_size; //Size of milsymbol symbols, change default in settings_manager.js
 	var current_highlighted = null;
 	var offline_mode = true;
 	var mode = "normal";
@@ -18,6 +18,12 @@ var MapModule = (function() {
 			//Create div for map to load into
 			display = document.createElement("div");
 			display.style.height = "100%";
+
+			icon_size = ftms_ui.settings_manager.getSetting("icon_sizing");
+			ftms_ui.settings_manager.addEventListener("icon_sizing", (value)=>{
+				icon_size = value;
+				this.updateIcons();
+			})
 
 			"use strict";
 			//Create the Cesium Viewer
@@ -278,11 +284,6 @@ var MapModule = (function() {
 
 		getViewer: function() {
 			return viewer;
-		},
-
-		setIconSize: function(num) {
-			icon_size = num;
-			this.updateIcons();
 		}
 	}
 }());

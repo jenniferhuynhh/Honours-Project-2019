@@ -7,7 +7,6 @@ var SettingsModule = (function() {
 
 	//Public
 	return {
-		audio_on: false,
 
 		init: function(ftms) {
 			//link FTMS UI system
@@ -17,52 +16,16 @@ var SettingsModule = (function() {
 			display = document.createElement("div");
 			display.classList.add("settings_module");
 
-			var settings = document.createElement("table");
-			settings.classList.add("settings");
+			var settings_table = document.createElement("table");
+			settings_table.classList.add("settings");
 
-			settings.appendChild(this.generateToggleOptions("Audio", this.audio_on, ()=>{
-				this.audio_on = !this.audio_on;
-			}));
-
-			settings.appendChild(this.generateToggleOptions("Dark Theme", true, function(){
-				var themes = {
-					dark: "public/javascripts/libraries/GoldenLayout1.5.9/goldenlayout-dark-theme.css",
-					light: "public/javascripts/libraries/GoldenLayout1.5.9/goldenlayout-light-theme.css"
-				}
-				var link = document.getElementById("gl-theme");
-				var ref = link.href.replace(/http(s?):\/\/(.+?)\//g, "");
-				if(ref == themes.light){
-					link.href = themes.dark;
-				}
-				else if(ref == themes.dark){
-					link.href = themes.light;
-				}
-			}));
-
-			settings.appendChild(this.generateToggleOptions("Colour Blind Mode", false, function(){
-				var modes = {
-					normal: "public/stylesheets/main.css",
-					colourblind: "public/stylesheets/colourblind.css"
-				}
-				var link = document.getElementById("normal-mode");
-				var ref = link.href.replace(/http(s?):\/\/(.+?)\//g, "");
-				if(ref == modes.normal){
-					link.href = modes.colourblind;
-				}
-				else if(ref == modes.colourblind){
-					link.href = modes.normal;
-				}
-			}));
-
-			settings.appendChild(this.generateSlider("Icon Sizing", function(){
-				ftms_ui.map_module.setIconSize(this.value);
-			}));
-			
-			settings.appendChild(this.generateLoadLayout());
-			
-			settings.appendChild(this.generateSaveLayout());
-
-			display.appendChild(settings);
+			settings_table.appendChild(this.generateToggleOptions("Audio", "audio_on"));
+			settings_table.appendChild(this.generateToggleOptions("Dark Theme", "dark_theme"));
+			settings_table.appendChild(this.generateToggleOptions("Colour Blind Mode", "colourblind"));
+			settings_table.appendChild(this.generateIconSizeSlider("Icon Sizing", "icon_sizing"));
+			settings_table.appendChild(this.generateLoadLayout());
+			settings_table.appendChild(this.generateSaveLayout());
+			display.appendChild(settings_table);
 
 			ftms_ui.event_manager.loadLayouts();
 
@@ -70,12 +33,11 @@ var SettingsModule = (function() {
 			ftms_ui.window_manager.appendToWindow('Settings Module', display);
 		},
 
-		generateToggleOptions: function(name, state, func){
+		generateToggleOptions: function(name, setting){
 			var row = document.createElement("tr");
 			var col1 = document.createElement("td");
 			var col2 = document.createElement("td");
 
-			//col1.setAttribute("class", "settings_cells");
 			col1.classList.add("settings_cells");
 			col1.appendChild(document.createTextNode(name));
 
@@ -84,8 +46,8 @@ var SettingsModule = (function() {
 			var span = document.createElement("span");
 			label.classList.add("switch");
 			input.type = "checkbox";
-			input.addEventListener("change", func);
-			input.checked = state;
+			input.addEventListener("change", () => ftms_ui.settings_manager.toggleSetting(setting));
+			input.checked = ftms_ui.settings_manager.getSetting(setting);
 			span.classList.add("slider", "round");
 
 			label.appendChild(input);
@@ -97,7 +59,7 @@ var SettingsModule = (function() {
 			return row;
 		},
 
-		generateSlider: function(name, func){
+		generateIconSizeSlider: function(name, setting){
 			var row = document.createElement("tr");
 			var col1 = document.createElement("td");
 			var col2 = document.createElement("td");
@@ -109,9 +71,9 @@ var SettingsModule = (function() {
 			input.type = "range";
 			input.min = "5";
 			input.max = "30";
-			input.value = "15";
+			input.value = ftms_ui.settings_manager.getSetting("icon_sizing");
 			input.classList.add("icon_slider");
-			input.addEventListener("change", func);
+			input.addEventListener("change", () => ftms_ui.settings_manager.changeSetting(setting, input.value));
 
 			col2.appendChild(input);
 			row.appendChild(col1);
@@ -132,23 +94,36 @@ var SettingsModule = (function() {
 			dropdown = document.createElement("select");
 			dropdown.classList.add("layout_dropdown");
 
-			var button = document.createElement("input");
-			button.classList.add("layout_buttons");
-			button.setAttribute("type", "button");
-			button.setAttribute("value", "Load");
-			button.addEventListener("click", function(){
+			var load_button = document.createElement("input");
+			load_button.classList.add("layout_buttons");
+			load_button.setAttribute("type", "button");
+			load_button.setAttribute("value", "Load");
+			load_button.addEventListener("click", function(){ //Load a selected layout
 				var selected = dropdown.options[dropdown.selectedIndex].text;
 				for(var i = 0; i < layouts.length; i++){
 					if(layouts[i].name == selected){
 						document.getElementById("goldenlayout").innerHTML = "";
 						document.getElementById("header").innerHTML = "";
-						ftms_ui.init(JSON.parse(layouts[i].layout));
+						ftms_ui.init(layouts[i].layout);
+					}
+				}
+			});
+
+			var default_button = document.createElement("input");
+			default_button.classList.add("layout_buttons");
+			default_button.setAttribute("type", "button");
+			default_button.setAttribute("value", "Set As Default");
+			default_button.addEventListener("click", ()=>{
+				for(var i = 0; i < layouts.length; i++){ //Save default layout as a setting
+					if(dropdown.options[dropdown.selectedIndex].text == layouts[i].name){
+						ftms_ui.settings_manager.changeSetting("default_layout", layouts[i].layout); 
 					}
 				}
 			});
 
 			col1.appendChild(dropdown);
-			col2.appendChild(button);
+			col2.appendChild(load_button);
+			col2.appendChild(default_button);
 			row.appendChild(col1);
 			row.appendChild(col2);
 
@@ -171,7 +146,7 @@ var SettingsModule = (function() {
 			textbox.setAttribute("placeholder", "Save your layout");
 
 			var button = document.createElement("input");
-			button.classList.add("layout_buttons");
+			button.classList.add("save_button");
 			button.setAttribute("type", "button");
 			button.setAttribute("value", "Save");
 			button.addEventListener("click", function(){
@@ -192,7 +167,7 @@ var SettingsModule = (function() {
 			return row;
 		},
 
-		receiveLayouts: function(data){
+		receiveLayouts: function(data) {
 			layouts = data;
 			while(dropdown.options.length > 0) dropdown.remove(0);
 			for(var i = 0; i < data.length; i++){

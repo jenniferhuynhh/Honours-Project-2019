@@ -447,13 +447,22 @@ body {
 
 .layout_buttons {
 	height: 30px;
+	width: 40%;
+	background-color: white;
+	border: 3px solid #d3d3d3;
+	border-radius: 5px;
+	margin: 3%;
+}
+
+.save_button {
+	height: 30px;
 	width: 50%;
 	background-color: white;
 	border: 3px solid #d3d3d3;
 	border-radius: 5px;
 }
 
-.layout_buttons:hover {
+.layout_buttons:hover, .save_button:hover {
 	background-color: #d3d3d3;
 }
 
@@ -468,7 +477,7 @@ body {
 .save_textbox {
 	padding-left: 10px;
 	height: 24px;
-	width: 70%;
+	width: 72%;
 	background-color: #d3d3d3;
 	border-radius: 5px;
 }
