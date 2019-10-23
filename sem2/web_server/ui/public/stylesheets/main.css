@@ -169,11 +169,11 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 }
 
 .alert.LOW {
-	color: #00b300;
+	color: #00e600;
 }
 
 .alert.LOW.dull {
-	color: #008000;
+	color: #006600;
 }
 
 .hidden {

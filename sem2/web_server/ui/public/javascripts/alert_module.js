@@ -11,7 +11,7 @@ var AlertModule = (function() {
 
 		for (var i = children.length - 1; i >= 0; i--) {
 			if (children[i] != showAcknowledgedDiv){
-				if (!children[i].classList.contains('dull')){
+				if (children[i].classList.contains('dull')){
 					children[i].classList.toggle('hidden');
 				}
 			}				
@@ -41,7 +41,7 @@ var AlertModule = (function() {
 			showAcknowledgedChk.addEventListener("click", showAcknowledged);
 
 			showAcknowledgedDiv.appendChild(showAcknowledgedChk);
-			showAcknowledgedDiv.appendChild(document.createTextNode("Show Acknowledged Alerts Only"));
+			showAcknowledgedDiv.appendChild(document.createTextNode("Show Acknowledged Alerts"));
 			display.appendChild(showAcknowledgedDiv);
 
 			// Append display to window
@@ -57,10 +57,14 @@ var AlertModule = (function() {
 			alert.innerHTML = alertJson.text;
 
 			alert.addEventListener('click', function(){
-				alert.classList.add('dull');
 				if (showAcknowledgedChk.checked){
-					alert.remove();
+					if (alert.classList.contains('dull'))
+						alert.remove();
+				}else{
+					alert.classList.add('hidden');
 				}
+
+				alert.classList.add('dull');
 			});
 
 			if(ftms_ui.settings.audio_on) alert_sound.play();
