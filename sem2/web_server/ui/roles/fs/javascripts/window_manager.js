@@ -3,6 +3,7 @@ var WindowManager = (function() {
 	//private
 	var ftms_ui; //FTMS UI system this module is linked to
 	var display; //GoldenLayout object
+	var config;
 
 	//public
 	return {
@@ -13,74 +14,72 @@ var WindowManager = (function() {
 			//Link FTMS UI system
 			ftms_ui = ftms;
 
-			var config;
-			if(layout){
-				config = layout;
-			}else{
-				config = {
-					settings: {
-						showPopoutIcon: false
-					},
-					content: [{
-						type: 'row',
+			//if no default or loaded layout is found
+			config = {
+				settings: {
+					showPopoutIcon: false
+				},
+				content: [{
+					type: 'row',
+					content:[{
+						type: 'column',
 						content:[{
-							type: 'column',
-							content:[{
-								type: 'component',
-								componentName: 'Map Module',
-								isClosable: false
-							},{
-								type: 'row',
-								content:[{
-									type: 'component',
-									componentName: 'Alert Module',
-									isClosable: false,
-									width: 65
-								},{
-									type: 'component',
-									componentName: 'Messaging Module',
-									isClosable: false
-								}],
-								height: 20
-							}],
-							width: 65
+							type: 'component',
+							componentName: 'Map Module',
+							isClosable: false
 						},{
-							type: 'column',
+							type: 'row',
 							content:[{
 								type: 'component',
-								componentName: 'Track Table Module',
+								componentName: 'Alert Module',
+								isClosable: false,
+								width: 65
+							},{
+								type: 'component',
+								componentName: 'Messaging Module',
 								isClosable: false
+							}],
+							height: 20
+						}],
+						width: 65
+					},{
+						type: 'column',
+						content:[{
+							type: 'component',
+							componentName: 'Track Table Module',
+							isClosable: false
+						},{
+							type: 'stack',
+							content: [{
+								type: 'component',
+								componentName: 'Authorisation Approval Module',
+								isClosable: false,
+								height: 30	
 							},{
-								type: 'stack',
-								content: [{
-									type: 'component',
-									componentName: 'Authorisation Approval Module',
-									isClosable: false,
-									height: 30	
-								},{
-									type: 'component',
-									componentName: 'Settings Module',
-									isClosable: false,
-									height: 30
-								}]
+								type: 'component',
+								componentName: 'Settings Module',
+								isClosable: false,
+								height: 30
+							}]
+						},{
+							type: 'stack',
+							content: [{
+								type: 'component',
+								componentName: 'Weapon Authorisation Module',
+								isClosable: false,
+								height: 30
 							},{
-								type: 'stack',
-								content: [{
-									type: 'component',
-									componentName: 'Weapon Authorisation Module',
-									isClosable: false,
-									height: 30
-								},{
-									type: 'component',
-									componentName: 'Weapon Firing Module',
-									isClosable: false,
-									height: 30
-								}]
+								type: 'component',
+								componentName: 'Weapon Firing Module',
+								isClosable: false,
+								height: 30
 							}]
 						}]
 					}]
-				};
+				}]
 			};
+
+			this.decideLayout(layout);
 			 
 			display = new GoldenLayout(config,document.getElementById("goldenlayout"));
 
@@ -98,6 +97,19 @@ var WindowManager = (function() {
 				container.getElement()[0].appendChild(element);
 			});
 		},	
+
+		//Decides what layout to load
+		decideLayout: function(loaded_layout) {
+			var default_layout = ftms_ui.settings_manager.getSetting("default_layout");
+			//if layout is chosen from dropdown menu
+			if(loaded_layout){
+				config = JSON.parse(loaded_layout);
+			}
+			//if default layout was found in user settings
+			else if(default_layout != ""){
+				config = JSON.parse(default_layout);
+			}
+		},
 
 		getConfig: function() {
 			return display.toConfig();

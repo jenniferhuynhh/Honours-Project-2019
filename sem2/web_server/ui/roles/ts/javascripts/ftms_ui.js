@@ -21,8 +21,9 @@ var FTMS_UI = (function() {
 
 			this.settings_manager = SettingsManager;
 			this.settings_manager.init(this, ()=>{
+				
 				this.window_manager = WindowManager;
-				this.window_manager.initialise(this, this.settings_manager.getSetting("default_layout"));
+				this.window_manager.initialise(this, layout);
 
 				this.settings = SettingsModule;
 				this.settings.init(this);
