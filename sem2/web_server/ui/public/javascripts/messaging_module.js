@@ -3,7 +3,8 @@ var MessagingModule = (function() {
 	var ftms_ui;
 	var display;
 	var messages;
-	//var message_sound;
+	var message_sound;
+	var sound_on;
 
 	//Public
 	return {
@@ -16,7 +17,9 @@ var MessagingModule = (function() {
 			display.classList.add('messaging_module');
 
 			//Adding audio 
-			message_sound = new Audio('public/resources/messages.mp3');
+			message_sound = new Audio('public/resources/messages.wav');
+			sound_on = ftms_ui.settings_manager.getSetting("audio_on");
+			ftms_ui.settings_manager.addEventListener("audio_on", value => sound_on = value);
 
 			//Create messaging module elements
 			var messages_td = document.createElement("td");
@@ -81,17 +84,21 @@ var MessagingModule = (function() {
 
 		onConnect: function(username) {
 			this.displayMessage('🔵 <i>' + username + ' joined the chat.</i>'); //😭
-			if(ftms_ui.settings.audio_on) message_sound.play();
+			this.playSound();
 		},
 
 		onDisconnect: function(username) {
 			this.displayMessage('🔴 <i>' + username + ' left the chat.</i>');
-			if(ftms_ui.settings.audio_on) message_sound.play();
+			this.playSound();
 		},
 		
 		onMessage: function(username, message) {
 			this.displayMessage('<strong>' + username + '</strong>: ' + message);
-			if(ftms_ui.settings.audio_on) message_sound.play();
+			this.playSound();
+		},
+
+		playSound() {
+			if(sound_on) message_sound.play();
 		},
 
 		displayMessage: function(message) {
