@@ -401,6 +401,13 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	width: 70px;
 }
 
+.ownship-button {
+	position: absolute;
+	top: 5px;
+	left: 80px;
+	width: 70px;
+}
+
 /*** Settings Module ***/
 .settings_module{
 	width: 100%;
