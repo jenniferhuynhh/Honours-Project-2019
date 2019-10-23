@@ -37,7 +37,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	background-color: #1ab2ff;
 }
 
-.highlighted_friendly_data {
+.friendly_data.highlighted {
 	/*background-color: #006b8c;*/
 	background-color: #0098C6;
 }
@@ -50,7 +50,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	background-color: #aaaa55;
 }
 
-.highlighted_hostile_data {
+.hostile_data.highlighted {
 	/*background-color: #c80000;*/
 	background-color: #666633;
 }
@@ -63,7 +63,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	background-color: #b3b3b3;
 }
 
-.highlighted_neutral_data {
+.neutral_data.highlighted {
 	/*background-color: #00a000;*/
 	background-color: #8c8c8c;
 }
@@ -76,7 +76,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	background-color: #ffd11a;
 }
 
-.highlighted_unknown_data {
+.unknown_data.highlighted {
 	/*background-color: #e1dc00;*/
 	background-color: #cca300;
 }
@@ -425,6 +425,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	color: white;
 	padding-top: 15px;
 	padding-bottom: 15px;
+	vertical-align: middle;
 }
 
 .setting_rows {
@@ -443,13 +444,22 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 
 .layout_buttons {
 	height: 30px;
+	width: 40%;
+	background-color: white;
+	border: 3px solid #d3d3d3;
+	border-radius: 5px;
+	margin: 3%;
+}
+
+.save_button {
+	height: 30px;
 	width: 50%;
 	background-color: white;
 	border: 3px solid #d3d3d3;
 	border-radius: 5px;
 }
 
-.layout_buttons:hover {
+.layout_buttons:hover, .save_button:hover {
 	background-color: #d3d3d3;
 }
 
@@ -464,8 +474,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 .save_textbox {
 	padding-left: 10px;
 	height: 24px;
-	width: 70%;
+	width: 72%;
 	background-color: #d3d3d3;
 	border-radius: 5px;
 }
-

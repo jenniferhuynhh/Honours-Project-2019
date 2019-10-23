@@ -1,9 +1,10 @@
 var TrackTableModule = (function() {
 	//Private
 	var ftms_ui; //FTMS UI system this module is linked to
+
 	var display;
-	var track_table; //the table that track data will be displayed in
-	var header_elements; //Labels to be displayed in header
+	var rows = new Map();
+	var current_highlighted = null;
 	var deleting_row;
 
 	//Public
@@ -12,14 +13,14 @@ var TrackTableModule = (function() {
 			//Link FTMS UI system
 			ftms_ui = ftms;
 			display = document.createElement('div');
-			display.setAttribute('class', 'track_table_display');
+			display.classList.add('track_table_display');
 
 			//Generate and store track data table element
-			track_table = document.createElement("table");
-			track_table.setAttribute("class", "track_table");
+			var track_table = document.createElement("table");
+			track_table.classList.add("track_table");
 
 			//Print headers
-			header_elements = ["ID", "Affiliation", "Latitude", "Longitude", "Speed", "Course", ""];
+			var header_elements = ["ID", "Affiliation", "Latitude", "Longitude", "Speed", "Course", ""];
 			var header = document.createElement("tr");
 			for(var i = 0; i < header_elements.length; i++) {
 				var th = document.createElement("th");
@@ -30,130 +31,118 @@ var TrackTableModule = (function() {
 			track_table.appendChild(header);
 			display.appendChild(track_table);
 
-			//Show table
+			//Create row when new track is created
+			ftms_ui.track_manager.addEventListener("create", track => {
+				var row = new Row(track);
+				rows.set(track.trackId, row);
+				track_table.appendChild(row.display);
+			});
+
+			//Handle a track being selected
+			ftms_ui.track_manager.addEventListener("selected", track => {
+				//Unselect current selected track, select new one
+				if(current_highlighted) current_highlighted.selected(false);
+				current_highlighted = rows.get(track.trackId);
+				current_highlighted.selected(true);
+			});
+
+			//Handle a track being unselected
+			ftms_ui.track_manager.addEventListener("unselected", track => {
+				current_highlighted.selected(false);
+				current_highlighted = null;
+			});
+
 			ftms_ui.window_manager.appendToWindow('Track Table Module', display);
-
-			ftms_ui.track_manager.setListener(this);
-			this.update();
-		},
-		//Updates given track's row
-		updateEntry: function(track) {
-			//Find track's row
-			var row;
-			for(var i = 1; i < track_table.rows.length; i++) {
-				if(track_table.rows[i].cells[0].innerHTML.replace("*","") == track.id) {
-					row = track_table.rows[i];
-				}
-			}
-
-			//Highlight the selected row
-			if(ftms_ui.track_manager.getSelectedTrack() == track) {
-				row.setAttribute("class", "highlighted_" + track.affiliation + "_data");
-			} else {
-				row.setAttribute("class", track.affiliation + "_data");
-			}
-
-			var elements = [ //Track's elements to be displayed
-				track.id,
-				track.affiliation,
-				track.latitude.toFixed(8),
-				track.longitude.toFixed(8),
-				track.speed.toFixed(3) + " knots",
-				track.course.toFixed(3) + "°"
-			];
-			if(track.manual) {
-				elements[0] = "*" + elements[0];
-				elements.push("[✗]");
-				if(track.id == deleting_row) elements[6] = "[✓]";
-			}
-
-			//Print data
-			for(var i = 0; i < elements.length; i++) {
-				row.cells[i].innerHTML = "";
-				row.cells[i].appendChild(document.createTextNode(elements[i]));
-			}
-		},
-		//Creates row for a given track
-		addEntry: function(track) {
-			var row = document.createElement("tr");
-
-			//Handle track selecting
-			var self = this;
-			row.addEventListener("click", function() {
-				var row_track = ftms_ui.track_manager.getTrack(this.cells[0].innerHTML.replace("*",""));
-				if(ftms_ui.track_manager.getSelectedTrack() == row_track) { //Unselect
-					ftms_ui.track_manager.setSelectedTrack(null);
-					ftms_ui.map_module.getViewer().selectedEntity = undefined;
-				} else { //Select
-					ftms_ui.track_manager.setSelectedTrack(row_track);
-					if(row_track) ftms_ui.map_module.getViewer().selectedEntity = ftms_ui.map_module.getViewer().entities.getById(row_track.id)
-				}
-			});
-
-			//Create cells
-			for(var i = 0; i < header_elements.length; i++) {
-				var data = document.createElement("td");
-				if(track.manual && i == 6) {
-					//Give option to delete track
-					data.classList.add("delete_cell");
-					data.addEventListener("click", function() {
-						if(track.id == deleting_row) {
-							ftms_ui.track_manager.deleteTrack(track.id);
-							ftms_ui.map_module.eraseTrack(track.id);
-						} else {
-							deleting_row = track.id;
-						}
-					});
-				}
-				row.appendChild(data);
-			}
-
-			//Print track's id in first row and add to table
-			row.cells[0].innerHTML = track.id;
-			track_table.appendChild(row);
-
-			this.updateEntry(track);
-		},
-		//Updates track data table with current track data
-		update: function() {
-			//Grab track data
-			var tracks = ftms_ui.track_manager.getTracks();
-			var self = this;
-
-			//If table is empty, add all existing tracks
-			if(track_table.rows.length <= 1) {
-				tracks.forEach(function(value, key){
-					self.addEntry(value);
-				});
-				return;
-			}
-
-			//If no tracks exist, empty table
-			if(tracks.size == 0) {
-				while(track_table.rows.length > 1) {
-					track_table.removeChild(track_table.rows[1]);
-				}
-				return;
-			}
-
-			//Update or add track's data
-			tracks.forEach(function(value, key) {
-				for(var i = 1; i < track_table.rows.length; i++) {
-					if(track_table.rows[i].cells[0].innerHTML.replace("*","") == value.id) { //If track data is already on table
-						self.updateEntry(value);
-						break;
-					} else if (i == track_table.rows.length-1) { //If not found
-						self.addEntry(value);
-					}
-				}
-			});
-
-			//Delete missing track's data
-			for(var i = 1; i < track_table.rows.length; i++) {
-				if(!tracks.has(Number(track_table.rows[i].cells[0].innerHTML.replace("*","")))) {
-					track_table.removeChild(track_table.rows[i--]);
-				}
-			}
 		}
 	}
 }());
+
+class Row {
+	constructor(track) {
+		this.track = track;
+		this.delete_state = 0;
+
+		//Create display
+		this.display = document.createElement("tr");
+		this.display.classList.add("class", this.track.affiliation + "_data");
+
+		var props = this.trackProperties(this.track);
+		for(var i = 0; i < props.length; i++) {
+			var cell = document.createElement("td");
+			cell.appendChild(document.createTextNode(props[i]));
+			if(i + 1 != props.length) cell.addEventListener("click", () => this.track.selected()); //Add track-selection to all cells except delete cell
+			this.display.appendChild(cell);
+		}
+
+		if(track.manual) {
+			var delete_cell = this.display.cells[this.display.cells.length-1];
+			delete_cell.classList.add("delete_cell");
+			delete_cell.addEventListener("click", () => {
+				this.progressDeleteState();
+				setTimeout(() => { //Reset delete button if not clicked within x milliseconds
+					if(this.delete_state == 1) {
+						this.resetDeleteState();
+					}
+				}, 1500)
+			});
+		}
+
+		//When track is updated, update cells
+		this.track.addEventListener("update", () => {
+			//Update row styling
+			for(var i = 0; i < this.display.classList.length; i++) { //Remove current affiliation class, but keep highlighting if present
+				if(this.display.classList[i].includes("_data")) {
+					this.display.classList.remove(this.display.classList[i--]);
+					break;
+				}
+			}
+			this.display.classList.add("class", this.track.affiliation + "_data");
+
+			//Update row info
+			var props = this.trackProperties(this.track);
+			for(var i = 0; i < props.length; i++) {
+				this.display.cells[i].childNodes[0].nodeValue = props[i];
+			}
+		});
+
+		//When track is deleted, remove this row
+		this.track.addEventListener("delete", () => this.display.remove());
+	}
+
+	selected() {
+		this.display.classList.toggle("highlighted");
+	}
+
+	progressDeleteState() {
+		if(this.delete_state == 0) {
+			this.delete_state++;
+			this.display.cells[this.display.cells.length-1].childNodes[0].nodeValue = "[✓]";
+		} else if(this.delete_state == 1) {
+			this.track.delete();
+		}
+	}
+
+	resetDeleteState() {
+		this.delete_state = 0;
+		this.display.cells[this.display.cells.length-1].childNodes[0].nodeValue = "[✗]";
+	}
+
+	//HELPER
+	trackProperties(track) {
+		var props = [ //Track's props to be displayed
+			track.trackId,
+			track.affiliation,
+			track.latitude.toFixed(8),
+			track.longitude.toFixed(8),
+			track.speed.toFixed(3) + " knots",
+			track.course.toFixed(3) + "°",
+			""
+		];
+
+		if(track.manual) {
+			props[0] = "*" + props[0];
+			props[props.length-1] = this.delete_state == 1 ? "[✓]" : "[✗]";
+		}
+		return props;
+	}
+}

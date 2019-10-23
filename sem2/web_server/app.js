@@ -4,14 +4,16 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
-var Track = require('./models/track.js');
-var ReplayTrack = require('./models/replayTrack.js');
-var ReplayAlert = require('./models/replayAlert.js');
-var UserLayouts = require('./models/layouts.js');
 var session = require('express-session');
 var kafka = require('kafka-node');
 var protobuf = require("protobufjs");
+//mongoose + models
+var mongoose = require('mongoose');
+var Track = require('./models/track.js');
+var UserLayouts = require('./models/layouts.js');
+var UserSettings = require('./models/settings.js');
+var ReplayTrack = require('./models/replayTrack.js');
+var ReplayAlert = require('./models/replayAlert.js');
 
 var app = express();
 
@@ -76,7 +78,7 @@ try {
 					track: root.lookup("tdn.SystemTrack"),
 					alert: root.lookup("tdn.Alert")
 				};
-
+				
 				//Setups are complete, components are ready; begin implementations
 				implementations();
 			});
@@ -89,12 +91,12 @@ try {
 //Called after component's (Kafka, protobuf) setups are complete. Contains implementations of these components.
 function implementations() {
 	//Consumer implementation
-	kafkaConsumer.on('message', async function(message) {
+	kafkaConsumer.on('message', function(message) {
 		if(message.topic == "tdn-systrk") {	//Handles incoming tracks
-			var track = proto.track.decode(message.value);
-			track = proto.track.toObject(track, {enums: String, longs: String});
+			var track_data = proto.track.decode(message.value);
+			track_data = proto.track.toObject(track_data, {enums: String, longs: String});
 
-			Track.findOne({trackId: track.trackId}, function(err, found_track) {
+			Track.findOne({trackId: track_data.trackId}, function(err, found_track) {
 				if(err) return console.log(err);
 
 				if(found_track) { //If changes to track found, overlay those changes before sending to clients
@@ -102,23 +104,22 @@ function implementations() {
 					/*for(var prop in found_track) {
 						if(Object.prototype.hasOwnProperty.call(found_track, prop)) {
 							//console.log(prop);
-							track[prop] = found_track[prop];
+							track_data[prop] = found_track[prop];
 						}
 					}*/
 					if(found_track.affiliation != undefined) {
-						track.affiliation = found_track.affiliation;
+						track_data.affiliation = found_track.affiliation.toLowerCase();
 					}
 					if(found_track.domain != undefined) {
-						track.domain = found_track.domain;
+						track_data.domain = found_track.domain.toLowerCase();
 					}
 					if(found_track.type != undefined) {
-						track.type = found_track.type;
+						track_data.type = found_track.type.toLowerCase();
 					}
 				}
 
-				ReplayTrack.create(track);
-
-				io.emit('recieve_track_update', track);
+				ReplayTrack.create(track_data);
+				io.emit('recieve_track_update', track_data);
 			});
 		} else if(message.topic == "tdn-alert") { //Handles incoming alerts
 			//var alert = proto.alert.decode(message.value);
@@ -163,7 +164,7 @@ function implementations() {
 
 		//CLASSIFICATION MODULE
 		//Send updated track information (with Andy's backend ready)
-		/*socket.on('send_track_update', function(track, updatedData) {
+		/*socket.on('send_track_update', function(track, update_data) {
 			var payload = [{
 				topic: 'tdn-ui-changes',
 				messages: JSON.stringify(track), //probably need protobuf encode
@@ -172,11 +173,29 @@ function implementations() {
 			kafkaProducer.send(payload, function(err, data) {});
 		});*/
 		//Send updated track information (without Andy's backend, using sysTracksUpdates collection)
-		socket.on('send_track_update', function(track, updatedData) {
-			updatedData.trackId = track.trackId;
-			Track.updateOne({trackId: track.trackId}, updatedData, function(error, writeOpResult) {
+		socket.on('send_track_update', function(track, update_data) {
+			//update_data.trackId = track.trackId;
+			/*Track.findOne({trackId: track.trackId}, function(err, found_track) {
+				if(err) return console.log(err);
+
+				if(found_track) {
+					found_track.update(update_data, function(error, writeOpResult) {
+						Track.findOne({trackId: track.trackId}, function(err, found_track) {
+							console.log(found_track);
+						});
+					});
+				} else {
+					Track.create(update_data, function(err, new_track) {
+						if(err) return console.log(err);
+						found_track = new_track;
+					});
+				}
+				//console.log(found_track);
+				io.emit('recieve_track_update', found_track);
+			});*/
+			Track.updateOne({trackId: track.trackId}, update_data, function(error, writeOpResult) {
 				if(!writeOpResult.nModified && !writeOpResult.n) {
-					Track.create(updatedData, function(err, user) {
+					Track.create(update_data, function(err, new_track) {
 						if(err) return console.log(err);
 					});
 				}
@@ -215,16 +234,18 @@ function implementations() {
 		});
 
 		socket.on('get_replay_bounds', function(setBounds){
-			// Get start/end from Mongo Replay Tracks
-			ReplayTrack.aggregate().
-			group({ _id: null, maxTS: { $max: '$timestamp' }, minTS: { $min: '$timestamp' } }).
-			project('_id maxTS minTS').
-			exec(function (err, r) {
-				if (err)
-					return console.error(err);
-					
-				setBounds(r[0].minTS, r[0].maxTS);
-			});
+			try {
+				// Get start/end from Mongo Replay Tracks
+				ReplayTrack.aggregate().
+				group({ _id: null, maxTS: { $max: '$timestamp' }, minTS: { $min: '$timestamp' } }).
+				project('_id maxTS minTS').
+				exec(function (err, r) {
+					if (err)
+						return console.error(err);
+						
+					setBounds(r[0].minTS, r[0].maxTS);
+				});
+			} catch(err) {console.log(err)};
 		});
 
 		//SETTINGS
@@ -232,7 +253,7 @@ function implementations() {
 			var session = socket.request.session;
 			UserLayouts.updateOne({userId: session.userId, name: layout_data.layout_name}, {layout: layout_data.layout_config}, function(error, writeOpResult) {
 				if(!writeOpResult.nModified && !writeOpResult.n) {
-					UserLayouts.create({userId: session.userId, name: layout_data.layout_name, layout: layout_data.layout_config}, function(err, layout) {
+					UserLayouts.create({userId: session.userId, name: layout_data.layout_name, layout: layout_data.layout_config}, function(err) {
 						if(err) return console.log(err);
 					});
 				}
@@ -243,6 +264,30 @@ function implementations() {
 			var session = socket.request.session;
 			UserLayouts.find({userId: session.userId}, function(error, layouts) {
 				io.emit('receive_layouts', layouts);
+			});
+		});
+
+		socket.on('save_settings', function(settings_data){
+			var session = socket.request.session;
+			UserSettings.updateOne({userId: session.userId}, {settings: settings_data}, function(error, writeOpResult) {
+				if(error) return console.log(error);
+				if(!writeOpResult.nModified && !writeOpResult.n) {
+					UserSettings.create({userId: session.userId, settings: settings_data}, function(err) {
+						if(err) return console.log(err);
+					});
+				}
+			});
+		});
+
+		socket.on('load_settings', function(callback){
+			var session = socket.request.session;
+			UserSettings.findOne({userId: session.userId}, function(error, userSettings) {
+				if(userSettings){
+					callback(userSettings.settings);
+				}
+				else{
+					callback(null);
+				}
 			});
 		});
 	});

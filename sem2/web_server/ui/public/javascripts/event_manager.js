@@ -15,7 +15,7 @@ var EventManager = (function() {
 			//RECEIVE MESSAGES FROM SERVER
 			//TRACK MANAGER
 			socket.on('recieve_track_update', function(track) {
-				if (!ftms_ui.replay_module.isReplayMode())
+				if(!ftms_ui.replay_module.isReplayMode())
 					ftms_ui.track_manager.recieveTrackUpdate(track);
 			});
 
@@ -25,7 +25,7 @@ var EventManager = (function() {
 
 			//ALERTS
 			socket.on('alert', function(message){
-				if (!ftms_ui.replay_module.isReplayMode())
+				if(!ftms_ui.replay_module.isReplayMode())
 					ftms_ui.alert_module.addAlert(message);
 			});
 
@@ -63,11 +63,9 @@ var EventManager = (function() {
 		
 		//SEND MESSAGES TO SERVER
 		//TRACK MANAGER
-		sendTrackUpdate: function(track, updatedData) {
-			if (!ftms_ui.replay_module.isReplayMode()){
-				track.trackId = track.id;
-				socket.emit('send_track_update', track, updatedData);
-			}
+		sendTrackUpdate: function(track, update_data) {
+			update_data.trackId = track.trackId;
+			socket.emit('send_track_update', track, update_data);
 		},
 
 		getManualTrackId: function(callback) {
@@ -108,6 +106,15 @@ var EventManager = (function() {
 
 		loadLayouts: function() {
 			socket.emit('load_layouts');
+		},
+
+		//SETTINGS
+		saveSettings: function(settings) {
+			socket.emit('save_settings', settings);
+		}, 
+
+		loadSettings: function(callback) {
+			socket.emit('load_settings', callback);
 		}
 	}
 }());

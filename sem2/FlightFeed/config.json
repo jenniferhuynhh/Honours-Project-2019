@@ -1,0 +1,15 @@
+{
+	"bounding_box": {
+		"upper": {
+			"lat": -10.733560,
+			"long": 178.506860
+		},
+		"lower": {
+			"lat": -47.275781,
+			"long": 112.969846
+		}
+	},
+	"kafka_topic": "tdn-systrk",
+	"query_rate_seconds": 5,
+	"IDs_start": 1000
+}

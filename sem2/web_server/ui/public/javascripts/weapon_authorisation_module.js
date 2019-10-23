@@ -41,7 +41,7 @@ var WeaponAuthorisationModule = (function() {
 				}
 				self.toggleDisabled();*/
 				var data = {
-					trackId: ftms_ui.track_manager.getSelectedTrack().id,
+					trackId: ftms_ui.track_manager.getSelectedTrack().trackId,
 					weaponIds: self.getSelectedWeapons() 
 				}
 				ftms_ui.event_manager.sendAuthorisationRequest(data);

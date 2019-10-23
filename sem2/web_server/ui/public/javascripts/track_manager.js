@@ -1,8 +1,14 @@
+//NOTE: This manager is for Create/Read operations. Update/Delete operations should be called on the track object itself.
 var TrackManager = (function() {
 	//Private
 	var ftms_ui; //FTMS UI system this module is linked to
-	var tracks; //Map of tracks, mapped to their unique ID
-	var listeners = [];
+	var listeners = { //Events that listeners can listen for
+		create: [],
+		selected: [],
+		unselected: []
+	};
+
+	var tracks = new Map(); //Map of tracks, mapped to their unique ID
 	var selected_track;
 
 	//Public
@@ -11,85 +17,81 @@ var TrackManager = (function() {
 		init: function(ftms) {
 			//Link FTMS UI system
 			ftms_ui = ftms;
-
-			tracks = new Map();
 		},
 
 		//Handles recieving a new track from the EventManager
-		recieveTrackUpdate: function(incoming_track) {
-			var track = this.getTrack(incoming_track.trackId);
+		recieveTrackUpdate: function(incoming_track_data) {
+			var track = this.getTrack(incoming_track_data.trackId);
 			if(track) { //If track exists, update properties
-				var updateData = {
-					latitude: incoming_track.latitude,
-					longitude: incoming_track.longitude,
-					altitude: incoming_track.altitude,
-					speed: incoming_track.speed,
-					course: incoming_track.course
+				var update_data = {
+					latitude: incoming_track_data.latitude,
+					longitude: incoming_track_data.longitude,
+					altitude: incoming_track_data.altitude,
+					speed: incoming_track_data.speed,
+					course: incoming_track_data.course
 				};
-				if(incoming_track.type != undefined) {
-					updateData.type = incoming_track.type;
+
+				if(incoming_track_data.type) {
+					update_data.type = incoming_track_data.type.toLowerCase();
 				}
-				if(incoming_track.affiliation != undefined) {
-					updateData.affiliation = incoming_track.affiliation;
+				if(incoming_track_data.affiliation) {
+					update_data.affiliation = incoming_track_data.affiliation.toLowerCase();
 				}
-				if(incoming_track.domain != undefined) {
-					updateData.domain = incoming_track.domain;
+				if(incoming_track_data.domain) {
+					update_data.domain = incoming_track_data.domain.toLowerCase();
 				}
-				this.updateTrack(track, updateData);
+				track.updateData(update_data);
 			} else { //If existing track not found, create new track
-				track = new Track(incoming_track.trackId, incoming_track.latitude, incoming_track.longitude, incoming_track.altitude, incoming_track.speed, incoming_track.course, "unknown", "sea");
-				if(incoming_track.manual) track.manual = incoming_track.manual;
-				this.setTrack(track);
+				if(incoming_track_data.manual) track.manual = incoming_track_data.manual;
+				this.createTrack(incoming_track_data);
 			}
 		},
 
-		//Sets track (CREATE)
-		setTrack: function(track) {
-			if(this.getTrack(track.id)) { //If track with given ID already exists, stop
-				log("Error: Track with ID '" + track.id + "' already exists!");
+		//Creates track, adds listeners, then calls this module's create event listeners
+		createTrack: function(track_data) {
+			if(this.getTrack(track_data.trackId)) { //If track with given ID already exists, stop
+				log("Error: Track with ID '" + track_data.trackId + "' already exists!");
 				return;
 			}
-			tracks.set(track.id, track);
-			this.callListeners();
-		},
 
-		//Returns track with matching ID (READ)
-		getTrack: function(id) {
-			return tracks.get(Number(id));
-		},
+			var track = new Track(track_data);
 
-		//Updates track (UPDATE)
-		updateTrack: function(track, properties) {
-			//Update track locally
-			for(var prop in properties) {
-				if(Object.prototype.hasOwnProperty.call(track, prop)) {
-					track[prop] = properties[prop];
+			//Handle track being selected
+			track.addEventListener("selected", () => {
+				if(selected_track == track) {
+					selected_track = null;
+					this.callListeners("unselected");
+				} else {
+					selected_track = track;
+					this.callListeners("selected", selected_track);
 				}
-			}
+			});
 
-			//console.log(track);
-			
-			this.callListeners();
+			//Handle track being deleted
+			track.addEventListener("delete", () => {
+				if(selected_track == track) {
+					selected_track = null;
+					this.callListeners("unselected");
+				}
+				tracks.delete(track.trackId);
+			});
+
+			tracks.set(track.trackId, track);
+			this.callListeners("create", track);
 		},
 
-		//Removes a track from the track array by ID (DELETE)
-		deleteTrack: function(id) {
-			tracks.delete(Number(id));
+		//Returns track with matching ID
+		getTrack: function(trackId) {
+			return tracks.get(Number(trackId));
 		},
 
-		//Gets all tracks
+		//Returns iterable map of all tracks
 		getTracks: function() {
 			return tracks;
 		},
 
-		//Sets selected track
-		setSelectedTrack: function(track) {
-			selected_track = track;
-			this.callListeners();
-		},
-
 		//Returns selected track
-		getSelectedTrack: function() {
+		getSelectedTrack: function(trackId) {
 			return selected_track;
 		},
 
@@ -98,46 +100,103 @@ var TrackManager = (function() {
 			ftms_ui.event_manager.getManualTrackId(callback);
 		},
 
-		//Registers a listener
-		setListener: function(listener) {
-			listeners.push(listener);
+		//Sets selected track
+		setSelectedTrack: function(track) {
+			selected_track = track;
+			this.callListeners("selected", selected_track);
 		},
 
-		//Calls update() function of all listeners
-		callListeners: function() {
-			for(var i = 0; i < listeners.length; i++) {
-				listeners[i].update();
+		addEventListener: function(event, func) {
+			listeners[event].push(func);
+		},
+
+		callListeners: function(event, track) {
+			for(var i = 0; i < listeners[event].length; i++) {
+				listeners[event][i](track);
 			}
 		},
 
 		removeAll: function() {
 			tracks.forEach(function(track){
-				ftms_ui.map_module.eraseTrack(track.id);
+				track.delete()
 			});
-			tracks = new Map();
-			ftms_ui.track_table_module.update();
 		},
 
 		//Adds a track for testing purposes
 		test: function() {
-			var test_listener = {
-				update: function() {log("listener called")}
+			//return;
+			var t1 = {
+				trackId: 123,
+				latitude: 26.576489,
+				longitude: 56.423728,
+				altitude: 0,
+				speed: 20,
+				course: 270,
+				affiliation: "friendly",
+				domain: "sea",
+				type: "naval ship"
 			};
-			//this.setListener(test_listener);
+			this.createTrack(t1);
 
-			var t1 = new Track(123, 26.576489, 56.423728, 0, 20, 270, "friendly", "sea");
-			this.setTrack(t1);
-			//var t2 = new Track(123, 26.576489, 56.423728, 0, 20, 270, "neutral", "land");
-			//this.setTrack(t2);
-			this.updateTrack(t1, {affiliation: "hostile"});
-			ftms_ui.map_module.paintTrack(t1);
+			var t2 = {
+				trackId: 124,
+				latitude: 27.576489,
+				longitude: 57.423728,
+				altitude: 0,
+				speed: 20,
+				course: 270,
+				affiliation: "hostile",
+				domain: "sea",
+				type: "naval ship"
+			};
+			this.createTrack(t2);
 
-			//track testing
-			//var alert = JSON.parse('{"_id":{"$oid":"5d952b363f446c644762f433"},"timestamp":{"$numberLong":"1570057014412"},"id":{"$numberInt":"1"},"severity":"LOW","status":"NEW","text":"System Track created","associatedObjectId":"4194311"}');
-			//ftms_ui.alert_module.addAlert(alert);
-
-			//Display data of new track positions
-			ftms_ui.track_table_module.update();
+			//setTimeout(function() {ftms_ui.map_module.setIconSize(40)}, 2000);
+			//this.getTrack(t1.trackId).updateData({affiliation: "hostile"});
 		}
 	}
 }());
+
+//Track object definition
+class Track extends EventListener {
+	constructor(track_data) {
+		super(["update", "selected", "delete"]); //events this object can fire
+
+		this.trackId = Number(track_data.trackId); //unique ID
+		this.latitude = track_data.latitude; //-34.912955 (Adelaide)
+		this.longitude = track_data.longitude; //138.365660 (Adelaide)
+		this.altitude = track_data.altitude;
+		this.speed = track_data.speed;
+		this.course = track_data.course; //course in degrees
+		this.manual = track_data.manual;
+ 		
+ 		//affiliation of track (friendly, hostile, etc.)
+		if(track_data.affiliation) this.affiliation = track_data.affiliation.toLowerCase()
+		else this.affiliation = "unknown";
+
+		//domain of track (air, sea, land, subsurface)
+		if(track_data.domain) this.domain = track_data.domain.toLowerCase()
+		else this.domain = "sea";
+
+		//type of track
+		if(track_data.type) this.type = track_data.type.toLowerCase()
+		else this.type = "naval ship";
+	}
+
+	updateData(track_data) {
+		for(var match in track_data) {
+			if(Object.prototype.hasOwnProperty.call(this, match)) {
+				this[match] = track_data[match];
+			}
+		}
+		this.callListeners("update");
+	}
+
+	delete() {
+		this.callListeners("delete");
+	}
+
+	selected() {
+		this.callListeners("selected");
+	}
+}

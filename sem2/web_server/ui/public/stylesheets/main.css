@@ -6,7 +6,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	outline: 0;
 }
 
-/*** Track data table ***/
+/*** Track table ***/
 .track_table_display {
 	width: 100%;
 	height: 100%;
@@ -37,8 +37,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	background-color: #1ab2ff;
 }
 
-.highlighted_friendly_data {
-	/*background-color: #006b8c;*/
+.friendly_data.highlighted {
 	background-color: #0098C6;
 }
 
@@ -50,8 +49,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	background-color: #ff471a;
 }
 
-.highlighted_hostile_data {
-	/*background-color: #c80000;*/
+.hostile_data.highlighted {
 	background-color: #A40303;
 }
 
@@ -63,8 +61,7 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	background-color: #00E200;
 }
 
-.highlighted_neutral_data {
-	/*background-color: #00a000;*/
+.neutral_data.highlighted {
 	background-color: #00A000;
 }
 
@@ -72,12 +69,11 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	background-color: #ffff80;
 }
 
-.unknown_data:hover{
+.unknown_data:hover {
 	background-color: #ffff33;
 }
 
-.highlighted_unknown_data {
-	/*background-color: #e1dc00;*/
+.unknown_data.highlighted {
 	background-color: #b3b300;
 }
 
@@ -173,11 +169,11 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 }
 
 .alert.LOW {
-	color: #00b300;
+	color: #00e600;
 }
 
 .alert.LOW.dull {
-	color: #008000;
+	color: #006600;
 }
 
 .hidden {
@@ -532,13 +528,22 @@ input:checked + .slider:before {
 
 .layout_buttons {
 	height: 30px;
+	width: 40%;
+	background-color: white;
+	border: 3px solid #d3d3d3;
+	border-radius: 5px;
+	margin: 3%;
+}
+
+.save_button {
+	height: 30px;
 	width: 50%;
 	background-color: white;
 	border: 3px solid #d3d3d3;
 	border-radius: 5px;
 }
 
-.layout_buttons:hover {
+.layout_buttons:hover, .save_button:hover {
 	background-color: #d3d3d3;
 }
 
@@ -553,7 +558,7 @@ input:checked + .slider:before {
 .save_textbox {
 	padding-left: 10px;
 	height: 24px;
-	width: 70%;
+	width: 72%;
 	background-color: #d3d3d3;
 	border-radius: 5px;
 }

@@ -2,12 +2,12 @@ var ClassificationModule = (function() {
 	//Private
 	var ftms_ui;
 	var display;
-	var div1, div2, div3;
-	var div1_menu;
-	var div2_buttons, div3_buttons;
+	var types_menu, domain_buttons, affiliation_buttons;
 
-	var land_types, sea_types, air_types, subsurface_types;
+	var track_types;
 	var track_domains, track_affiliations;
+
+	var selected_track;
 
 	//Public
 	return {
@@ -16,14 +16,13 @@ var ClassificationModule = (function() {
 			//links FTMS UI system
 			ftms_ui = ftms;
 
-			//Create div for elements to sit in
-			display = document.createElement("div");
-
 			//Track types
-			land_types = ['Tank', 'Humvee', 'Desert patrol vehicle'];
-			sea_types = ['Missile boat', 'Naval ship', 'Patrol boat' ];
-			air_types = ['Jet', 'Helicopter', 'Military aircraft'];
-			subsurface_types = ['Submarine', 'Torpedo'];
+			track_types = {
+				land: ['Tank', 'Humvee', 'Desert patrol vehicle'],
+				sea: ['Missile boat', 'Naval ship', 'Patrol boat' ],
+				air: ['Jet', 'Helicopter', 'Military aircraft'],
+				subsurface: ['Submarine', 'Torpedo']
+			}
 
 			//Track domains
 			track_domains = ['Land', 'Sea', 'Subsurface', 'Air'];
@@ -31,159 +30,151 @@ var ClassificationModule = (function() {
 			//Track affiliations
 			track_affiliations = ['Friendly', 'Neutral', 'Hostile', 'Unknown'];
 
+			//DISPLAY SETUP
+			//Create div for elements to sit in
+			display = document.createElement("div");
+
 			//Track type dropdown menu div
-			div1 = document.createElement('div');
-			div1.setAttribute('class', 'center_align');
+			var types_div = document.createElement('div');
+			types_div.classList.add('center_align');
 
-			var div1_contents = document.createElement('div');
-			div1_contents.setAttribute('class', 'dropdown_container');
+			var types_div_contents = document.createElement('div');
+			types_div_contents.classList.add('dropdown_container');
 
-			var type_text = document.createTextNode('Type: ');
-
-			div1_menu = document.createElement('select');
-			div1_menu.setAttribute('class', 'type_dropdown_menu');
+			types_menu = document.createElement('select');
+			types_menu.classList.add('type_dropdown_menu');
 
 			var self = this;
-			div1_menu.addEventListener('change', function(){
+			types_menu.addEventListener('change', function(){
 				self.updateTrack('type', this.value.toLowerCase());
 			});
-			div1_contents.appendChild(type_text);
-			div1_contents.appendChild(div1_menu);
-			div1.appendChild(div1_contents);
+			types_div_contents.appendChild(document.createTextNode('Type: '));
+			types_div_contents.appendChild(types_menu);
+			types_div.appendChild(types_div_contents);
 
 			//Track domain div
-			div2 = document.createElement('div');
-			div2.setAttribute('class', 'classification_buttons_container');
-			div2.setAttribute('class', 'center_align');
+			var domain_div = document.createElement('div');
+			domain_div.classList.add('center_align');
+			//domain_div.classList.add('classification_buttons_container');
 			
-			div2_buttons = [];
+			domain_buttons = [];
 			for (var i = 0; i < track_domains.length; i++) {
-				div2_buttons.push(this.generateButton(track_domains[i], 'domain'));
-				div2.appendChild(div2_buttons[i]);
+				domain_buttons.push(this.generateButton(track_domains[i], 'domain'));
+				domain_div.appendChild(domain_buttons[i]);
 			}
 
 			//Track affiliation div
-			div3 = document.createElement('div');
-			div3.setAttribute('class', 'classification_buttons_container');
-			div3.setAttribute('class', 'center_align');
+			var affiliation_div = document.createElement('div');
+			affiliation_div.classList.add('center_align');
+			//affiliation_div.classList.add('class', 'classification_buttons_container');
 
-			div3_buttons = [];
+			affiliation_buttons = [];
 			for (var i = 0; i < track_affiliations.length; i++) {
-				div3_buttons.push(this.generateButton(track_affiliations[i], 'affiliation'));
-				div3.appendChild(div3_buttons[i]);
+				affiliation_buttons.push(this.generateButton(track_affiliations[i], 'affiliation'));
+				affiliation_div.appendChild(affiliation_buttons[i]);
 			}
 
 			//append the divs to display
-			display.appendChild(div1);
-			display.appendChild(div2);
-			display.appendChild(div3);
-			ftms_ui.window_manager.appendToWindow('Track Classification Module', display);
+			display.appendChild(types_div);
+			display.appendChild(domain_div);
+			display.appendChild(affiliation_div);
 
-			ftms_ui.track_manager.setListener(this);
+			ftms_ui.track_manager.addEventListener("selected", track => {
+				if(selected_track) selected_track.removeEventListener("update", this.update);
+				selected_track = track;
+				selected_track.addEventListener("update", this.update);
+				this.update();
+			});
+
+			ftms_ui.track_manager.addEventListener("unselected", () => {
+				selected_track.removeEventListener("update", this.update);
+				selected_track = null;
+				this.clearFields();
+			});
+
+			ftms_ui.window_manager.appendToWindow('Track Classification Module', display);
 		},
 
 		//Generates a button with a value and an onclick function that changes the property of a track
 		generateButton: function(s, property) {
 			var button = document.createElement('input');
-			button.setAttribute('class', 'unhighlighted_classification_buttons');
-			button.setAttribute('type', 'button');
-			button.setAttribute('value', s);
-			var self = this;
-			button.addEventListener('click', function() {
-				self.updateTrack(property, s.toLowerCase());
+			button.classList.add('unhighlighted_classification_buttons');
+			button.type = 'button';
+			button.value = s;
+			button.addEventListener('click', () => {
+				this.updateTrack(property, s.toLowerCase());
 			});
-
 			return button;
 		},
 
 		//Updates a tracks data when needed (dropdown change/button press)
 		updateTrack: function(property, value) {
-			var track = ftms_ui.track_manager.getSelectedTrack();
 			//If nothing is selected
-			if(!track) {
+			if(!selected_track) {
 				this.clearFields(); 
 				return;
 			}
 
-			var updateData = {};
-			if(property == 'affiliation') {
-				updateData.affiliation = value;
-			} else if(property == 'domain') {
-				updateData.domain = value;
-			} else if(property == 'type') {
-				updateData.type = value; 
-			}
-			ftms_ui.track_manager.updateTrack(track, updateData);
+			var update_data = {};
+			update_data[property] = value;
+
+			//Update locally
+			selected_track.updateData(update_data);
+
 			//Send track update to track server
-			ftms_ui.event_manager.sendTrackUpdate(track, updateData);
+			ftms_ui.event_manager.sendTrackUpdate(selected_track, update_data);
 		},
 		
 		//Updates the dropdown menu and buttons to reflect track properties
 		update: function() {
-			var track = ftms_ui.track_manager.getSelectedTrack();
-			//If nothing is selected
-			if(!track) {
-				this.clearFields(); 
-				return;
-			}
-
 			//Update dropdown menu
-			var selected_array;
-			if(track.domain == 'land') {
-				selected_array = land_types;
-			} else if(track.domain == 'air') {
-				selected_array = air_types;
-			} else if(track.domain == 'sea') {
-				selected_array = sea_types;
-			} else if(track.domain == 'subsurface') {
-				selected_array = subsurface_types;
-			}
+			var selected_array = track_types[selected_track.domain.toLowerCase()];
 
 			//Clear existing options
-			div1_menu.innerHTML = "";
+			while(types_menu.options.length > 0) types_menu.remove(0);
 
 			//Add topmost option
 			var empty_option = document.createElement('option');
-			div1_menu.appendChild(empty_option);
+			types_menu.appendChild(empty_option);
 
 			//Add relevant options
 			for(var i = 0; i < selected_array.length; i++) {
 				var option = document.createElement('option');
 				option.innerHTML = selected_array[i];
-				if(track.type == option.innerHTML.toLowerCase()) {
+				if(selected_track.type == option.innerHTML.toLowerCase()) {
 					option.selected = true;
 				}
-				div1_menu.appendChild(option);
+				types_menu.appendChild(option);
 			}
 
 			//Update domain buttons
-			for(var i = 0; i < div2_buttons.length; i++) {
-				if(div2_buttons[i].value.toLowerCase() == track.domain) {
-					div2_buttons[i].setAttribute('class', 'highlighted_classification__buttons');
+			for(var i = 0; i < domain_buttons.length; i++) {
+				if(domain_buttons[i].value.toLowerCase() == selected_track.domain) {
+					domain_buttons[i].setAttribute('class', 'highlighted_classification__buttons');
 				}
 				else{
-					div2_buttons[i].setAttribute('class', 'unhighlighted_classification_buttons');
+					domain_buttons[i].setAttribute('class', 'unhighlighted_classification_buttons');
 				}
 			}
 
 			//Update affiliation buttons
-			for(var i = 0; i < div3_buttons.length; i++) {
-				if(div3_buttons[i].value.toLowerCase() == track.affiliation) {
-					div3_buttons[i].setAttribute('class', 'highlighted_classification__buttons');
+			for(var i = 0; i < affiliation_buttons.length; i++) {
+				if(affiliation_buttons[i].value.toLowerCase() == selected_track.affiliation) {
+					affiliation_buttons[i].setAttribute('class', 'highlighted_classification__buttons');
 				} else {
-					div3_buttons[i].setAttribute('class', 'unhighlighted_classification_buttons');
+					affiliation_buttons[i].setAttribute('class', 'unhighlighted_classification_buttons');
 				}
 			}
 		},
 
 		//Clears the dropdown menu and deselects domain and affiliation buttons
 		clearFields: function() {
-			div1_menu.innerHTML = "";
-			for(var i = 0; i < div2_buttons.length; i++) {
-				div2_buttons[i].setAttribute('class', 'unhighlighted_classification_buttons');
+			while(types_menu.options.length > 0) types_menu.remove(0);
+			for(var i = 0; i < domain_buttons.length; i++) {
+				domain_buttons[i].setAttribute('class', 'unhighlighted_classification_buttons');
 			}
-			for(var i = 0; i < div3_buttons.length; i++) {
-				div3_buttons[i].setAttribute('class', 'unhighlighted_classification_buttons');
+			for(var i = 0; i < affiliation_buttons.length; i++) {
+				affiliation_buttons[i].setAttribute('class', 'unhighlighted_classification_buttons');
 			}
 		}		
 	}
