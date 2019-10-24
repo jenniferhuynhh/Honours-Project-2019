@@ -146,7 +146,7 @@ var ReplayModule = (function() {
 			switchBox.appendChild(replaySwitch);
 
 			var sliderCircle = document.createElement('span');
-			sliderCircle.classList.add('slider', 'round');
+			sliderCircle.classList.add('event_replay_slider', 'round');
 			switchBox.appendChild(sliderCircle);
 
 			var rightLabel = document.createElement('h1');
