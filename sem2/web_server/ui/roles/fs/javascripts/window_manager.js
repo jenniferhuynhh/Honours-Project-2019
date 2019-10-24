@@ -73,6 +73,11 @@ var WindowManager = (function() {
 								componentName: 'Weapon Firing Module',
 								isClosable: false,
 								height: 30
+							},{
+								type: 'component',
+								componentName: 'Replay Module',
+								isClosable: false,
+								height: 40
 							}]
 						}]
 					}]

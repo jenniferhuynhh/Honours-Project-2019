@@ -9,6 +9,8 @@
 	<script src="public/javascripts/libraries/socket.io/socket.io.js"></script>
 	<script src="public/javascripts/libraries/milsymbol/milsymbol.js"></script>
 	<script src="public/javascripts/libraries/cesium/Build/Cesium/Cesium.js"></script>
+	<script src="public/javascripts/libraries/daterangepicker/moment.min.js"></script>
+	<script src="public/javascripts/libraries/daterangepicker/daterangepicker.js"></script>
 	<!-- Custom JS -->
 	<script src="public/javascripts/helpers.js"></script>
 	<script src="public/javascripts/EventListener.js"></script>
@@ -20,6 +22,7 @@
 	<script src="public/javascripts/header.js"></script>
 	<script src="public/javascripts/messaging_module.js"></script>
 	<script src="public/javascripts/alert_module.js"></script>
+	<script src="public/javascripts/replay_module.js"></script>
 	<script src="public/javascripts/weapon_firing_module.js"></script>
 	<script src="public/javascripts/weapon_authorisation_module.js"></script>
 	<script src="public/javascripts/authorisation_approval_module.js"></script>
@@ -29,15 +32,16 @@
 	<script src="../roles/fs/javascripts/ftms_ui.js"></script>
 	<script src="public/javascripts/main.js"></script>
 	<!-- Style Sheets -->
-	<link id="normal-mode" href="public/stylesheets/main.css" rel="stylesheet">
 	<link href="public/stylesheets/toggle_slider.css" rel="stylesheet">
 	<link href="public/stylesheets/icon_slider.css" rel="stylesheet">
     <link href="public/javascripts/libraries/cesium/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
     <link href="public/javascripts/libraries/GoldenLayout1.5.9/goldenlayout-base.css" rel="stylesheet">
     <link id="gl-theme" href="public/javascripts/libraries/GoldenLayout1.5.9/goldenlayout-dark-theme.css" rel="stylesheet">
+    <link href="public/javascripts/libraries/daterangepicker/daterangepicker.css" rel="stylesheet">
+	<link id="normal-mode" href="public/stylesheets/main.css" rel="stylesheet">
 </head>
 <body onload="load_ftms_ui();" style="margin: 0px;">
 	<div id="header" style="height: 4%; position: absolute; width: 100%"></div>
-	<div id="goldenlayout" style="height: 97%; position: absolute; width: 100%; top: 3%; left: 15px;"></div>
+	<div id="goldenlayout" style="height: 97%; position: absolute; width: 100%; top: 3%;"></div>
 </body>
 </html>
