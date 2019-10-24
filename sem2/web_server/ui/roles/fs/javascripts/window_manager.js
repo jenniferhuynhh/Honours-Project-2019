@@ -84,6 +84,13 @@ var WindowManager = (function() {
 				}]
 			};
 
+			//save recommended config
+			var recommended_layout = {
+					layout_config: JSON.stringify(config),
+					layout_name: "(Recommended)"
+			}
+			ftms_ui.event_manager.saveLayout(recommended_layout);
+
 			this.decideLayout(layout);
 			 
 			display = new GoldenLayout(config,document.getElementById("goldenlayout"));
