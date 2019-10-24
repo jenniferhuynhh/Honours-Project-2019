@@ -142,7 +142,7 @@ var MapModule = (function() {
 			var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
 			handler.setInputAction(click => {
 				if(mode == "manual") {
-					if(current_highlighted) viewer.selectedEntity = viewer.entities.getById(current_highlighted.id); //prevent current selected track's infobox disappearing
+					if(current_highlighted) viewer.selectedEntity = viewer.entities.getById(current_highlighted.trackId); //prevent current selected track's infobox disappearing
 
 					var ellipsoid = viewer.scene.globe.ellipsoid;
 					var cartesian = viewer.camera.pickEllipsoid(new Cesium.Cartesian2(click.position.x, click.position.y), ellipsoid);
