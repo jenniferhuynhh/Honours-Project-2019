@@ -28,9 +28,7 @@ var MapModule = (function() {
 			"use strict";
 			//Create the Cesium Viewer
 			var viewer_options = {
-				animation: false,
 				selectionIndicator: false,
-				timeline: false,
 				baseLayerPicker : false,
 				geocoder : false
 			}
@@ -45,6 +43,8 @@ var MapModule = (function() {
 
 			viewer = new Cesium.Viewer(display, viewer_options);
 			viewer.scene.mode = Cesium.SceneMode.SCENE2D;
+
+			this.hideReplayControls();
 
 			//Remove entity focus-locking upon double click
 			viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
@@ -272,6 +272,18 @@ var MapModule = (function() {
 
 		getViewer: function() {
 			return viewer;
+		},
+		hideReplayControls: function() {
+			viewer.animation.container.style.display = "none";
+			viewer.timeline.container.style.display = "none";
+		},
+		showReplayControls: function() {
+			viewer.animation.container.style.display = "block";
+			viewer.timeline.container.style.display = "block";
+		},
+		setIconSize: function(num) {
+			icon_size = num;
+			this.update();
 		}
 	}
 }());

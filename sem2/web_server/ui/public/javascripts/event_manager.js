@@ -10,12 +10,13 @@ var EventManager = (function() {
 			ftms_ui = ftms;
 
 			//Socket.io library being used for server communications
-			socket = io();
+			socket = io('http://localhost:3000');
 
 			//RECEIVE MESSAGES FROM SERVER
 			//TRACK MANAGER
 			socket.on('recieve_track_update', function(track) {
-				ftms_ui.track_manager.recieveTrackUpdate(track);
+				if(!ftms_ui.replay_module.isReplayMode())
+					ftms_ui.track_manager.recieveTrackUpdate(track);
 			});
 
 			socket.on('receive_manual_track_id', function(id) {
@@ -24,7 +25,8 @@ var EventManager = (function() {
 
 			//ALERTS
 			socket.on('alert', function(message){
-				ftms_ui.alert_module.addAlert(message);
+				if(!ftms_ui.replay_module.isReplayMode())
+					ftms_ui.alert_module.addAlert(message);
 			});
 
 			//MESSAGING
@@ -88,6 +90,16 @@ var EventManager = (function() {
 			socket.emit('send_request_status', data);
 		},
 
+		//TRACK REPLAY
+		sendTrackReplayRequest: function(prevTime, newTime, displayReplayData){
+			socket.emit('get_replay_data', prevTime, newTime, displayReplayData);
+		},
+
+		sendReplayBoundRequest: function(setBounds){
+			socket.emit('get_replay_bounds', setBounds);
+		},
+
+		//SETTINGS
 		saveLayout: function(layout) {
 			socket.emit('save_layout', layout);
 		},

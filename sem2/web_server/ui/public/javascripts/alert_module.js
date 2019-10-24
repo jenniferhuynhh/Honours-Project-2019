@@ -73,6 +73,16 @@ var AlertModule = (function() {
 			if(sound_on) alert_sound.play();
 
 			showAcknowledgedDiv.insertAdjacentElement("afterend", alert);
+		},
+
+		removeAll: function(){
+			var children = display.childNodes;
+
+			for (var i = children.length - 1; i >= 0; i--) {
+				if (children[i] != showAcknowledgedDiv){
+					children[i].remove();
+				}				
+			}
 		}
 	}
 }());
