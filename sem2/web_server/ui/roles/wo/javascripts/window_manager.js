@@ -54,7 +54,12 @@ var WindowManager = (function() {
 								type: 'component',
 								componentName: 'Authorisation Approval Module',
 								isClosable: false,
-								height: 30	
+								height: 30
+							},{
+								type: 'component',
+								componentName: 'Replay Module',
+								isClosable: false,
+								height: 40
 							},{
 								type: 'component',
 								componentName: 'Settings Module',

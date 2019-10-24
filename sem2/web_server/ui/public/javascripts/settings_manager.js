@@ -7,7 +7,8 @@ var SettingsManager = (function() {
 		dark_theme: true,
 		colourblind: false,
 		icon_sizing: 15,
-		default_layout: ""
+		default_layout: "",
+		ownship_id: 1020
 	}
 
 	//Public

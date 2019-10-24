@@ -116,6 +116,12 @@ var TrackManager = (function() {
 			}
 		},
 
+		removeAll: function() {
+			tracks.forEach(function(track){
+				track.delete()
+			});
+		},
+
 		//Adds a track for testing purposes
 		test: function() {
 			//return;

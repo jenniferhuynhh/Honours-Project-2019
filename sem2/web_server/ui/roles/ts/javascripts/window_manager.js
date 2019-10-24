@@ -57,6 +57,11 @@ var WindowManager = (function() {
 								height: 40	
 							},{
 								type: 'component',
+								componentName: 'Replay Module',
+								isClosable: false,
+								height: 40
+							},{
+								type: 'component',
 								componentName: 'Settings Module',
 								isClosable: false,
 								height: 40

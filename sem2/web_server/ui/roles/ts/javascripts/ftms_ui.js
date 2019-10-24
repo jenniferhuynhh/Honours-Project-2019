@@ -10,6 +10,7 @@ var FTMS_UI = (function() {
 		track_table_module: null,
 		classification_module: null,
 		alert_module: null,
+		replay_module: null,
 		messaging_module: null,
 		header: null,
 
@@ -41,6 +42,9 @@ var FTMS_UI = (function() {
 
 				this.alert_module = AlertModule;
 				this.alert_module.init(this);
+
+				this.replay_module = ReplayModule;
+				this.replay_module.init(this);
 
 				this.messaging_module = MessagingModule;
 				this.messaging_module.initialise(this);

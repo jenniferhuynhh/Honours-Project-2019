@@ -12,6 +12,8 @@ var mongoose = require('mongoose');
 var Track = require('./models/track.js');
 var UserLayouts = require('./models/layouts.js');
 var UserSettings = require('./models/settings.js');
+var ReplayTrack = require('./models/replayTrack.js');
+var ReplayAlert = require('./models/replayAlert.js');
 
 var app = express();
 
@@ -41,12 +43,13 @@ try {
 	//CLIENT SETUP
 	kafkaClient = new kafka.KafkaClient();
 	kafkaClient.createTopics(topics, function(err, res) {
-		if(err) console.log('Error creating topics', err);
+		if(err) return console.log('Error creating topics', err);
 
 		//CONSUMER SETUP
 		var offset = new kafka.Offset(kafkaClient);
 		offset.fetchLatestOffsets(topics, function(err, offset) {
-			if(err) console.log('Error fetching offsets', err);
+
+			if(err) return console.log('Error fetching offsets', err);
 
 			//Converts topic array into array of objects required for Kafka setup
 			var topicObjects = [];
@@ -115,11 +118,13 @@ function implementations() {
 					}
 				}
 
+				ReplayTrack.create(track_data);
 				io.emit('recieve_track_update', track_data);
 			});
 		} else if(message.topic == "tdn-alert") { //Handles incoming alerts
 			//var alert = proto.alert.decode(message.value);
 			var alert = JSON.parse(message.value);
+			ReplayAlert.create({timestamp:alert.timestamp['$numberLong'], severity:alert.severity, text:alert.text});
 			io.emit('alert', alert);
 		}
 	});
@@ -210,6 +215,37 @@ function implementations() {
 
 		socket.on('send_request_status', function(data){
 			io.emit('receive_request_status', data);
+		});
+
+		//REPLAY MODULE
+		socket.on('get_replay_data', function(prevTime, newTime, displayReplayData){
+			// Get tracks from kafka 'Offset' API
+			ReplayTrack.find({timestamp:{$gt: prevTime, $lte: newTime}}, function(err, tracks){
+				if (err)
+					return console.error(err);
+
+				ReplayAlert.find({timestamp:{$gt: prevTime, $lte: newTime}}, function(err, alerts){
+					if (err)
+						return console.error(err);
+
+					displayReplayData({tracks:tracks, alerts:alerts});
+				});
+			});
+		});
+
+		socket.on('get_replay_bounds', function(setBounds){
+			try {
+				// Get start/end from Mongo Replay Tracks
+				ReplayTrack.aggregate().
+				group({ _id: null, maxTS: { $max: '$timestamp' }, minTS: { $min: '$timestamp' } }).
+				project('_id maxTS minTS').
+				exec(function (err, r) {
+					if (err)
+						return console.error(err);
+						
+					setBounds(r[0].minTS, r[0].maxTS);
+				});
+			} catch(err) {console.log(err)};
 		});
 
 		//SETTINGS
