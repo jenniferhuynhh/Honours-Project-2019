@@ -7,7 +7,6 @@ var SettingsModule = (function() {
 
 	//Public
 	return {
-
 		init: function(ftms) {
 			//link FTMS UI system
 			ftms_ui = ftms;
@@ -23,6 +22,7 @@ var SettingsModule = (function() {
 			settings_table.appendChild(this.generateToggleOptions("Dark Theme", "dark_theme"));
 			settings_table.appendChild(this.generateToggleOptions("Colour Blind Mode", "colourblind"));
 			settings_table.appendChild(this.generateIconSizeSlider("Icon Sizing", "icon_sizing"));
+			settings_table.appendChild(this.generateTextbox("Ownship ID", "ownship_id"));
 			settings_table.appendChild(this.generateLoadLayout());
 			settings_table.appendChild(this.generateSaveLayout());
 			display.appendChild(settings_table);
@@ -53,6 +53,28 @@ var SettingsModule = (function() {
 			label.appendChild(input);
 			label.appendChild(span);
 			col2.appendChild(label);
+
+			row.appendChild(col1);
+			row.appendChild(col2);
+			return row;
+		},
+
+		generateTextbox: function(name, setting){
+			var row = document.createElement("tr");
+			var col1 = document.createElement("td");
+			var col2 = document.createElement("td");
+
+			col1.classList.add("settings_cells");
+			col1.appendChild(document.createTextNode(name));
+
+			var input = document.createElement("input");
+			input.type = "textbox";
+			input.value = ftms_ui.settings_manager.getSetting(setting);
+			input.placeholder = setting;
+			input.addEventListener("keyup", () => {
+				ftms_ui.settings_manager.changeSetting(setting, input.value);
+			});
+			col2.appendChild(input);
 
 			row.appendChild(col1);
 			row.appendChild(col2);
