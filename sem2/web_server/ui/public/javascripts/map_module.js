@@ -8,6 +8,8 @@ var MapModule = (function() {
 	var current_highlighted = null;
 	var offline_mode = true;
 	var mode = "normal";
+	var camera_mode = "normal";
+	var ownship;
 
 	//Public
 	return {
@@ -104,9 +106,9 @@ var MapModule = (function() {
 			/////////////////////////////////////////////////////////////////////////////////
 			// Custom mouse interaction for highlighting, selecting and manual track placing
 			/////////////////////////////////////////////////////////////////////////////////
+			var map_buttons_div = document.createElement("div");
 
 			//Manual track handling
-			var manual_track_div = document.createElement("div");
 			var manual_track_button = document.createElement("button");
 			manual_track_button.innerHTML = "Manual";
 			manual_track_button.classList.add("manual-track-button", "custom-cesium-button", "custom-cesium-toolbar-button");
@@ -115,8 +117,26 @@ var MapModule = (function() {
 				else mode = "manual";
 				this.classList.toggle("active");
 			});
-			manual_track_div.appendChild(manual_track_button);
-			display.appendChild(manual_track_div);
+			map_buttons_div.appendChild(manual_track_button);
+
+			//Ownship focus
+			var ownship_button = document.createElement("button");
+			ownship_button.innerHTML = "Ownship";
+			ownship_button.classList.add("ownship-button", "custom-cesium-button", "custom-cesium-toolbar-button");
+			ownship_button.addEventListener("click", function() { //Toggles ownship mode on/off
+				if(camera_mode == "normal"){
+					camera_mode = "ownship_focus";
+					viewer.trackedEntity = viewer.entities.getById(ftms_ui.settings_manager.getSetting("ownship_id"));
+				}
+				else if(camera_mode == "ownship_focus"){
+					camera_mode = "normal";
+					viewer.trackedEntity = null;
+				}
+				this.classList.toggle("active");
+			})
+			map_buttons_div.appendChild(ownship_button);
+
+			display.appendChild(map_buttons_div);
 
 			//Handle on-click track icon selecting
 			var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);

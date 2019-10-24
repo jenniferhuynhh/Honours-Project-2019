@@ -3,7 +3,6 @@ var Header = (function() {
 	var ftms_ui;
 	var display;
 	var header_cells = {};
-	var ownship_id = 8000; //6291459;
 	var ownship_active = false;
 
 	//Public
@@ -58,7 +57,7 @@ var Header = (function() {
 
 			//Register header as track listener
 			if(!ownship_active) {
-				var ownship = ftms_ui.track_manager.getTrack(ownship_id);
+				var ownship = ftms_ui.track_manager.getTrack(ftms_ui.settings_manager.getSetting("ownship_id"));
 				if(ownship) { //If own is currently shown
 					ownship_active = true;
 					ownship.addEventListener("update", function() {

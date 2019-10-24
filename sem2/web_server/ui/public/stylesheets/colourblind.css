@@ -2,7 +2,7 @@ body {
 	margin: 0px;
 }
 
-input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***/
+*:focus { /*** Removes Chrome's automatic clickable-element highlighting ***/
 	outline: 0;
 }
 
@@ -402,6 +402,13 @@ input:focus { /*** Removes Chrome's automatic clickable-element highlighting ***
 	position: absolute;
 	top: 5px;
 	left: 5px;
+	width: 70px;
+}
+
+.ownship-button {
+	position: absolute;
+	top: 5px;
+	left: 80px;
 	width: 70px;
 }
 
