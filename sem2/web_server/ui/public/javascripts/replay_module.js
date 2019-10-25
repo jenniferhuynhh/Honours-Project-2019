@@ -101,6 +101,8 @@ var ReplayModule = (function() {
 				format: 'kk:mm:ss DD/MM/YY'
 			}
 		},dateTimeChange);
+
+		updateTimeline();
 	};
 
 	function displayReplayData(data){
@@ -125,6 +127,7 @@ var ReplayModule = (function() {
 
 			// Get Cesium Viewer
 			cViewer = ftms_ui.map_module.getViewer();
+			cViewer.clock.clockRange = Cesium.ClockRange.CLAMPED;
 
 			// Create replay controls
 			// Switch and Labels
