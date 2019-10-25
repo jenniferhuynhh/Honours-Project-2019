@@ -54,7 +54,7 @@ function createTrack(flight_data) {
 	var track = {
 		trackId: track_ids.get(flight_data[0]),
 		name: "plane",
-		timestamp: flight_data[3],
+		timestamp: flight_data[3] * 1000,
 		eventType: 0,
 		sensorId: 0,
 		latitude: flight_data[6],

@@ -234,18 +234,24 @@ function implementations() {
 		});
 
 		socket.on('get_replay_bounds', function(setBounds){
-			try {
+			// Check if replay collection is empty
+			mongoose.connection.db.collection('replaytracks').count(function(err, count) {
+				if (this.err)
+					return console.error(this.err);
+				else if (count == 0)
+					return setBounds(0, Date.now());
+				
 				// Get start/end from Mongo Replay Tracks
 				ReplayTrack.aggregate().
 				group({ _id: null, maxTS: { $max: '$timestamp' }, minTS: { $min: '$timestamp' } }).
 				project('_id maxTS minTS').
 				exec(function (err, r) {
-					if (err)
-						return console.error(err);
+					if (this.err)
+						return console.error(this.err);
 						
 					setBounds(r[0].minTS, r[0].maxTS);
 				});
-			} catch(err) {console.log(err)};
+			});
 		});
 
 		//SETTINGS

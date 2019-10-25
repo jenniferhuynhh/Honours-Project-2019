@@ -101,6 +101,8 @@ var ReplayModule = (function() {
 				format: 'kk:mm:ss DD/MM/YY'
 			}
 		},dateTimeChange);
+
+		updateTimeline();
 	};
 
 	function displayReplayData(data){
@@ -125,6 +127,7 @@ var ReplayModule = (function() {
 
 			// Get Cesium Viewer
 			cViewer = ftms_ui.map_module.getViewer();
+			cViewer.clock.clockRange = Cesium.ClockRange.CLAMPED;
 
 			// Create replay controls
 			// Switch and Labels
@@ -167,6 +170,19 @@ var ReplayModule = (function() {
 			dateTimeInput.id = 'replayDateTimeInput';
 			dateTimeInput.setAttribute('type','text');
 			dateTimeDiv.appendChild(dateTimeInput);
+
+			// Reset Bounds Button
+			var resetDiv = document.createElement('div');
+			resetDiv.style.textAlign = "center";
+			resetDiv.style.margin = "5%";
+			display.appendChild(resetDiv);
+
+			var resetButton = document.createElement('button');
+			resetButton.innerHTML = "Get Latest Start/End";
+			resetButton.style.textAlign = "center";
+			resetButton.classList.add('layout_buttons');
+			resetButton.addEventListener('click',function(){ftms_ui.event_manager.sendReplayBoundRequest(setBounds)});
+			resetDiv.appendChild(resetButton);
 
 			ftms_ui.event_manager.sendReplayBoundRequest(setBounds);
 
