@@ -171,6 +171,19 @@ var ReplayModule = (function() {
 			dateTimeInput.setAttribute('type','text');
 			dateTimeDiv.appendChild(dateTimeInput);
 
+			// Reset Bounds Button
+			var resetDiv = document.createElement('div');
+			resetDiv.style.textAlign = "center";
+			resetDiv.style.margin = "5%";
+			display.appendChild(resetDiv);
+
+			var resetButton = document.createElement('button');
+			resetButton.innerHTML = "Get Latest Start/End";
+			resetButton.style.textAlign = "center";
+			resetButton.classList.add('layout_buttons');
+			resetButton.addEventListener('click',function(){ftms_ui.event_manager.sendReplayBoundRequest(setBounds)});
+			resetDiv.appendChild(resetButton);
+
 			ftms_ui.event_manager.sendReplayBoundRequest(setBounds);
 
 			// Append display to window
