@@ -92,7 +92,7 @@ var ClassificationModule = (function() {
 				this.clearFields();
 			});
 
-			ftms_ui.window_manager.appendToWindow('Track Classification Module', display);
+			ftms_ui.window_manager.appendToWindow('Track Classification', display);
 		},
 
 		//Generates a button with a value and an onclick function that changes the property of a track

@@ -237,7 +237,7 @@ var MapModule = (function() {
 				viewer.selectedEntity = null;
 			});
 
-			ftms_ui.window_manager.appendToWindow('Map Module', display);
+			ftms_ui.window_manager.appendToWindow('Map', display);
 		},
 
 		makeIcon: function(track) {

@@ -79,7 +79,7 @@ var MessagingModule = (function() {
 			}
 			ftms_ui.event_manager.userConnect(username, getCookie("role"));
 
-			ftms_ui.window_manager.appendToWindow('Messaging Module', display);
+			ftms_ui.window_manager.appendToWindow('Messages', display);
 		},
 
 		onConnect: function(username) {

@@ -15,7 +15,7 @@ var AuthorisationApprovalModule = (function() {
 			display.setAttribute('class', 'center_align');
 
 			//append display to window
-			ftms_ui.window_manager.appendToWindow('Authorisation Approval Module', display);
+			ftms_ui.window_manager.appendToWindow('Authorisation Approval', display);
 		},
 
 		receiveRequests: function(data) {

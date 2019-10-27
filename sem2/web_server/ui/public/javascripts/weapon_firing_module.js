@@ -56,7 +56,7 @@ var WeaponFiringModule = (function() {
 			display.appendChild(div2);
 			
 			//append display to window
-			ftms_ui.window_manager.appendToWindow('Weapon Firing Module', display);
+			ftms_ui.window_manager.appendToWindow('Weapon Firing', display);
 		},
 
 		generateWeaponsButtons: function(s) {

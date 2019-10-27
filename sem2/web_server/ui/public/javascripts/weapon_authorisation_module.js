@@ -53,7 +53,7 @@ var WeaponAuthorisationModule = (function() {
 			display.appendChild(div2);
 			
 			//append display to window
-			ftms_ui.window_manager.appendToWindow('Weapon Authorisation Module', display);
+			ftms_ui.window_manager.appendToWindow('Weapon Authorisation', display);
 		},
 		generateWeaponsButtons: function(s) {
 			var button = document.createElement('input');
