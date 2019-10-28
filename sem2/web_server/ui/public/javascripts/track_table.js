@@ -52,7 +52,7 @@ var TrackTableModule = (function() {
 				current_highlighted = null;
 			});
 
-			ftms_ui.window_manager.appendToWindow('Track Table Module', display);
+			ftms_ui.window_manager.appendToWindow('Track Table', display);
 		}
 	}
 }());

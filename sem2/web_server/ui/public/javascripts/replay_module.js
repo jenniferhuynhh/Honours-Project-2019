@@ -187,7 +187,7 @@ var ReplayModule = (function() {
 			ftms_ui.event_manager.sendReplayBoundRequest(setBounds);
 
 			// Append display to window
-			ftms_ui.window_manager.appendToWindow('Replay Module', display);
+			ftms_ui.window_manager.appendToWindow('Replay', display);
 		},
 
 		isReplayMode: function(){
