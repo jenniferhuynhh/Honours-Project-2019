@@ -117,6 +117,8 @@ var AuthorisationApprovalModule = (function() {
 					var stack = ftms_ui.window_manager.getDisplay().root.getItemsById('FOStack')[0];
 					var tab = ftms_ui.window_manager.getDisplay().root.getItemsById('weaponFiring')[0];
 					stack.setActiveContentItem(tab);
+				} else if(response.status == "denied"){
+					ftms_ui.event_manager.deleteResponse(data.requestId);
 				}
 			});
 
