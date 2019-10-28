@@ -74,7 +74,7 @@ var MessagingModule = (function() {
 						   break;
 				case "wo": username = "Warfare Officer";
 						   break;
-				case "fs": username = "Firing Officer";
+				case "fo": username = "Firing Officer";
 						   break;
 			}
 			ftms_ui.event_manager.userConnect(username, getCookie("role"));

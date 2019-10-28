@@ -34,16 +34,12 @@ var WeaponAuthorisationModule = (function() {
 			authorise_button.setAttribute('value', 'Request Authorisation');
 			var self = this; 
 			authorise_button.addEventListener('click', function() {
-				/*if (this.className == 'unhighlighted_authorise_button'){
-					this.setAttribute('class', 'highlighted_authorise_button');
-				}
-				else{
-					this.setAttribute('class', 'unhighlighted_authorise_button');
-				}
-				self.toggleDisabled();*/
 				var data = {
 					trackId: ftms_ui.track_manager.getSelectedTrack().trackId,
 					weaponIds: self.getSelectedWeapons() 
+				}
+				for(var i = 0; i < weapons_buttons.length; i++) {
+					weapons_buttons[i].setAttribute('class', 'unhighlighted_weapons_buttons');
 				}
 				ftms_ui.event_manager.sendAuthorisationRequest(data);
 			});
