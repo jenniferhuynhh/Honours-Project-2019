@@ -3,7 +3,7 @@ var WeaponAuthorisationModule = (function() {
 	var ftms_ui;
 	var display;
 	var div1, div2;
-	var weapons_buttons = [];
+	var weapons_buttons;
 	var authorise_button;
 
 	//Public 
@@ -16,6 +16,7 @@ var WeaponAuthorisationModule = (function() {
 			display = document.createElement("div");
 			display.setAttribute('class', 'center_align');
 
+			weapons_buttons = [];
 			var weapons_button_names = ['1', '2', '3', '4'];
 			//separate div for weapon buttons
 			div1 = document.createElement('div');	
