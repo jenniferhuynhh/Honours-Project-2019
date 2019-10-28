@@ -5,10 +5,10 @@ var MapModule = (function() {
 	var display;
 	var viewer;
 	var icon_size; //Size of milsymbol symbols, change default in settings_manager.js
-	var current_highlighted = null;
-	var offline_mode = true;
-	var mode = "normal";
-	var camera_mode = "normal";
+	var current_highlighted;
+	var offline_mode;
+	var mode;
+	var camera_mode;
 	var ownship;
 
 	//Public
@@ -20,6 +20,11 @@ var MapModule = (function() {
 			//Create div for map to load into
 			display = document.createElement("div");
 			display.style.height = "100%";
+
+			current_highlighted = null;
+			offline_mode = true;
+			mode = "normal";
+			camera_mode = "normal";
 
 			icon_size = ftms_ui.settings_manager.getSetting("icon_sizing");
 			ftms_ui.settings_manager.addEventListener("icon_sizing", (value)=>{

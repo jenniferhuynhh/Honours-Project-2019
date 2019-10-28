@@ -3,8 +3,8 @@ var TrackTableModule = (function() {
 	var ftms_ui; //FTMS UI system this module is linked to
 
 	var display;
-	var rows = new Map();
-	var current_highlighted = null;
+	var rows;
+	var current_highlighted;
 	var deleting_row;
 
 	//Public
@@ -14,6 +14,9 @@ var TrackTableModule = (function() {
 			ftms_ui = ftms;
 			display = document.createElement('div');
 			display.classList.add('track_table_display');
+
+			rows = new Map();
+			current_highlighted = null;
 
 			//Generate and store track data table element
 			var track_table = document.createElement("table");
