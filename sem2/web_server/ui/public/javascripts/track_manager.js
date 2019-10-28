@@ -2,13 +2,9 @@
 var TrackManager = (function() {
 	//Private
 	var ftms_ui; //FTMS UI system this module is linked to
-	var listeners = { //Events that listeners can listen for
-		create: [],
-		selected: [],
-		unselected: []
-	};
+	var listeners;
 
-	var tracks = new Map(); //Map of tracks, mapped to their unique ID
+	var tracks; //Map of tracks, mapped to their unique ID
 	var selected_track;
 
 	//Public
@@ -17,6 +13,13 @@ var TrackManager = (function() {
 		init: function(ftms) {
 			//Link FTMS UI system
 			ftms_ui = ftms;
+			listeners = { //Events that listeners can listen for
+				create: [],
+				selected: [],
+				unselected: []
+			}
+
+			tracks = new Map();
 		},
 
 		//Handles recieving a new track from the EventManager

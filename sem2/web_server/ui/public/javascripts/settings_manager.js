@@ -1,21 +1,24 @@
 var SettingsManager = (function() {
 	//Private
 	var ftms_ui; //FTMS UI system this module is linked to
-	var listeners = {}; //Listeners can listen to the name of any setting, will be called when value changes
-	var settings = {
-		audio_on: false,
-		dark_theme: true,
-		colourblind: false,
-		icon_sizing: 15,
-		default_layout: "",
-		ownship_id: 1020
-	}
+	var listeners;
+	var settings;
 
 	//Public
 	return {
 		init: function(ftms, callback) {
 			//Link FTMS UI system
 			ftms_ui = ftms;
+
+			listeners = {}; //Listeners can listen to the name of any setting, will be called when value changes
+			settings = {
+				audio_on: false,
+				dark_theme: true,
+				colourblind: false,
+				icon_sizing: 15,
+				default_layout: "",
+				ownship_id: 1020
+			}
 
 			//Creates listener channel for each setting
 			for(var setting in settings) listeners[setting] = [];

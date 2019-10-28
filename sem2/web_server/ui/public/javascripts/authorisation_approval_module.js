@@ -2,7 +2,7 @@ var AuthorisationApprovalModule = (function() {
 	//Private
 	var ftms_ui;
 	var display;
-	var requests = new Map();
+	var requests;
 
 	//Public 
 	return {
@@ -13,6 +13,8 @@ var AuthorisationApprovalModule = (function() {
 			//create div for the module
 			display = document.createElement("div");
 			display.setAttribute('class', 'center_align');
+
+			requests = new Map();
 
 			//append display to window
 			ftms_ui.window_manager.appendToWindow('Authorisation Approval', display);
