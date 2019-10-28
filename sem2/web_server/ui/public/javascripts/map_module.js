@@ -22,7 +22,7 @@ var MapModule = (function() {
 			display.style.height = "100%";
 
 			current_highlighted = null;
-			offline_mode = false;
+			offline_mode = true;
 			mode = "normal";
 			camera_mode = "normal";
 
