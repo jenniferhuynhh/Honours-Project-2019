@@ -56,6 +56,11 @@ var TrackTableModule = (function() {
 			});
 
 			ftms_ui.window_manager.appendToWindow('Track Table', display);
+		},
+
+		//Scrolls the table to selected track's row. Animation can be changed between smooth and instant - behaviour: ('smooth'|'auto') respectively
+		scrollToSelected: function() {
+			if(current_highlighted) current_highlighted.display.scrollIntoView({behavior: "smooth", block: "center"});
 		}
 	}
 }());
