@@ -1,8 +1,16 @@
 var mongoose = require('mongoose');
 
 var FiringRequestSchema = new mongoose.Schema({
+	requestId: {
+		type: Number,
+		required: true
+	},
 	username: {
 		type: String,
+		required: true
+	},
+	timestamp: {
+		type: Number,
 		required: true
 	},
 	trackId: {
@@ -10,15 +18,15 @@ var FiringRequestSchema = new mongoose.Schema({
 		required: true,
 		min: 0
 	},
-	weapon: {
+	weaponIds: {
 		type: Array,
 		required: true
 	},
-	state: {
+	status: {
 		type: String,
 		require: true
 	}
 });
 
-var FiringRequests = mongoose.model('FiringRequests', FiringRequestSchema);
-module.exports = FiringRequests;
+var FiringRequest = mongoose.model('FiringRequest', FiringRequestSchema, "FiringRequest");
+module.exports = FiringRequest;
