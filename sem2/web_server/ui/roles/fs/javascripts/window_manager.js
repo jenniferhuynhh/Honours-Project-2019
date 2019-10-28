@@ -63,6 +63,7 @@ var WindowManager = (function() {
 							}]
 						},{
 							type: 'stack',
+							id: 'FOStack',
 							content: [{
 								type: 'component',
 								componentName: 'Weapon Authorisation',
@@ -72,7 +73,8 @@ var WindowManager = (function() {
 								type: 'component',
 								componentName: 'Weapon Firing',
 								isClosable: false,
-								height: 30
+								height: 30,
+								id: 'weaponFiring'
 							},{
 								type: 'component',
 								componentName: 'Replay',
@@ -125,6 +127,10 @@ var WindowManager = (function() {
 
 		getConfig: function() {
 			return display.toConfig();
+		},
+
+		getDisplay: function(){
+			return display;
 		}
 	}
 }());

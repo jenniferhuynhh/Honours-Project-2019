@@ -13,7 +13,7 @@ router.get('/', function(req, res, next) {
 				if (user === null) {
 					return res.sendFile(path.join(__dirname, "../ui/public", "/login.html"));
 				} else {
-					req.session.userId = user._id;
+					setReq(req,user);
 					return res.redirect('/ftms');
 				}
 			}
@@ -40,7 +40,7 @@ router.post('/', function(req, res, next) {
 			if (err) {
 				return next(err);
 			} else {
-				req.session.userId = user._id;
+				setReq(req,user);
 				return res.redirect('/');
 			}
 		});
@@ -52,7 +52,7 @@ router.post('/', function(req, res, next) {
 				err.status = 401;
 				return next(err);
 			} else {
-				req.session.userId = user._id;
+				setReq(req,user);
 				return res.redirect('/ftms');
 			}
 			});
@@ -126,6 +126,12 @@ router.get('/logout', function (req, res, next) {
 		});
 	}
 });
+
+function setReq(req, user){
+	req.session.userId = user._id;
+	req.session.username = user.username;
+	req.session.role = user.role;
+}
 
 
 module.exports = router;

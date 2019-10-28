@@ -45,7 +45,8 @@ var WeaponFiringModule = (function() {
 			fire_button.addEventListener('click', function() {
 				self.unselectButtons();
 				self.disableButtons();
-				ftms_ui.authorisation_approval_module.deleteResponse(self.requestId);
+				ftms_ui.event_manager.deleteResponse(self.requestId);
+				//ftms_ui.authorisation_approval_module.deleteResponse(self.requestId);
 				//var audio = new Audio('../resources/boom.mp3');
 				//audio.play();
 			});

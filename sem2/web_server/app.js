@@ -14,11 +14,15 @@ var UserLayouts = require('./models/layouts.js');
 var UserSettings = require('./models/settings.js');
 var ReplayTrack = require('./models/replayTrack.js');
 var ReplayAlert = require('./models/replayAlert.js');
+var FiringRequest = require('./models/firing_request.js');
 
 var app = express();
 
 //Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/tmsdb', {useNewUrlParser: true});
+mongoose.connect('mongodb://localhost:27017/tmsdb', {useNewUrlParser: true}, ()=>{
+	//clear firing request
+	mongoose.connection.db.dropCollection('FiringRequest', ()=> {/*supress errors*/});
+});
 
 //Use sessions for tracking logins
 var sessionMiddleware = session({
@@ -129,7 +133,7 @@ function implementations() {
 		}
 	});
 
-	var requestCount = 0;
+	var requestCount = 1;
 	var manual_track_count = 0;
 	//Socket.io implementations
 	io.on('connection', function(socket) {
@@ -206,15 +210,47 @@ function implementations() {
 		//WEAPON AUTHORISATION
 		socket.on('send_request', function(data){
 			data.requestId = requestCount++;
-			data.status = "Pending...";
-			io.to('wo').emit('receive_request', data);
-			io.to('fs').emit('receive_confirmation', data);
-			//io.emit('receive_request', data);
-			//io.emit('receive_confirmation', data);
+			data.status = "pending";
+			data.username = socket.request.session.username;
+			data.timestamp = new Date().getTime();
+			FiringRequest.create(data, (err)=>{
+				if(err) return console.log(err);
+				
+				io.to('wo').emit('receive_request', data);
+				io.to('fs').emit('receive_confirmation', data);			
+			});
 		});
 
 		socket.on('send_request_status', function(data){
-			io.emit('receive_request_status', data);
+			FiringRequest.updateOne({requestId: data.requestId}, {status: data.status}, function(error, writeOpResult) {
+				if(error) return console.log(error);
+				if(writeOpResult.nModified) {
+					io.emit('receive_request_status', data);
+				};
+			});
+		});
+
+		socket.on('get_all_requests', function(){
+			var role = socket.request.session.role;
+			if(role == 'wo'){
+				FiringRequest.find({status: 'pending'}, (err, firing_requests)=>{
+					socket.emit('receive_all_requests', firing_requests);
+				});
+			}
+			else if(role == 'fs'){
+				FiringRequest.find({}, (err, firing_requests)=>{
+					socket.emit('receive_all_confirmations', firing_requests);
+				});
+			}
+		});
+
+		socket.on('delete_response', function(requestId){
+			console.log(requestId);
+			console.log("hi");
+			FiringRequest.deleteOne({requestId: requestId}, ()=>{
+				console.log('deleted');
+				io.emit('response_deleted', requestId);
+			});
 		});
 
 		//REPLAY MODULE

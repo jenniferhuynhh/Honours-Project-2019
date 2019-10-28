@@ -10,7 +10,7 @@ var EventManager = (function() {
 			ftms_ui = ftms;
 
 			//Socket.io library being used for server communications
-			socket = io('http://localhost:3000');
+			socket = io();
 
 			//RECEIVE MESSAGES FROM SERVER
 			//TRACK MANAGER
@@ -44,7 +44,7 @@ var EventManager = (function() {
 
 			//AUTHORISATION APPROVAL
 			socket.on('receive_request', function(data) {
-				ftms_ui.authorisation_approval_module.receiveRequests(data);
+				ftms_ui.authorisation_approval_module.receiveRequest(data);
 			});
 
 			socket.on('receive_confirmation', function(data) {
@@ -53,6 +53,18 @@ var EventManager = (function() {
 
 			socket.on('receive_request_status', function(data) {
 				ftms_ui.authorisation_approval_module.receiveRequestStatus(data);
+			});
+
+			socket.on('receive_all_requests', function(data) {
+				ftms_ui.authorisation_approval_module.receiveRequests(data);
+			});
+
+			socket.on('receive_all_confirmations', function(data) {
+				ftms_ui.authorisation_approval_module.receiveConfirmations(data);
+			});
+
+			socket.on('response_deleted', function(requestId) {
+				ftms_ui.authorisation_approval_module.deleteResponse(requestId);
 			});
 
 			//SETTINGS
@@ -88,6 +100,14 @@ var EventManager = (function() {
 
 		sendRequestStatus: function(data) {
 			socket.emit('send_request_status', data);
+		},
+
+		getAllRequests: function() {
+			socket.emit('get_all_requests');
+		},
+
+		deleteResponse: function(requestId) {
+			socket.emit('delete_response', requestId);
 		},
 
 		//TRACK REPLAY
