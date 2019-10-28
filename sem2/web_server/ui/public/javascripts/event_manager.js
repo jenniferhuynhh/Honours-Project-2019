@@ -10,7 +10,7 @@ var EventManager = (function() {
 			ftms_ui = ftms;
 
 			//Socket.io library being used for server communications
-			socket = io('http://localhost:3000');
+			socket = io();
 
 			//RECEIVE MESSAGES FROM SERVER
 			//TRACK MANAGER
