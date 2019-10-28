@@ -245,10 +245,7 @@ function implementations() {
 		});
 
 		socket.on('delete_response', function(requestId){
-			console.log(requestId);
-			console.log("hi");
 			FiringRequest.deleteOne({requestId: requestId}, ()=>{
-				console.log('deleted');
 				io.emit('response_deleted', requestId);
 			});
 		});

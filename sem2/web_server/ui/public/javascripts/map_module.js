@@ -190,15 +190,18 @@ var MapModule = (function() {
 			//Create new icon entity when new track is created
 			ftms_ui.track_manager.addEventListener("create", track => {
 				//Create icon entity for the track
-				var ent = viewer.entities.add({
-					id: track.trackId,
-					name: "ID: " + track.trackId,
-					description: "Affiliation: " + track.affiliation + "<br>Longitude: " + track.longitude + "<br>Latitude: " + track.latitude + "<br>Altitude: " + track.altitude,
-					position: Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, track.altitude),
-					billboard: {
-						image: this.makeIcon(track)
-					}
-				});
+				var ent = viewer.entities.getById(track.trackId);
+				if(!ent) {
+					ent = viewer.entities.add({
+						id: track.trackId,
+						name: "ID: " + track.trackId,
+						description: "Affiliation: " + track.affiliation + "<br>Longitude: " + track.longitude + "<br>Latitude: " + track.latitude + "<br>Altitude: " + track.altitude,
+						position: Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, track.altitude),
+						billboard: {
+							image: this.makeIcon(track)
+						}
+					});
+				}
 
 				//When track is updated, update the icon's properties
 				track.addEventListener("update", () => {
