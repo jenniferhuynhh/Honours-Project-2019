@@ -5,15 +5,6 @@
 	<link rel="stylesheet" href="public/stylesheets/style.css">
 </head>
 <body>
-
-<!--<h3>Login</h3>
-<form method='POST' action='/' target="_self">
-	<input type="textbox" name="logusername" /><br>
-	<input type="password" name="logpassword" /><br>
-    <input type="submit" value="Submit">
-</form>
-<a href="/register"><p>Register Here...</p></a>-->
-
 	<section class="forms-section">
 	  <h1 class="section-title">FTMS</h1>
 	  <div class="forms">
@@ -51,7 +42,11 @@
 	          </div>
 	          <div class="input-block">
 	            <label for="signup-role">Role</label>
-	            <input id="signup-role" type="textbox" name="role" required>
+	            <select id="signup-role" name="role" required>
+	            	<option value="ts">Track Supervisor</option>
+	            	<option value="fo">Firing Officer</option>
+	            	<option value="wo">Warfare Officer</option>
+	            </select>
 	          </div>
 	          <div class="input-block">
 	            <label for="signup-password">Password</label>
@@ -67,7 +62,7 @@
 	    </div>
 	  </div>
 	</section>
+	
 	<script type="text/javascript" src="public/javascripts/form_switch.js"></script>
-
 </body>
 </html>

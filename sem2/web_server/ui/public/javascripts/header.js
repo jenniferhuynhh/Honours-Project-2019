@@ -31,7 +31,7 @@ var Header = (function() {
 						   break;
 				case "wo": role = "Warfare Officer";
 						   break;
-				case "fs": role = "Firing Officer";
+				case "fo": role = "Firing Officer";
 						   break;
 			}
 			header_cells["role"].innerHTML = "Role: " + role;

@@ -104,13 +104,6 @@ function implementations() {
 				if(err) return console.log(err);
 
 				if(found_track) { //If changes to track found, overlay those changes before sending to clients
-					//console.log(found_track);
-					/*for(var prop in found_track) {
-						if(Object.prototype.hasOwnProperty.call(found_track, prop)) {
-							//console.log(prop);
-							track_data[prop] = found_track[prop];
-						}
-					}*/
 					if(found_track.affiliation != undefined) {
 						track_data.affiliation = found_track.affiliation.toLowerCase();
 					}
@@ -217,7 +210,7 @@ function implementations() {
 				if(err) return console.log(err);
 				
 				io.to('wo').emit('receive_request', data);
-				io.to('fs').emit('receive_confirmation', data);			
+				io.to('fo').emit('receive_confirmation', data);			
 			});
 		});
 
@@ -237,7 +230,7 @@ function implementations() {
 					socket.emit('receive_all_requests', firing_requests);
 				});
 			}
-			else if(role == 'fs'){
+			else if(role == 'fo'){
 				FiringRequest.find({}, (err, firing_requests)=>{
 					socket.emit('receive_all_confirmations', firing_requests);
 				});
