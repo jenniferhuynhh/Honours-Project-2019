@@ -45,7 +45,6 @@ var TrackManager = (function() {
 				}
 				track.updateData(update_data);
 			} else { //If existing track not found, create new track
-				if(incoming_track_data.manual) track.manual = incoming_track_data.manual;
 				this.createTrack(incoming_track_data);
 			}
 		},
