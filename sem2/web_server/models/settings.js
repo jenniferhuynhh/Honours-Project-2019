@@ -20,9 +20,9 @@ var UserSettingsSchema = new mongoose.Schema({
 		},
 		icon_sizing: {
 			type: Number,
-			required: true,
-			min: 5,
-			max: 30
+			required: true/*,
+			min: 30,
+			max: 55*/
 		},
 		default_layout: {
 			type: String
