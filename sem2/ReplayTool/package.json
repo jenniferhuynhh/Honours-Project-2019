@@ -1,0 +1,17 @@
+{
+  "name": "replaytool",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "JaredLinklater",
+  "license": "ISC",
+  "dependencies": {
+    "kafka-node": "^4.1.3",
+    "long": "^4.0.0",
+    "mongoose": "^5.7.7",
+    "protobufjs": "^6.8.8"
+  }
+}
