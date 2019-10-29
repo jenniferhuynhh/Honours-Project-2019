@@ -30,7 +30,7 @@ var SettingsModule = (function() {
 			ftms_ui.event_manager.loadLayouts();
 
 			//append display to window
-			ftms_ui.window_manager.appendToWindow('Settings Module', display);
+			ftms_ui.window_manager.appendToWindow('Settings', display);
 		},
 
 		generateToggleOptions: function(name, setting){

@@ -48,7 +48,7 @@ var AlertModule = (function() {
 			display.appendChild(showAcknowledgedDiv);
 
 			// Append display to window
-			ftms_ui.window_manager.appendToWindow('Alert Module', display);
+			ftms_ui.window_manager.appendToWindow('Alerts', display);
 		},
 
 		addAlert: function(alertJson){

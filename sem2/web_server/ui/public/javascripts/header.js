@@ -2,7 +2,7 @@ var Header = (function() {
 	//Private
 	var ftms_ui;
 	var display;
-	var header_cells = {};
+	var header_cells;
 	var ownship;
 
 	//Public
@@ -15,6 +15,7 @@ var Header = (function() {
 			display.classList.add("header_table");
 
 			//Create header table
+			header_cells = {};
 			var header_cells_names = ["course", "speed", "lat", "long", "date", "time", "role", "logout"];
 			var header_row = document.createElement("tr");
 			for(var i = 0; i < header_cells_names.length; i++) {
@@ -30,7 +31,7 @@ var Header = (function() {
 						   break;
 				case "wo": role = "Warfare Officer";
 						   break;
-				case "fs": role = "Firing Officer";
+				case "fo": role = "Firing Officer";
 						   break;
 			}
 			header_cells["role"].innerHTML = "Role: " + role;

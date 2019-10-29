@@ -2,13 +2,9 @@
 var TrackManager = (function() {
 	//Private
 	var ftms_ui; //FTMS UI system this module is linked to
-	var listeners = { //Events that listeners can listen for
-		create: [],
-		selected: [],
-		unselected: []
-	};
+	var listeners;
 
-	var tracks = new Map(); //Map of tracks, mapped to their unique ID
+	var tracks; //Map of tracks, mapped to their unique ID
 	var selected_track;
 
 	//Public
@@ -17,6 +13,13 @@ var TrackManager = (function() {
 		init: function(ftms) {
 			//Link FTMS UI system
 			ftms_ui = ftms;
+			listeners = { //Events that listeners can listen for
+				create: [],
+				selected: [],
+				unselected: []
+			}
+
+			tracks = new Map();
 		},
 
 		//Handles recieving a new track from the EventManager
@@ -91,19 +94,19 @@ var TrackManager = (function() {
 		},
 
 		//Returns selected track
-		getSelectedTrack: function(trackId) {
+		getSelectedTrack: function() {
 			return selected_track;
-		},
-
-		//Gets the next manual track ID from the server and calls the callback when ready
-		getManualTrackId: function(callback) {
-			ftms_ui.event_manager.getManualTrackId(callback);
 		},
 
 		//Sets selected track
 		setSelectedTrack: function(track) {
 			selected_track = track;
 			this.callListeners("selected", selected_track);
+		},
+
+		//Gets the next manual track ID from the server and calls the callback when ready
+		getManualTrackId: function(callback) {
+			ftms_ui.event_manager.getManualTrackId(callback);
 		},
 
 		addEventListener: function(event, func) {

@@ -5,10 +5,10 @@ var MapModule = (function() {
 	var display;
 	var viewer;
 	var icon_size; //Size of milsymbol symbols, change default in settings_manager.js
-	var current_highlighted = null;
-	var offline_mode = true;
-	var mode = "normal";
-	var camera_mode = "normal";
+	var current_highlighted;
+	var offline_mode;
+	var mode;
+	var camera_mode;
 	var ownship;
 
 	//Public
@@ -20,6 +20,11 @@ var MapModule = (function() {
 			//Create div for map to load into
 			display = document.createElement("div");
 			display.style.height = "100%";
+
+			current_highlighted = null;
+			offline_mode = true;
+			mode = "normal";
+			camera_mode = "normal";
 
 			icon_size = ftms_ui.settings_manager.getSetting("icon_sizing");
 			ftms_ui.settings_manager.addEventListener("icon_sizing", (value)=>{
@@ -133,8 +138,15 @@ var MapModule = (function() {
 					viewer.trackedEntity = null;
 				}
 				this.classList.toggle("active");
-			})
+			});
 			map_buttons_div.appendChild(ownship_button);
+
+			//Ownship focus
+			var scroll_to_track_button = document.createElement("button");
+			scroll_to_track_button.innerHTML = "Scroll to Track";
+			scroll_to_track_button.classList.add("scrollto-button", "custom-cesium-button", "custom-cesium-toolbar-button");
+			scroll_to_track_button.addEventListener("click", () => ftms_ui.track_table_module.scrollToSelected());
+			map_buttons_div.appendChild(scroll_to_track_button);
 
 			display.appendChild(map_buttons_div);
 
@@ -190,16 +202,19 @@ var MapModule = (function() {
 			//Create new icon entity when new track is created
 			ftms_ui.track_manager.addEventListener("create", track => {
 				//Create icon entity for the track
-				var ent = viewer.entities.add({
-					id: track.trackId,
-					name: "ID: " + track.trackId,
-					description: "Affiliation: " + track.affiliation + "<br>Longitude: " + track.longitude + "<br>Latitude: " + track.latitude + "<br>Altitude: " + track.altitude,
-					position: Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, track.altitude),
-					billboard: {
-						image: this.makeIcon(track),
-						scaleByDistance: new Cesium.NearFarScalar(1, 0.7, 1000000, 0.3)
-					}
-				});
+				var ent = viewer.entities.getById(track.trackId);
+				if(!ent) {
+					ent = viewer.entities.add({
+						id: track.trackId,
+						name: "ID: " + track.trackId,
+						description: "Affiliation: " + track.affiliation + "<br>Longitude: " + track.longitude + "<br>Latitude: " + track.latitude + "<br>Altitude: " + track.altitude,
+						position: Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, track.altitude),
+						billboard: {
+							image: this.makeIcon(track),
+							scaleByDistance: new Cesium.NearFarScalar(1, 0.7, 1000000, 0.3)
+						}
+					});
+				}
 
 				//When track is updated, update the icon's properties
 				track.addEventListener("update", () => {
@@ -238,7 +253,7 @@ var MapModule = (function() {
 				viewer.selectedEntity = null;
 			});
 
-			ftms_ui.window_manager.appendToWindow('Map Module', display);
+			ftms_ui.window_manager.appendToWindow('Map', display);
 		},
 
 		makeIcon: function(track) {

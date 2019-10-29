@@ -25,18 +25,18 @@ var WindowManager = (function() {
 						type: 'column',
 						content:[{
 							type: 'component',
-							componentName: 'Map Module',
+							componentName: 'Map',
 							isClosable: false
 						},{
 							type: 'row',
 							content:[{
 								type: 'component',
-								componentName: 'Alert Module',
+								componentName: 'Alerts',
 								isClosable: false,
 								width: 65
 							},{
 								type: 'component',
-								componentName: 'Messaging Module',
+								componentName: 'Messages',
 								isClosable: false
 							}],
 							height: 20
@@ -46,36 +46,38 @@ var WindowManager = (function() {
 						type: 'column',
 						content:[{
 							type: 'component',
-							componentName: 'Track Table Module',
+							componentName: 'Track Table',
 							isClosable: false
 						},{
 							type: 'stack',
 							content: [{
 								type: 'component',
-								componentName: 'Authorisation Approval Module',
+								componentName: 'Authorisation Approval',
 								isClosable: false,
 								height: 30	
 							},{
 								type: 'component',
-								componentName: 'Settings Module',
+								componentName: 'Settings',
 								isClosable: false,
 								height: 30
 							}]
 						},{
 							type: 'stack',
+							id: 'FOStack',
 							content: [{
 								type: 'component',
-								componentName: 'Weapon Authorisation Module',
+								componentName: 'Weapon Authorisation',
 								isClosable: false,
 								height: 30
 							},{
 								type: 'component',
-								componentName: 'Weapon Firing Module',
+								componentName: 'Weapon Firing',
 								isClosable: false,
-								height: 30
+								height: 30,
+								id: 'weaponFiring'
 							},{
 								type: 'component',
-								componentName: 'Replay Module',
+								componentName: 'Replay',
 								isClosable: false,
 								height: 40
 							}]
@@ -125,6 +127,10 @@ var WindowManager = (function() {
 
 		getConfig: function() {
 			return display.toConfig();
+		},
+
+		getDisplay: function(){
+			return display;
 		}
 	}
 }());

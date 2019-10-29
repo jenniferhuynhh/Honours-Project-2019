@@ -25,18 +25,18 @@ var WindowManager = (function() {
 						type: 'column',
 						content:[{
 							type: 'component',
-							componentName: 'Map Module',
+							componentName: 'Map',
 							isClosable: false
 						},{
 							type: 'row',
 							content:[{
 								type: 'component',
-								componentName: 'Alert Module',
+								componentName: 'Alerts',
 								isClosable: false,
 								width: 65
 							},{
 								type: 'component',
-								componentName: 'Messaging Module',
+								componentName: 'Messages',
 								isClosable: false
 							}],
 							height: 20
@@ -46,23 +46,23 @@ var WindowManager = (function() {
 						type: 'column',
 						content:[{
 							type: 'component',
-							componentName: 'Track Table Module',
+							componentName: 'Track Table',
 							isClosable: false
 						},{
 							type: 'stack',
 							content: [{
 								type: 'component',
-								componentName: 'Track Classification Module',
+								componentName: 'Track Classification',
 								isClosable: false,
 								height: 40	
 							},{
 								type: 'component',
-								componentName: 'Replay Module',
+								componentName: 'Replay',
 								isClosable: false,
 								height: 40
 							},{
 								type: 'component',
-								componentName: 'Settings Module',
+								componentName: 'Settings',
 								isClosable: false,
 								height: 40
 							}]

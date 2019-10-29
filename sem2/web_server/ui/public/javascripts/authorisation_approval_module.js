@@ -2,7 +2,7 @@ var AuthorisationApprovalModule = (function() {
 	//Private
 	var ftms_ui;
 	var display;
-	var requests = new Map();
+	var requests;
 
 	//Public 
 	return {
@@ -14,12 +14,22 @@ var AuthorisationApprovalModule = (function() {
 			display = document.createElement("div");
 			display.setAttribute('class', 'center_align');
 
+			requests = new Map();
+
 			//append display to window
-			ftms_ui.window_manager.appendToWindow('Authorisation Approval Module', display);
+			ftms_ui.window_manager.appendToWindow('Authorisation Approval', display);
+
+			ftms_ui.event_manager.getAllRequests();
 		},
 
-		receiveRequests: function(data) {
+		receiveRequest: function(data) {
 			this.generateRequestNotification(data);
+		},
+
+		receiveRequests: function(firing_requests) {
+			firing_requests.forEach(data=>{
+				this.receiveRequest(data);
+			});
 		},
 
 		generateRequestNotification: function(data) {
@@ -35,29 +45,21 @@ var AuthorisationApprovalModule = (function() {
 			var cross_cell = document.createElement("td");
 
 			cell1.setAttribute("class", "cell1");
-			cell1.appendChild(document.createTextNode("16:04:05"));
+			cell1.appendChild(document.createTextNode(new Date(data.timestamp).toLocaleTimeString('en-US')));
 			cell1.appendChild(document.createElement("br"));
-			cell1.appendChild(document.createTextNode("Jennifer Huynh"));		
+			cell1.appendChild(document.createTextNode(data.username));		
 
 			cell2.setAttribute("class", "cell1");
-			for (var key in data) {
-			    if (data.hasOwnProperty(key)) {
-			        if (key == "trackId"){
-			        	cell2.appendChild(document.createTextNode("Track Id: " + data[key]));
-			        	cell2.appendChild(document.createElement("br"));
-			        }
-			        else if (key == "weaponIds"){
-			        	var message = "Weapon Ids: ";
-			        	for (var i = 0; i < data[key].length; i++){
-			        		message += data[key][i];
-			        		if (i+1 != data[key].length){
-			        			message += ", ";
-			        		}			        		
-			        	}
-			        	cell2.appendChild(document.createTextNode(message));
-			        }
-			    }
-			}
+			cell2.appendChild(document.createTextNode("Track Id: " + data.trackId));
+			cell2.appendChild(document.createElement("br"));
+			var message = "Weapon Ids: ";
+        	for (var i = 0; i < data.weaponIds.length; i++){
+        		message += data.weaponIds[i];
+        		if (i+1 != data.weaponIds.length){
+        			message += ", ";
+        		}			        		
+        	}
+        	cell2.appendChild(document.createTextNode(message));
 			
 			tick_cell.setAttribute("class", "tick_cell");
 			tick_cell.appendChild(document.createTextNode("✓"));
@@ -65,7 +67,7 @@ var AuthorisationApprovalModule = (function() {
 				display.removeChild(requests_table);
 				ftms_ui.event_manager.sendRequestStatus({
 					requestId: requests_table.requestId,
-					status: "Approved"
+					status: "approved"
 				});
 			});
 			
@@ -75,7 +77,7 @@ var AuthorisationApprovalModule = (function() {
 				display.removeChild(requests_table);
 				ftms_ui.event_manager.sendRequestStatus({
 					requestId: requests_table.requestId,
-					status: "Denied"
+					status: "denied"
 				});
 			});
 
@@ -94,18 +96,29 @@ var AuthorisationApprovalModule = (function() {
 			requests.set(data.requestId, data);	
 		},
 
+		receiveConfirmations: function(confirmations) {
+			confirmations.forEach(data=>{
+				this.receiveConfirmation(data);
+			});
+		},
+
 		generateResponseNotification: function(data) {
 			var response_table = document.createElement("table");
 			response_table.setAttribute("class", "response_table");
 			response_table.addEventListener("click", function(){
 				var response = requests.get(data.requestId);
-				if(response.status == "Approved"){
+				if(response.status == "approved"){
 					ftms_ui.weapon_firing_module.disableButtons();
 					ftms_ui.weapon_firing_module.unselectButtons();
 					ftms_ui.weapon_firing_module.requestId = data.requestId;
 					for(var i = 0; i < data.weaponIds.length; i++){
 						ftms_ui.weapon_firing_module.weapons_buttons[data.weaponIds[i]-1].disabled = false;
 					}
+					var stack = ftms_ui.window_manager.getDisplay().root.getItemsById('FOStack')[0];
+					var tab = ftms_ui.window_manager.getDisplay().root.getItemsById('weaponFiring')[0];
+					stack.setActiveContentItem(tab);
+				} else if(response.status == "denied"){
+					ftms_ui.event_manager.deleteResponse(data.requestId);
 				}
 			});
 
@@ -116,32 +129,25 @@ var AuthorisationApprovalModule = (function() {
 			var status_cell = document.createElement("td");
 
 			cell1.setAttribute("class", "cell1");
-			cell1.appendChild(document.createTextNode("16:04:05"));
+			cell1.appendChild(document.createTextNode(new Date(data.timestamp).toLocaleTimeString('en-US')));
 			cell1.appendChild(document.createElement("br"));
-			cell1.appendChild(document.createTextNode("Jennifer Huynh"));
+			cell1.appendChild(document.createTextNode(data.username));	
 		
 			cell2.setAttribute("class", "cell1");
-			for (var key in data) {
-			    if (data.hasOwnProperty(key)) {
-			        if (key == "trackId"){
-			        	cell2.appendChild(document.createTextNode("Track Id: " + data[key]));
-			        	cell2.appendChild(document.createElement("br"));
-			        }
-			        else if (key == "weaponIds"){
-			        	var message = "Weapon Ids: ";
-			        	for (var i = 0; i < data[key].length; i++){
-			        		message += data[key][i];
-			        		if (i+1 != data[key].length){
-			        			message += ", ";
-			        		}			        		
-			        	}
-			        	cell2.appendChild(document.createTextNode(message));
-			        }
-			    }
-			}
+	        cell2.appendChild(document.createTextNode("Track Id: " + data.trackId));
+	        cell2.appendChild(document.createElement("br"));
+
+        	var message = "Weapon Ids: ";
+        	for (var i = 0; i < data.weaponIds.length; i++){
+        		message += data.weaponIds[i];
+        		if (i+1 != data.weaponIds.length){
+        			message += ", ";
+        		}			        		
+        	}
+	        cell2.appendChild(document.createTextNode(message));
 			
 			status_cell.setAttribute("class", "status_cell");
-			status_cell.appendChild(document.createTextNode(data.status));
+			status_cell.appendChild(document.createTextNode(data.status[0].toUpperCase() + data.status.slice(1)));
 
 			row.appendChild(cell1);
 			row.appendChild(cell2);
@@ -156,8 +162,9 @@ var AuthorisationApprovalModule = (function() {
 
 		receiveRequestStatus: function(data) {
 			var request = requests.get(data.requestId);
+			console.log(data.requestId);
 			request.status = data.status;
-			request.resElement.rows[0].cells[2].innerHTML = request.status;
+			request.resElement.rows[0].cells[2].innerHTML = data.status[0].toUpperCase() + data.status.slice(1);
 		},
 
 		deleteResponse: function(requestId) {
