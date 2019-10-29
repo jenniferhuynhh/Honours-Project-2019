@@ -6,7 +6,7 @@ var SettingsManager = (function() {
 		audio_on: false,
 		dark_theme: true,
 		colourblind: false,
-		icon_sizing: 15,
+		icon_sizing: 40,
 		default_layout: "",
 		ownship_id: 1020
 	}

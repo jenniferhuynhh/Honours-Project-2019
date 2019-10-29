@@ -197,7 +197,7 @@ var MapModule = (function() {
 					position: Cesium.Cartesian3.fromDegrees(track.longitude, track.latitude, track.altitude),
 					billboard: {
 						image: this.makeIcon(track),
-						scaleByDistance: new Cesium.NearFarScalar(100, 3, 1000000, 1)
+						scaleByDistance: new Cesium.NearFarScalar(1, 0.7, 1000000, 0.3)
 					}
 				});
 

@@ -91,8 +91,8 @@ var SettingsModule = (function() {
 
 			var input = document.createElement("input");
 			input.type = "range";
-			input.min = "5";
-			input.max = "30";
+			input.min = "30";
+			input.max = "55";
 			input.value = ftms_ui.settings_manager.getSetting("icon_sizing");
 			input.classList.add("icon_slider");
 			input.addEventListener("change", () => ftms_ui.settings_manager.changeSetting(setting, input.value));
