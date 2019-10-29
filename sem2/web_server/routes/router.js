@@ -18,7 +18,6 @@ router.get('/', function(req, res, next) {
 				}
 			}
 		});
-	//res.sendFile(path.join(__dirname, "../ui/public", "/login.html")); //path.join(__dirname + '/login.html')
 });
 
 // POST for login or resgistration attempts
@@ -80,33 +79,10 @@ router.get('/ftms', function (req, res, next) {
 						return res.sendFile(path.join(__dirname, "../ui/roles/ts", "/ftms.html"));
 					} else if(user.role == "wo") {
 						return res.sendFile(path.join(__dirname, "../ui/roles/wo", "/ftms.html"));
-					} else if(user.role == "fs") {
-						return res.sendFile(path.join(__dirname, "../ui/roles/fs", "/ftms.html"));
+					} else if(user.role == "fo") {
+						return res.sendFile(path.join(__dirname, "../ui/roles/fo", "/ftms.html"));
 					}
 					return res.sendFile(path.join(__dirname, "../ui/public", "/ftms.html"));
-				}
-			}
-		});
-});
-
-// GET for logout
-router.get('/register', function (req, res, next) {
-	res.sendFile(path.join(__dirname, "../ui/public", "/register.html"));
-});
-
-// GET route after registering
-router.get('/profile', function (req, res, next) {
-	User.findById(req.session.userId)
-		.exec(function (error, user) {
-			if (error) {
-				return next(error);
-			} else {
-				if (user === null) {
-					var err = new Error('Not authorized! Go back!');
-					err.status = 400;
-					return next(err);
-				} else {
-					return res.send('<h1> Username: </h1>' + user.username + '<h2> Role: </h2>' + user.role + '<br><a type="button" href="/logout">Logout</a>')
 				}
 			}
 		});
@@ -132,6 +108,5 @@ function setReq(req, user){
 	req.session.username = user.username;
 	req.session.role = user.role;
 }
-
 
 module.exports = router;

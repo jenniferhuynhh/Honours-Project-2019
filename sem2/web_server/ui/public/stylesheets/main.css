@@ -496,6 +496,13 @@ input:checked + .event_replay_slider:before {
 	width: 70px;
 }
 
+.scrollto-button {
+	position: absolute;
+	top: 5px;
+	left: 155px;
+	width: 105px;
+}
+
 /*** Settings Module ***/
 .settings_module{
 	width: 100%;

@@ -94,19 +94,19 @@ var TrackManager = (function() {
 		},
 
 		//Returns selected track
-		getSelectedTrack: function(trackId) {
+		getSelectedTrack: function() {
 			return selected_track;
-		},
-
-		//Gets the next manual track ID from the server and calls the callback when ready
-		getManualTrackId: function(callback) {
-			ftms_ui.event_manager.getManualTrackId(callback);
 		},
 
 		//Sets selected track
 		setSelectedTrack: function(track) {
 			selected_track = track;
 			this.callListeners("selected", selected_track);
+		},
+
+		//Gets the next manual track ID from the server and calls the callback when ready
+		getManualTrackId: function(callback) {
+			ftms_ui.event_manager.getManualTrackId(callback);
 		},
 
 		addEventListener: function(event, func) {
