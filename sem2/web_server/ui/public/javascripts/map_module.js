@@ -138,8 +138,15 @@ var MapModule = (function() {
 					viewer.trackedEntity = null;
 				}
 				this.classList.toggle("active");
-			})
+			});
 			map_buttons_div.appendChild(ownship_button);
+
+			//Ownship focus
+			var scroll_to_track_button = document.createElement("button");
+			scroll_to_track_button.innerHTML = "Scroll to Track";
+			scroll_to_track_button.classList.add("scrollto-button", "custom-cesium-button", "custom-cesium-toolbar-button");
+			scroll_to_track_button.addEventListener("click", () => ftms_ui.track_table_module.scrollToSelected());
+			map_buttons_div.appendChild(scroll_to_track_button);
 
 			display.appendChild(map_buttons_div);
 
