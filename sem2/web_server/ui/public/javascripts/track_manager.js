@@ -126,7 +126,7 @@ var TrackManager = (function() {
 
 		//Adds a track for testing purposes
 		test: function() {
-			//return;
+			return;
 			var t1 = {
 				trackId: 123,
 				latitude: 26.576489,
