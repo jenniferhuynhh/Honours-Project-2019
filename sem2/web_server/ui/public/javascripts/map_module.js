@@ -141,14 +141,18 @@ var MapModule = (function() {
 			});
 			map_buttons_div.appendChild(ownship_button);
 
-			//Ownship focus
+			//Scroll to Track button
 			var scroll_to_track_button = document.createElement("button");
 			scroll_to_track_button.innerHTML = "Scroll to Track";
 			scroll_to_track_button.classList.add("scrollto-button", "custom-cesium-button", "custom-cesium-toolbar-button");
 			scroll_to_track_button.addEventListener("click", () => ftms_ui.track_table_module.scrollToSelected());
 			map_buttons_div.appendChild(scroll_to_track_button);
-
 			display.appendChild(map_buttons_div);
+
+			//Viewer distance label
+			var distance_label = document.createElement("div");
+			distance_label.classList.add("distance_label");
+			display.appendChild(distance_label);
 
 			//Handle on-click track icon selecting
 			var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
@@ -189,15 +193,45 @@ var MapModule = (function() {
 				}
 			}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
-			/*var pickedObject = viewer.scene.pick(click.position);
-			if(Cesium.defined(pickedObject)) { //If clicked on entity
-				ftms_ui.track_manager.setSelectedTrack(ftms_ui.track_manager.getTrack(viewer.selectedEntity.id));
-			} else { //If clicked on empty space
-				var previously_selected_track = ftms_ui.track_manager.getSelectedTrack();
-				if(!previously_selected_track) return;
-				ftms_ui.track_manager.setSelectedTrack(null);
-				this.paintTrack(previously_selected_track);
-			}*/
+			//Print horizontal distance from one side of the viewer to the other
+			function printDistance() {
+				setTimeout(() => { //Delay is necessary as this function is called before the camera has reached its new location
+					var ellipsoid = viewer.scene.globe.ellipsoid;
+					//Take two reference points: each horizontal extreme, both vertically centered
+					var cartesian_left = viewer.camera.pickEllipsoid(new Cesium.Cartesian2(0, display.offsetHeight/2), ellipsoid);
+					var cartesian_right = viewer.camera.pickEllipsoid(new Cesium.Cartesian2(display.offsetWidth, display.offsetHeight/2), ellipsoid);
+					if(cartesian_left && cartesian_right) {
+						var cartographic_left = ellipsoid.cartesianToCartographic(cartesian_left);
+						var cartographic_right = ellipsoid.cartesianToCartographic(cartesian_right);
+
+						var positions = Cesium.Cartesian3.fromDegreesArray([
+							Cesium.Math.toDegrees(cartographic_left.longitude), Cesium.Math.toDegrees(cartographic_left.latitude),
+							 Cesium.Math.toDegrees(cartographic_right.longitude), Cesium.Math.toDegrees(cartographic_left.latitude)
+						]);
+
+						var surfacePositions = Cesium.PolylinePipeline.generateArc({
+							positions: positions
+						});
+
+						var scratchCartesian3 = new Cesium.Cartesian3();
+						var surfacePositionsLength = surfacePositions.length;
+						var totalDistanceInMeters = 0;
+						for (var i = 3; i < surfacePositionsLength; i += 3) {
+							scratchCartesian3.x = surfacePositions[i] - surfacePositions[i - 3];
+							scratchCartesian3.y = surfacePositions[i + 1] - surfacePositions[i - 2];
+							scratchCartesian3.z = surfacePositions[i + 2] - surfacePositions[i - 1];
+							totalDistanceInMeters += Cesium.Cartesian3.magnitude(scratchCartesian3);
+						}
+
+						var totalDistanceInKm = totalDistanceInMeters * 0.001;
+
+						distance_label.innerHTML = 'Distance: ' + totalDistanceInKm.toFixed(3) + ' km';
+					}
+				}, 100);
+			}
+			handler.setInputAction(() => printDistance(), Cesium.ScreenSpaceEventType.LEFT_UP);
+			handler.setInputAction(() => printDistance(), Cesium.ScreenSpaceEventType.RIGHT_UP);
+			handler.setInputAction(() => printDistance(), Cesium.ScreenSpaceEventType.WHEEL);
 
 			//Create new icon entity when new track is created
 			ftms_ui.track_manager.addEventListener("create", track => {
@@ -253,6 +287,7 @@ var MapModule = (function() {
 				viewer.selectedEntity = null;
 			});
 
+			printDistance();
 			ftms_ui.window_manager.appendToWindow('Map', display);
 		},
 
