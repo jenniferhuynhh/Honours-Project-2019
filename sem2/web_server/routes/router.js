@@ -70,9 +70,7 @@ router.get('/ftms', function (req, res, next) {
 				return next(error);
 			} else {
 				if (user === null) {
-					var err = new Error('Not authorized! Go back!');
-					err.status = 400;
-					return next(err);
+					return res.redirect('/');
 				} else {
 					res.cookie('role', user.role);
 					if(user.role == "ts") {
