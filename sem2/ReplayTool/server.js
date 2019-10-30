@@ -4,6 +4,8 @@ var kafka = require('kafka-node');
 var protobuf = require('protobufjs');
 
 var kafka_topic = 'tdn-systrk';
+var alert_severities = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];
+var send_alerts = true;
 
 //MONGODB SETUP
 mongoose.connect('mongodb://localhost:27017/flights', {useNewUrlParser: true, useUnifiedTopology: true}, err => {
@@ -54,6 +56,16 @@ function main() {
 					topic: kafka_topic,
 					messages: proto.encode(proto.fromObject(tracks[i])).finish() //encode before putting on Kafka stream
 				})
+				if(send_alerts && tracks[i].eventType == 1) { //if new track, send alert
+					kafka_messages.push({
+						topic: 'tdn-alert',
+						messages: JSON.stringify({
+							timestamp: new Date().getTime(),
+							severity: alert_severities[randomInt(0, alert_severities.length)],
+							text: 'System Track "' + tracks[i].trackId + '" created'
+						})
+					})
+				}
 			}
 
 			log('Sending ' + kafka_messages.length + ' tracks across "' + kafka_topic + '"...');
@@ -107,4 +119,10 @@ class Clock {
 	}
 }
 
+//Logs string to console with timestamp
 function log(s) {console.log('[' + new Date().toTimeString().substr(0,8) + '] ' + s);}
+
+//Generates random int between min/max (inclusive, exclusive respectively)
+function randomInt(min, max) {
+	return Math.floor((Math.random() * max) + min);
+}
